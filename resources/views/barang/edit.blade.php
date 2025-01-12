@@ -13,20 +13,26 @@
           <input type="hidden" id="barang_id">
 
           <div class="row">
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
               <div class="form-group">
                 <label>Gambar</label>
                 <input type="file" class="form-control" name="gambar" id="edit_gambar" onchange="previewImageEdit()">
                 <img src="" class="img-preview img-fluid my-1" id="edit_gambar_preview" style="max-height: 275px; overflow:hidden; border: 1px solid black;">
                 <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-gambar"></div>
               </div>
-            </div>
+            </div> --}}
 
-            <div class="col-md-6">
+            <div class="col">
               <div class="form-group">
                 <label>Nama Barang</label>
                 <input type="text" class="form-control" name="nama_barang" id="edit_nama_barang">
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama_barang"></div>
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_nama_barang"></div>
+              </div>
+              
+              <div class="form-group">
+                <label>Kode Barang</label>
+                <input type="text" class="form-control" name="kode_barang" id="edit_kode_barang">
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_kode_barang"></div>
               </div>
 
               <div class="form-group">
@@ -58,13 +64,13 @@
               <div class="form-group">
                 <label>Stok Minimum</label>
                 <input type="number" class="form-control" name="stok_minimum" id="edit_stok_minimum">
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-stok_minimum"></div>
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_stok_minimum"></div>
               </div>
               
               <div class="form-group">
                 <label>Deskripsi</label>
                 <textarea class="form-control" name="deskripsi" id="edit_deskripsi"></textarea>
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-deskripsi"></div>
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_deskripsi"></div>
               </div>
             </div>
           </div>

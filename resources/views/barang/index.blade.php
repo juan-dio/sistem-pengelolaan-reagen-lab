@@ -6,10 +6,10 @@
 
 @section('content')
     <div class="section-header">
-        <h1>Data Barang</h1>
+        <h1>Data Reagen</h1>
         <div class="ml-auto">
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah
-                Barang</a>
+                Reagen</a>
         </div>
     </div>
 
@@ -22,12 +22,12 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Gambar</th>
-                                    <th>Kode Barang</th>
-                                    <th>Nama Barang</th>
-                                    <th>Stok</th>
-                                    <th>Opsi</th>
                                     <th>Barcode</th>
+                                    <th>Kode</th>
+                                    <th>Nama</th>
+                                    <th>Stok</th>
+                                    <th colspan="2">Opsi</th>
+                                    {{-- <th></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,12 +62,12 @@
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
                                 <td>${stok}</td>
-                                <td>
+                                <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                     <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                    <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fa fa-trash"></i> </a>
+                                    <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fa fa-trash" style="padding: 0 1px;"></i> </a>
                                 </td>
-                                <td>        
+                                <td style="padding: 8px 6px;">        
                                     <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
                                 </td>
                             </tr>
@@ -91,39 +91,44 @@
 
             let nama_barang = $('#nama_barang').val();
             let kode_barang = $('#kode_barang').val();
+            let gambar = null;
             let stok_minimum = $('#stok_minimum').val();
             let jenis_id = $('#jenis_id').val();
             let satuan_id = $('#satuan_id').val();
             let deskripsi = $('#deskripsi').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
-            let canvas = document.createElement('canvas');
-
-            JsBarcode(canvas, kode_barang, {
-                format: "CODE128",
-                displayValue: true,
-                fontSize: 20,
-                width: 2,
-                height: 60
-            });
-            
-            let barcodeDataUrl = canvas.toDataURL('image/png');
-
-            // Konversi base64 menjadi Blob
-            const base64Data = barcodeDataUrl.split(',')[1];
-            const binaryData = atob(base64Data);
-            const arrayBuffer = new Uint8Array(binaryData.length);
-
-            for (let i = 0; i < binaryData.length; i++) {
-                arrayBuffer[i] = binaryData.charCodeAt(i);
+            if (kode_barang) {
+                let canvas = document.createElement('canvas');
+    
+                JsBarcode(canvas, kode_barang, {
+                    format: "CODE128",
+                    displayValue: true,
+                    fontSize: 20,
+                    width: 2,
+                    height: 60
+                });
+                
+                let barcodeDataUrl = canvas.toDataURL('image/png');
+    
+                // Konversi base64 menjadi Blob
+                const base64Data = barcodeDataUrl.split(',')[1];
+                const binaryData = atob(base64Data);
+                const arrayBuffer = new Uint8Array(binaryData.length);
+    
+                for (let i = 0; i < binaryData.length; i++) {
+                    arrayBuffer[i] = binaryData.charCodeAt(i);
+                }
+    
+                gambar = new Blob([arrayBuffer], { type: 'image/png' });
             }
-
-            let gambar = new Blob([arrayBuffer], { type: 'image/png' });
 
             let formData = new FormData();
             formData.append('nama_barang', nama_barang);
             formData.append('kode_barang', kode_barang);
-            formData.append('gambar', gambar, kode_barang + '.png');
+            if (gambar) {
+                formData.append('gambar', gambar, kode_barang + '.png');
+            }
             formData.append('stok_minimum', stok_minimum);
             formData.append('jenis_id', jenis_id);
             formData.append('satuan_id', satuan_id);
@@ -140,7 +145,6 @@
 
                 success: function(response) {
                     Swal.fire({
-                        type: 'success',
                         icon: 'success',
                         title: `${response.message}`,
                         showConfirmButton: true,
@@ -166,12 +170,12 @@
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
                                 <td>${stok}</td>
-                                <td>
+                                <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                     <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                    <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                    <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
                                 </td>
-                                <td>        
+                                <td style="padding: 8px 6px;">        
                                     <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
                                 </td>
                             </tr>
@@ -180,13 +184,25 @@
                                     false);
                             });
 
-                            $('#gambar').val('');
-                            $('#preview').attr('src', '');
                             $('#nama_barang').val('');
+                            $('#kode_barang').val('');
                             $('#stok_minimum').val('');
                             $('#deskripsi').val('');
 
                             $('#modal_tambah_barang').modal('hide');
+
+                            $('#alert-nama_barang').removeClass('d-block');
+                            $('#alert-nama_barang').addClass('d-none');
+                            $('#alert-kode_barang').removeClass('d-block');
+                            $('#alert-kode_barang').addClass('d-none');
+                            $('#alert-stok_minimum').removeClass('d-block');
+                            $('#alert-stok_minimum').addClass('d-none');
+                            $('#alert-jenis_id').removeClass('d-block');
+                            $('#alert-jenis_id').addClass('d-none');
+                            $('#alert-satuan_id').removeClass('d-block');
+                            $('#alert-satuan_id').addClass('d-none');
+                            $('#alert-deskripsi').removeClass('d-block');
+                            $('#alert-deskripsi').addClass('d-none');
 
                             let table = $('#table_id').DataTable();
                             table.draw();
@@ -199,13 +215,13 @@
                 },
 
                 error: function(error) {
-                    if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
-                            0]) {
-                        $('#alert-gambar').removeClass('d-none');
-                        $('#alert-gambar').addClass('d-block');
+                    // if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
+                    //         0]) {
+                    //     $('#alert-gambar').removeClass('d-none');
+                    //     $('#alert-gambar').addClass('d-block');
 
-                        $('#alert-gambar').html(error.responseJSON.gambar[0]);
-                    }
+                    //     $('#alert-gambar').html(error.responseJSON.gambar[0]);
+                    // }
 
                     if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
                         .nama_barang[0]) {
@@ -213,6 +229,20 @@
                         $('#alert-nama_barang').addClass('d-block');
 
                         $('#alert-nama_barang').html(error.responseJSON.nama_barang[0]);
+                    } else {
+                        $('#alert-nama_barang').removeClass('d-block');
+                        $('#alert-nama_barang').addClass('d-none');
+                    }
+                    
+                    if (error.responseJSON && error.responseJSON.kode_barang && error.responseJSON
+                        .kode_barang[0]) {
+                        $('#alert-kode_barang').removeClass('d-none');
+                        $('#alert-kode_barang').addClass('d-block');
+
+                        $('#alert-kode_barang').html(error.responseJSON.kode_barang[0]);
+                    } else {
+                        $('#alert-kode_barang').removeClass('d-block');
+                        $('#alert-kode_barang').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.stok_minimum && error.responseJSON
@@ -221,6 +251,9 @@
                         $('#alert-stok_minimum').addClass('d-block');
 
                         $('#alert-stok_minimum').html(error.responseJSON.stok_minimum[0]);
+                    } else {
+                        $('#alert-stok_minimum').removeClass('d-block');
+                        $('#alert-stok_minimum').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jenis_id && error.responseJSON
@@ -229,6 +262,9 @@
                         $('#alert-jenis_id').addClass('d-block');
 
                         $('#alert-jenis_id').html(error.responseJSON.jenis_id[0]);
+                    } else {
+                        $('#alert-jenis_id').removeClass('d-block');
+                        $('#alert-jenis_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.satuan_id && error.responseJSON
@@ -237,6 +273,9 @@
                         $('#alert-satuan_id').addClass('d-block');
 
                         $('#alert-satuan_id').html(error.responseJSON.satuan_id[0]);
+                    } else {
+                        $('#alert-satuan_id').removeClass('d-block');
+                        $('#alert-satuan_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.deskripsi && error.responseJSON
@@ -245,6 +284,9 @@
                         $('#alert-deskripsi').addClass('d-block');
 
                         $('#alert-deskripsi').html(error.responseJSON.deskripsi[0]);
+                    } else {
+                        $('#alert-deskripsi').removeClass('d-block');
+                        $('#alert-deskripsi').addClass('d-none');
                     }
                 }
             });
@@ -290,13 +332,14 @@
                 cache: false,
                 success: function(response) {
                     $('#barang_id').val(response.data.id);
-                    $('#edit_gambar').val(null);
+                    // $('#edit_gambar').val(null);
                     $('#edit_nama_barang').val(response.data.nama_barang);
+                    $('#edit_kode_barang').val(response.data.kode_barang);
                     $('#edit_stok_minimum').val(response.data.stok_minimum);
                     $('#edit_jenis_id').val(response.data.jenis_id);
                     $('#edit_satuan_id').val(response.data.satuan_id);
                     $('#edit_deskripsi').val(response.data.deskripsi);
-                    $('#edit_gambar_preview').attr('src', '/storage/' + response.data.gambar);
+                    // $('#edit_gambar_preview').attr('src', '/storage/' + response.data.gambar);
 
                     $('#modal_edit_barang').modal('show');
                 }
@@ -308,19 +351,49 @@
             e.preventDefault();
 
             let barang_id = $('#barang_id').val();
-            let gambar = $('#edit_gambar')[0].files[0];
+            // let gambar = $('#edit_gambar')[0].files[0];
             let nama_barang = $('#edit_nama_barang').val();
+            let kode_barang = $('#edit_kode_barang').val();
+            let gambar = null;
             let stok_minimum = $('#edit_stok_minimum').val();
             let deskripsi = $('#edit_deskripsi').val();
             let jenis_id = $('#edit_jenis_id').val();
             let satuan_id = $('#edit_satuan_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
+            if (kode_barang) {
+                let canvas = document.createElement('canvas');
+    
+                JsBarcode(canvas, kode_barang, {
+                    format: "CODE128",
+                    displayValue: true,
+                    fontSize: 20,
+                    width: 2,
+                    height: 60
+                });
+                
+                let barcodeDataUrl = canvas.toDataURL('image/png');
+    
+                // Konversi base64 menjadi Blob
+                const base64Data = barcodeDataUrl.split(',')[1];
+                const binaryData = atob(base64Data);
+                const arrayBuffer = new Uint8Array(binaryData.length);
+    
+                for (let i = 0; i < binaryData.length; i++) {
+                    arrayBuffer[i] = binaryData.charCodeAt(i);
+                }
+    
+                gambar = new Blob([arrayBuffer], { type: 'image/png' });
+            }
 
             // Buat objek FormData
             let formData = new FormData();
-            formData.append('gambar', gambar);
+            // formData.append('gambar', gambar);
             formData.append('nama_barang', nama_barang);
+            formData.append('kode_barang', kode_barang);
+            if (gambar) {
+                formData.append('gambar', gambar, kode_barang + '.png');
+            }
             formData.append('stok_minimum', stok_minimum);
             formData.append('deskripsi', deskripsi);
             formData.append('jenis_id', jenis_id);
@@ -338,7 +411,6 @@
 
                 success: function(response) {
                     Swal.fire({
-                        type: 'success',
                         icon: 'success',
                         title: `${response.message}`,
                         showConfirmButton: true,
@@ -366,55 +438,94 @@
                     rowData.eq(4).text(stok);
 
                     $('#modal_edit_barang').modal('hide');
+
+                    $('#alert-edit_nama_barang').removeClass('d-block');
+                    $('#alert-edit_nama_barang').addClass('d-none');
+                    $('#alert-edit_kode_barang').removeClass('d-block');
+                    $('#alert-edit_kode_barang').addClass('d-none');
+                    $('#alert-edit_stok_minimum').removeClass('d-block');
+                    $('#alert-edit_stok_minimum').addClass('d-none');
+                    $('#alert-edit_jenis_id').removeClass('d-block');
+                    $('#alert-edit_jenis_id').addClass('d-none');
+                    $('#alert-edit_satuan_id').removeClass('d-block');
+                    $('#alert-edit_satuan_id').addClass('d-none');
+                    $('#alert-edit_deskripsi').removeClass('d-block');
+                    $('#alert-edit_deskripsi').addClass('d-none');
                 },
 
                 error: function(error) {
-                    if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
-                            0]) {
-                        $('#alert-gambar').removeClass('d-none');
-                        $('#alert-gambar').addClass('d-block');
+                    // if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
+                    //         0]) {
+                    //     $('#alert-gambar').removeClass('d-none');
+                    //     $('#alert-gambar').addClass('d-block');
 
-                        $('#alert-gambar').html(error.responseJSON.gambar[0]);
-                    }
+                    //     $('#alert-gambar').html(error.responseJSON.gambar[0]);
+                    // }
 
                     if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
                         .nama_barang[0]) {
-                        $('#alert-nama_barang').removeClass('d-none');
-                        $('#alert-nama_barang').addClass('d-block');
+                        $('#alert-edit_nama_barang').removeClass('d-none');
+                        $('#alert-edit_nama_barang').addClass('d-block');
 
-                        $('#alert-nama_barang').html(error.responseJSON.nama_barang[0]);
+                        $('#alert-edit_nama_barang').html(error.responseJSON.nama_barang[0]);
+                    } else {
+                        $('#alert-edit_nama_barang').removeClass('d-block');
+                        $('#alert-edit_nama_barang').addClass('d-none');
+                    }
+                    
+                    if (error.responseJSON && error.responseJSON.kode_barang && error.responseJSON
+                        .kode_barang[0]) {
+                        $('#alert-edit_kode_barang').removeClass('d-none');
+                        $('#alert-edit_kode_barang').addClass('d-block');
+
+                        $('#alert-edit_kode_barang').html(error.responseJSON.kode_barang[0]);
+                    } else {
+                        $('#alert-edit_kode_barang').removeClass('d-block');
+                        $('#alert-edit_kode_barang').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.stok_minimum && error.responseJSON
                         .stok_minimum[0]) {
-                        $('#alert-stok_minimum').removeClass('d-none');
-                        $('#alert-stok_minimum').addClass('d-block');
+                        $('#alert-edit_stok_minimum').removeClass('d-none');
+                        $('#alert-edit_stok_minimum').addClass('d-block');
 
-                        $('#alert-stok_minimum').html(error.responseJSON.stok_minimum[0]);
+                        $('#alert-edit_stok_minimum').html(error.responseJSON.stok_minimum[0]);
+                    } else {
+                        $('#alert-edit_stok_minimum').removeClass('d-block');
+                        $('#alert-edit_stok_minimum').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jenis_id && error.responseJSON
                         .jenis_id[0]) {
-                        $('#alert-jenis_id').removeClass('d-none');
-                        $('#alert-jenis_id').addClass('d-block');
+                        $('#alert-edit_jenis_id').removeClass('d-none');
+                        $('#alert-edit_jenis_id').addClass('d-block');
 
-                        $('#alert-jenis_id').html(error.responseJSON.jenis_id[0]);
+                        $('#alert-edit_jenis_id').html(error.responseJSON.jenis_id[0]);
+                    } else {
+                        $('#alert-edit_jenis_id').removeClass('d-block');
+                        $('#alert-edit_jenis_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.satuan_id && error.responseJSON
                         .satuan_id[0]) {
-                        $('#alert-satuan_id').removeClass('d-none');
-                        $('#alert-satuan_id').addClass('d-block');
+                        $('#alert-edit_satuan_id').removeClass('d-none');
+                        $('#alert-edit_satuan_id').addClass('d-block');
 
-                        $('#alert-satuan_id').html(error.responseJSON.satuan_id[0]);
+                        $('#alert-edit_satuan_id').html(error.responseJSON.satuan_id[0]);
+                    } else {
+                        $('#alert-edit_satuan_id').removeClass('d-block');
+                        $('#alert-edit_satuan_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.deskripsi && error.responseJSON
                         .deskripsi[0]) {
-                        $('#alert-deskripsi').removeClass('d-none');
-                        $('#alert-deskripsi').addClass('d-block');
+                        $('#alert-edit_deskripsi').removeClass('d-none');
+                        $('#alert-edit_deskripsi').addClass('d-block');
 
-                        $('#alert-deskripsi').html(error.responseJSON.deskripsi[0]);
+                        $('#alert-edit_deskripsi').html(error.responseJSON.deskripsi[0]);
+                    } else {
+                        $('#alert-edit_deskripsi').removeClass('d-block');
+                        $('#alert-edit_deskripsi').addClass('d-none');
                     }
                 }
             })
@@ -445,7 +556,6 @@
                         },
                         success: function(response) {
                             Swal.fire({
-                                type: 'success',
                                 icon: 'success',
                                 title: `${response.message}`,
                                 showConfirmButton: true,
@@ -468,16 +578,16 @@
                                         let barang = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>
-                                            <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px"; height="150px"></td>
+                                            <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                             <td>${value.kode_barang}</td>
                                             <td>${value.nama_barang}</td>
                                             <td>${stok}</td>
-                                            <td>
+                                            <td style="padding: 8px 6px;">
                                                 <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                                 <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                                <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                                <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
                                             </td>
-                                            <td>        
+                                            <td style="padding: 8px 6px;">        
                                                 <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
                                             </td>
                                         </tr>
@@ -507,30 +617,4 @@
             edit_gambar_preview.src = URL.createObjectURL(event.target.files[0]);
         }
     </script>
-
-    {{-- <canvas id="canvas"></canvas> --}}
-
-    {{-- <!-- Generate Barcode -->
-    <script>
-        document.addEventListener("DOMContentLoaded", (e) => {
-            document.addEventListener("click", (e) => {
-                if (e.target.classList.contains('btn-barcode')) {
-                    let data = e.target.dataset;
-
-                    // Buat elemen canvas secara dinamis
-                    const canvas = document.createElement('canvas');
-                    document.body.appendChild(canvas);
-
-                    // Generate barcode di dalam canvas
-                    JsBarcode(canvas, data.code, {
-                        format: "CODE128",
-                        displayValue: true,
-                        fontSize: 20,
-                        width: 2,
-                        height: 60
-                    });
-                }
-            });
-        });
-    </script> --}}
 @endsection

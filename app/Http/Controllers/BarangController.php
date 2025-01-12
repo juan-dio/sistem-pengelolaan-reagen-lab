@@ -63,6 +63,7 @@ class BarangController extends Controller
         ], [
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
+            'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
             'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
             'gambar.required'       => 'Tambahkan Gambar !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
@@ -72,34 +73,25 @@ class BarangController extends Controller
             'satuan_id.required'    => 'Pilih Jenis Barang !'
         ]);
 
-        if ($request->hasFile('gambar')) 
-        {
-            $path       = 'gambar-barang/';
-            $file       = $request->file('gambar');
-            $fileName   = $file->getClientOriginalName();
-            $gambar     = $file->storeAs($path, $fileName, 'public');
-        } else{
-            $gambar = null;
-        }
-        
-        // $kode_barang = 'BRG-' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
-        $request->merge([
-            // 'kode_barang'   => $kode_barang,
-            'gambar'        => $gambar,
-            'user_id'       => auth()->user()->id,
-        ]);
-
         if($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
+        $gambar = null;
+        if ($request->hasFile('gambar')) {
+            $path       = 'gambar-barang/';
+            $file       = $request->file('gambar');
+            $fileName   = $file->getClientOriginalName();
+            $gambar     = $file->storeAs($path, $fileName, 'public');
+        }
+
         $barang = Barang::create([
             'nama_barang' => $request->nama_barang,
-            'deskripsi'   => $request->deskripsi,
-            'user_id'     => $request->user_id,
             'kode_barang' => $request->kode_barang,
-            'gambar'      => $path . $fileName,
             'stok_minimum'=> $request->stok_minimum,
+            'deskripsi'   => $request->deskripsi,
+            'gambar'      => $gambar,
+            'user_id'     => auth()->user()->id,
             'jenis_id'    => $request->jenis_id,
             'satuan_id'   => $request->satuan_id
         ]);
@@ -142,13 +134,16 @@ class BarangController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
+            'kode_barang'   => 'required|unique:barangs,kode_barang,' . $barang->id,
             'deskripsi'     => 'required',
             'gambar'        => 'nullable|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
-            'satuan_id'      => 'required'
+            'satuan_id'     => 'required'
         ], [
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
+            'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
+            'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
             'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
@@ -156,10 +151,13 @@ class BarangController extends Controller
             'jenis_id.required'     => 'Pilih Jenis Barang !',
             'satuan_id.required'    => 'Pilih Satuan Barang !'
         ]);
-    
-        // cek apakah gambar diubah atau tidak
-        if($request->hasFile('gambar')){
-            // hapus gambar lama
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+
+        $gambar = $barang->gambar;
+        if($request->hasFile('gambar')) {
             if($barang->gambar) {
                 unlink('.'.Storage::url($barang->gambar));
             }
@@ -167,37 +165,15 @@ class BarangController extends Controller
             $file       = $request->file('gambar');
             $fileName   = $file->getClientOriginalName();
             $gambar     = $file->storeAs($path, $fileName, 'public');
-            $path      .= $fileName; 
-        } else {
-            // jika tidak ada file gambar, gunakan gambar lama
-            $validator = Validator::make($request->all(), [
-                'nama_barang'   => 'required',
-                'deskripsi'     => 'required',
-                'stok_minimum'  => 'required|numeric',
-                'jenis_id'      => 'required',
-                'satuan_id'      => 'required'
-            ], [
-                'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
-                'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
-                'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
-                'stok_minimum.numeric'  => 'Gunakan Angka Untuk Mengisi Form Ini !',
-                'jenis_id.required'     => 'Pilih Jenis Barang !',
-                'satuan_id.required'    => 'Pilih Satuan Barang !'
-            ]);
-
-            $path = $barang->gambar;
         } 
-        
-        if($validator->fails()){
-            return response()->json($validator->errors(), 422);
-        }
     
         $barang->update([
             'nama_barang'   => $request->nama_barang,
+            'kode_barang'   => $request->kode_barang,
             'stok_minimum'  => $request->stok_minimum, 
             'deskripsi'     => $request->deskripsi,
             'user_id'       => auth()->user()->id,
-            'gambar'        => $path,
+            'gambar'        => $gambar,
             'jenis_id'      => $request->jenis_id,
             'satuan_id'     => $request->satuan_id
         ]);

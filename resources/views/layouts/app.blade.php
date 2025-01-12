@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>SISTEM PENGELOLAAN REAGEN</title>
+    <title>Sistem Pengelolaan Reagen</title>
 
     <!-- General CSS Files -->
     <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
@@ -25,8 +25,8 @@
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <!-- Javascript -->
-    @vite('resources/js/app.js')
+    {{-- <!-- Javascript -->
+    @vite('resources/js/app.js') --}}
 
 
     <!-- Datatable Jquery -->
@@ -159,10 +159,6 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="nav-link {{ Request::is('barang') ? 'active' : '' }}"
                                             href="/barang"><i class="fa fa-solid fa-circle fa-xs"></i> Nama Reagen</a>
-                                    </li>
-                                    <li><a class="nav-link {{ Request::is('manufaktur') ? 'active' : '' }}"
-                                            href="/manufaktur"><i class="fa fa-solid fa-circle fa-xs"></i>
-                                            Manufaktur</a>
                                     </li>
                                     <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}"
                                             href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a>
@@ -320,6 +316,7 @@
     <script src="assets/modules/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
     <script src="assets/modules/moment.min.js"></script>
+    <script src="assets/modules/jsbarcode.all.min.js"></script>
     <script src="assets/js/stisla.js"></script>
 
     <!-- JS Libraies -->

@@ -13,14 +13,14 @@
           <input type="hidden" id="barang_id">
 
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-group">
-                <label>Gambar</label>
+                {{-- <label>Gambar</label> --}}
                 <img src="" class="img-preview img-fluid my-1" id="detail_gambar_preview" style="max-height: 275px; overflow:hidden; border: 1px solid black;">
               </div>
             </div>
             
-            <div class="col-md-6">
+            <div class="col-md-8">
 
               <div class="form-group">
                 <label>Nama Barang</label>
