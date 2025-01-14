@@ -8,7 +8,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\AlatController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\DashboardController;
@@ -89,8 +89,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/supplier/get-data', [SupplierController::class, 'getDataSupplier']);
         Route::resource('/supplier', SupplierController::class);
     
-        Route::get('/customer/get-data', [CustomerController::class, 'getDataCustomer']);
-        Route::resource('/customer', CustomerController::class);
+        Route::get('/alat/get-data', [AlatController::class, 'getDataAlat']);
+        Route::resource('/alat', AlatController::class);
     
         Route::get('/api/barang-masuk/', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);

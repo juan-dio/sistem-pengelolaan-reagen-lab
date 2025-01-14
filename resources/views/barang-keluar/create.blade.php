@@ -46,17 +46,17 @@
                 </div>
 
                 <div class="form-group">
-                  <label>Customer</label>
-                  <select class="form-control" name="customer_id" id="customer_id">
-                    @foreach ($customers as $customer)
-                        @if (old('customer_id') == $customer->id)
-                          <option value="{{ $customer->id }}" selected>{{ $customer->customer}}</option>
+                  <label>Alat</label>
+                  <select class="form-control" name="alat_id" id="alat_id">
+                    @foreach ($alats as $alat)
+                        @if (old('alat_id') == $alat->id)
+                          <option value="{{ $alat->id }}" selected>{{ $alat->alat}}</option>
                         @else
-                          <option value="{{ $customer->id }}">{{ $customer->customer}}</option>
+                          <option value="{{ $alat->id }}">{{ $alat->alat}}</option>
                         @endif
                     @endforeach
                   </select>
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-customer_id"></div>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-alat_id"></div>
                 </div>
   
                 <div class="form-group">

@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Alat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-class CustomerController extends Controller
+class AlatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('customer.index', [
-            'customers' => Customer::all()
+        return view('alat.index', [
+            'alats' => Alat::all()
         ]);
     }
 
-    public function getDataCustomer()
+    public function getDataAlat()
     {
         return response()->json([
             'success'   => true,
-            'data'      => Customer::all()
+            'data'      => Alat::all()
         ]);
     }
 
@@ -32,7 +32,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customer.create');
+        return view('alat.create');
     }
 
     /**
@@ -41,34 +41,31 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer'  => 'required',
-            'alamat'    => 'required'
+            'alat'  => 'required',
         ],[
-            'customer.required' => 'Form Customer Wajib Di Isi !',
-            'alamat.required'   => 'Form Alamat Wajib Diisi'
+            'alat.required' => 'Form Alat Wajib Di Isi !',
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 422);
         }
 
-        $customer = Customer::create([
-            'customer'  => $request->customer,
-            'alamat'    => $request->alamat,
+        $alat = Alat::create([
+            'alat'  => $request->alat,
             'user_id'   => auth()->user()->id
         ]);
 
         return response()->json([
             'success'   => true,
             'message'   => 'Data Berhasil Disimpan !',
-            'data'      => $customer
+            'data'      => $alat
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer)
+    public function show(Alat $alat)
     {
         //
     }
@@ -76,51 +73,48 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Customer $customer)
+    public function edit(Alat $alat)
     {
         return response()->json([
             'success' => true,
             'message' => 'Edit Data Barang',
-            'data'    => $customer
+            'data'    => $alat
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Alat $alat)
     {
         $validator = Validator::make($request->all(), [
-            'customer'  => 'required',
-            'alamat'    => 'required'
+            'alat'  => 'required',
         ],[
-            'customer.required' => 'Form Customer Wajib Di Isi !',
-            'alamat.required'   => 'Form Alamat Wajib Diisi'
+            'alat.required' => 'Form Alat Wajib Di Isi !',
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 422);
         }
 
-        $customer->update([
-            'customer'  => $request->customer,
-            'alamat'    => $request->alamat,
+        $alat->update([
+            'alat'  => $request->alat,
             'user_id'   => auth()->user()->id
         ]);
 
         return response()->json([
             'success'   => true,
             'message'   => 'Data Berhasil Terupdate',
-            'data'      => $customer
+            'data'      => $alat
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Customer $customer)
+    public function destroy(Alat $alat)
     {
-        Customer::destroy($customer->id);
+        Alat::destroy($alat->id);
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Dihapus'

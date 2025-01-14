@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label>Nama Jenis Barang</label>
                 <input type="text" class="form-control" name="jenis_barang" id="edit_jenis_barang">
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jenis_barang"></div>
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_jenis_barang"></div>
             </div>
         </div>
 

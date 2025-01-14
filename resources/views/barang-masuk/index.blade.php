@@ -38,6 +38,20 @@
         </div>
     </div>
 
+    <!-- Disable enter key on form if not in textarea or button -->
+    <script>
+        $(document).ready(function() {
+            $(window).keydown(function(event) {
+                if (event.keyCode == 13) {
+                    if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'BUTTON') {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
 
     <!-- Select2 Autocomplete -->
     <script>
@@ -216,6 +230,12 @@
                             $('#stok').val('');
 
                             $('#modal_tambah_barangMasuk').modal('hide');
+
+                            $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
+                            $('#alert-tanggal_masuk').removeClass('d-block').addClass('d-none');
+                            $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
+                            $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
 
                             let table = $('#table_id').DataTable();
                             table.draw(); // memperbarui Datatables

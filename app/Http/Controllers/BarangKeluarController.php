@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Satuan;
-use App\Models\Customer;
+use App\Models\Alat;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,7 +20,7 @@ class BarangKeluarController extends Controller
         return view('barang-keluar.index', [
             'barangs'           => Barang::all(),
             'barangKeluar'      => BarangKeluar::all(),
-            'customers'         => Customer::all()
+            'alats'         => Alat::all()
         ]);
     }
 
@@ -29,7 +29,7 @@ class BarangKeluarController extends Controller
         return response()->json([
             'success'   => true,
             'data'      => BarangKeluar::all(),
-            'customer'  => Customer::all()
+            'alat'  => Alat::all()
         ]);
     }
 
@@ -52,7 +52,7 @@ class BarangKeluarController extends Controller
         $validator = Validator::make($request->all(), [
             'tanggal_keluar'     => 'required',
             'nama_barang'        => 'required',
-            'customer_id'        => 'required',
+            'alat_id'        => 'required',
             'jumlah_keluar'      => [
                 'required',
                 function ($attribute, $value, $fail) use ($request) {
@@ -68,7 +68,7 @@ class BarangKeluarController extends Controller
             'tanggal_keluar.required'    => 'Pilih Barang Terlebih Dahulu !',
             'nama_barang.required'       => 'Form Nama Barang Wajib Di Isi !',
             'jumlah_keluar.required'     => 'Form Jumlah Stok Masuk Wajib Di Isi !',
-            'customer_id.required'       => 'Pilih Customer !'
+            'alat_id.required'       => 'Pilih Alat !'
         ]);
 
         if($validator->fails()) {
@@ -80,7 +80,7 @@ class BarangKeluarController extends Controller
             'tanggal_keluar'    => $request->tanggal_keluar,
             'nama_barang'       => $request->nama_barang,
             'jumlah_keluar'     => $request->jumlah_keluar,
-            'customer_id'       => $request->customer_id,
+            'alat_id'       => $request->alat_id,
             'kode_transaksi'    => $request->kode_transaksi,
             'user_id'           => auth()->user()->id
         ]); 

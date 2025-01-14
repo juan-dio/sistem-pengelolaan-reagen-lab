@@ -33,6 +33,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Disable enter key on form if not in textarea or button -->
+    <script>
+        $(document).ready(function() {
+            $(window).keydown(function(event) {
+                if (event.keyCode == 13) {
+                    if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'BUTTON') {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
     <!-- Datatables Jquery -->
     <script>
         $(document).ready(function() {
@@ -124,6 +139,8 @@
                             $('#jenis_barang').val('');
                             $('#modal_tambah_jenis_barang').modal('hide');
 
+                            $('#alert-jenis_barang').removeClass('d-block').addClass('d-none');
+
                             let table = $('#table_id').DataTable();
                             table.draw(); // memperbarui Datatables
                         },
@@ -200,15 +217,18 @@
                     rowData.eq(1).text(response.data.jenis_barang);
 
                     $('#modal_edit_jenis_barang').modal('hide');
+
+                    $('#alert-edit_jenis_barang').removeClass('d-block');
+                    $('#alert-edit_jenis_barang').addClass('d-none');
                 },
 
                 error: function(error) {
                     if (error.responseJSON && error.responseJSON.jenis_barang && error.responseJSON
                         .jenis_barang[0]) {
-                        $('#alert-jenis_barang').removeClass('d-none');
-                        $('#alert-jenis_barang').addClass('d-block');
+                        $('#alert-edit_jenis_barang').removeClass('d-none');
+                        $('#alert-edit_jenis_barang').addClass('d-block');
 
-                        $('#alert-jenis_barang').html(error.responseJSON.jenis_barang[0]);
+                        $('#alert-edit_jenis_barang').html(error.responseJSON.jenis_barang[0]);
                     }
                 }
             });

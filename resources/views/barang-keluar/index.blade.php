@@ -25,7 +25,7 @@
                                     <th>Tanggal Keluar</th>
                                     <th>Nama Barang</th>
                                     <th>Stok Keluar</th>
-                                    <th>Customer</th>
+                                    <th>Alat</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
@@ -96,7 +96,7 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        let customer = getCustomerName(response.customer, value.customer_id);
+                        let alat = getAlatName(response.alat, value.alat_id);
                         let barangKeluar = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>   
@@ -104,7 +104,7 @@
                     <td>${value.tanggal_keluar}</td>
                     <td>${value.nama_barang}</td>
                     <td>${value.jumlah_keluar}</td>
-                    <td>${customer}</td>
+                    <td>${alat}</td>
                     <td>       
                         <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                     </td>
@@ -113,9 +113,9 @@
                         $('#table_id').DataTable().row.add($(barangKeluar)).draw(false);
                     });
 
-                    function getCustomerName(customers, customerId) {
-                        let customer = customers.find(s => s.id === customerId);
-                        return customer ? customer.customer : '';
+                    function getAlatName(alats, alatId) {
+                        let alat = alats.find(s => s.id === alatId);
+                        return alat ? alat.alat : '';
                     }
                 }
             });
@@ -152,7 +152,7 @@
             let tanggal_keluar = $('#tanggal_keluar').val();
             let nama_barang = $('#nama_barang').val();
             let jumlah_keluar = $('#jumlah_keluar').val();
-            let customer_id = $('#customer_id').val();
+            let alat_id = $('#alat_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
             let formData = new FormData();
@@ -160,7 +160,7 @@
             formData.append('tanggal_keluar', tanggal_keluar);
             formData.append('nama_barang', nama_barang);
             formData.append('jumlah_keluar', jumlah_keluar);
-            formData.append('customer_id', customer_id);
+            formData.append('alat_id', alat_id);
             formData.append('_token', token);
 
             $.ajax({
@@ -191,8 +191,8 @@
                             let counter = 1;
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
-                                let customer = getCustomerName(response.customer,
-                                    value.customer_id);
+                                let alat = getAlatName(response.alat,
+                                    value.alat_id);
                                 let barangKeluar = `
                                 <tr class="barang-row" id="index_${value.id}">
                                     <td>${counter++}</td>   
@@ -200,7 +200,7 @@
                                     <td>${value.tanggal_keluar}</td>
                                     <td>${value.nama_barang}</td>
                                     <td>${value.jumlah_keluar}</td>
-                                    <td>${customer}</td>
+                                    <td>${alat}</td>
                                     <td>
                                         <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                     </td>
@@ -217,12 +217,18 @@
 
                             $('#modal_tambah_barangKeluar').modal('hide');
 
+                            $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
+                            $('#alert-tanggal_keluar').removeClass('d-block').addClass('d-none');
+                            $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-jumlah_keluar').removeClass('d-block').addClass('d-none');
+                            $('#alert-alat_id').removeClass('d-block').addClass('d-none');
+
                             let table = $('#table_id').DataTable();
                             table.draw(); // memperbarui Datatables
 
-                            function getCustomerName(customers, customerId) {
-                                let customer = customers.find(s => s.id === customerId);
-                                return customer ? customer.customer : '';
+                            function getAlatName(alats, alatId) {
+                                let alat = alats.find(s => s.id === alatId);
+                                return alat ? alat.alat : '';
                             }
                         },
 
@@ -265,10 +271,10 @@
                         $('#alert-jumlah_keluar').html(error.responseJSON.jumlah_keluar[0]);
                     }
 
-                    if (error.responseJSON && error.responseJSON.customer_id && error.responseJSON
-                        .customer_id[0]) {
-                        $('#alert-customer_id').removeClass('d-none').addClass('d-block');
-                        $('#alert-customer_id').html(error.responseJSON.customer_id[0]);
+                    if (error.responseJSON && error.responseJSON.alat_id && error.responseJSON
+                        .alat_id[0]) {
+                        $('#alert-alat_id').removeClass('d-none').addClass('d-block');
+                        $('#alert-alat_id').html(error.responseJSON.alat_id[0]);
                     }
 
                     // Menampilkan kembali modal tambah jika terjadi error
@@ -321,9 +327,9 @@
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
-                                        let customer = getCustomerName(
-                                            response.customer, value
-                                            .customer_id);
+                                        let alat = getAlatName(
+                                            response.alat, value
+                                            .alat_id);
                                         let barangKeluar = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>   
@@ -331,7 +337,7 @@
                                             <td>${value.tanggal_keluar}</td>
                                             <td>${value.nama_barang}</td>
                                             <td>${value.jumlah_keluar}</td>
-                                            <td>${customer}</td>
+                                            <td>${alat}</td>
                                             <td>       
                                                 <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                             </td>
@@ -341,11 +347,11 @@
                                             $(barangKeluar)).draw(false);
                                     });
 
-                                    function getCustomerName(customers,
-                                    customerId) {
-                                        let customer = customers.find(s => s.id ===
-                                            customerId);
-                                        return customer ? customer.customer : '';
+                                    function getAlatName(alats,
+                                    alatId) {
+                                        let alat = alats.find(s => s.id ===
+                                            alatId);
+                                        return alat ? alat.alat : '';
                                     }
                                 }
                             });

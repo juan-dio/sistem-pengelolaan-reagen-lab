@@ -42,6 +42,20 @@
         </div>
     </div>
 
+    <!-- Disable enter key on form if not in textarea or button -->
+    <script>
+        $(document).ready(function() {
+            $(window).keydown(function(event) {
+                if (event.keyCode == 13) {
+                    if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'BUTTON') {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
     <!-- Datatables Jquery -->
     <script>
         $(document).ready(function() {
@@ -233,18 +247,12 @@
 
                                         $('#modal_tambah_barang').modal('hide');
 
-                                        $('#alert-nama_barang').removeClass('d-block');
-                                        $('#alert-nama_barang').addClass('d-none');
-                                        $('#alert-kode_barang').removeClass('d-block');
-                                        $('#alert-kode_barang').addClass('d-none');
-                                        $('#alert-stok_minimum').removeClass('d-block');
-                                        $('#alert-stok_minimum').addClass('d-none');
-                                        $('#alert-jenis_id').removeClass('d-block');
-                                        $('#alert-jenis_id').addClass('d-none');
-                                        $('#alert-satuan_id').removeClass('d-block');
-                                        $('#alert-satuan_id').addClass('d-none');
-                                        $('#alert-deskripsi').removeClass('d-block');
-                                        $('#alert-deskripsi').addClass('d-none');
+                                        $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                                        $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
+                                        $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
+                                        $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
+                                        $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
+                                        $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
 
                                         let table = $('#table_id').DataTable();
                                         table.draw();

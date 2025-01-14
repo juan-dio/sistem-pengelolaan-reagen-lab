@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class Customer extends Model
+class Alat extends Model
 {
     use HasFactory;
     use LogsActivity;
 
-    protected $fillable = ['customer', 'alamat', 'user_id'];
+    protected $fillable = ['alat', 'user_id'];
     protected $guarded = [''];
 
     protected $ignoreChangedAttributes = ['updated_at'];
