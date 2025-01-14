@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Satuan;
 use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
-
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class BarangController extends Controller
 {
@@ -55,7 +55,6 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
             'kode_barang'   => 'required|unique:barangs,kode_barang',
-            'deskripsi'     => 'required',
             'gambar'        => 'required|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
@@ -64,7 +63,6 @@ class BarangController extends Controller
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
             'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
-            'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
             'gambar.required'       => 'Tambahkan Gambar !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
@@ -135,7 +133,6 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
             'kode_barang'   => 'required|unique:barangs,kode_barang,' . $barang->id,
-            'deskripsi'     => 'required',
             'gambar'        => 'nullable|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
@@ -144,7 +141,6 @@ class BarangController extends Controller
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
             'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
-            'deskripsi.required'    => 'Form Deskripsi Wajib Di Isi !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
             'stok_minimum.numeric'  => 'Gunakan Angka Untuk Mengisi Form Ini !',
@@ -159,7 +155,11 @@ class BarangController extends Controller
         $gambar = $barang->gambar;
         if($request->hasFile('gambar')) {
             if($barang->gambar) {
-                unlink('.'.Storage::url($barang->gambar));
+                try {
+                    unlink('.'.Storage::url($barang->gambar));
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
             }
             $path       = 'gambar-barang/';
             $file       = $request->file('gambar');
@@ -198,6 +198,87 @@ class BarangController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data Barang Berhasil Dihapus!'
+        ]);
+    }
+
+    public function downloadExcelTemplate() {
+        $template = public_path('storage/excel/template.xlsx');
+
+        // Log path file
+        Log::info('Path to template: ' . $template);
+
+        if (!file_exists($template)) {
+            Log::error('File not found at: ' . $template);
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        $headers = ['Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+        return response()->download($template, 'template.xlsx', $headers);
+    }
+
+    public function readExcel(Request $request) {
+        // cek database harus kosong
+        if(Barang::count() > 0) {
+            return response()->json([
+                'success' => false,
+                'excel' => ['Data Reagen Harus Kosong !']
+            ], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'excel' => 'required|mimes:xlsx,xls'
+        ], [
+            'excel.required' => 'Pilih File Excel !',
+            'excel.mimes'    => 'Gunakan File Dengan Ekstensi xlsx, xls !'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $excel = $request->file('excel');
+        $nama_file = $excel->getClientOriginalName();
+        $excel->storeAs('excel', $nama_file, 'public');
+
+        $excel = public_path('storage/excel/' . $nama_file);
+        $loadExcel = IOFactory::load($excel);
+        $sheet = $loadExcel->getActiveSheet();
+
+        $data = [];
+
+        // Membaca data dari sheet
+        foreach ($sheet->getRowIterator() as $row) {
+            $rowData = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false); // Mengatur agar semua sel dibaca, termasuk yang kosong
+
+            // foreach ($cellIterator as $cell) {
+            //     $rowData[] = $cell->getValue(); // Mendapatkan nilai dari setiap sel
+            // }
+
+            // Mendapatkan nilai dari setiap sel
+            $rowData['kode_barang'] = $sheet->getCell('A' . $row->getRowIndex())->getValue();
+            $rowData['nama_barang'] = $sheet->getCell('B' . $row->getRowIndex())->getValue();
+            $rowData['stok_minimum'] = $sheet->getCell('C' . $row->getRowIndex())->getValue();
+            $rowData['deskripsi'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
+            $rowData['jenis_id'] = ($sheet->getCell('E' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
+            $rowData['satuan_id'] = (in_array($sheet->getCell('F' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
+
+            $data[] = $rowData;
+        }
+
+        // Menghapus file excel yang sudah di upload
+        try {
+            unlink($excel);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        return response()->json([
+            'data' => $data,
+            'success' => true,
+            'message' => 'Data Berhasil Di Import !'
         ]);
     }
 }

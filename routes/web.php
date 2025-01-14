@@ -76,6 +76,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
         Route::get('/barang/get-data', [BarangController::class, 'getDataBarang']);
         Route::resource('/barang', BarangController::class);
+
+        Route::post('/barang/excel', [BarangController::class, 'readExcel']);
+        Route::get('/barang/excel', [BarangController::class, 'downloadExcelTemplate']);
     
         Route::get('/jenis-barang/get-data', [JenisController::class, 'getDataJenisBarang']);
         Route::resource('/jenis-barang', JenisController::class);

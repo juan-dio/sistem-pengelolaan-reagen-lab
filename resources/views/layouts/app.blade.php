@@ -178,15 +178,15 @@
                                             href="/supplier"><i class="fa fa-solid fa-circle fa-xs"></i> Supplier</a>
                                     </li>
                                     <li><a class="nav-link {{ Request::is('customer') ? 'active' : '' }}"
-                                            href="/customer"><i class="fa fa-solid fa-circle fa-xs"></i> Customer</a>
+                                            href="/customer"><i class="fa fa-solid fa-circle fa-xs"></i> Analyzer</a>
                                     </li>
                                 </ul>
                             </li>
 
                             <li class="menu-header">TRANSAKSI</li>
-                            <li><a class="nav-link {{ Request::is('forecast') ? 'active' : '' }}" href="forecast"><i
+                            {{-- <li><a class="nav-link {{ Request::is('forecast') ? 'active' : '' }}" href="forecast"><i
                                         class="fa fa-solid fa-calculator"></i><span>
-                                        Forecast</span></a></li>
+                                        Forecast</span></a></li> --}}
                             <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}"
                                     href="barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang
                                         Masuk</span></a></li>

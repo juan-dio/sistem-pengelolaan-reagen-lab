@@ -3,6 +3,7 @@
 @include('barang.create')
 @include('barang.edit')
 @include('barang.show')
+@include('barang.excel')
 
 @section('content')
     <div class="section-header">
@@ -10,6 +11,8 @@
         <div class="ml-auto">
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah
                 Reagen</a>
+            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang_excel"><i class="fa fa-table"></i> Import
+                Reagen Excel</a>
         </div>
     </div>
 
@@ -25,7 +28,7 @@
                                     <th>Barcode</th>
                                     <th>Kode</th>
                                     <th>Nama</th>
-                                    <th>Stok</th>
+                                    <th>Stok Minimum</th>
                                     <th colspan="2">Opsi</th>
                                     {{-- <th></th> --}}
                                 </tr>
@@ -54,14 +57,14 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        let stok = value.stok != null ? value.stok : "Stok Kosong";
+                        // let stok = value.stok != null ? value.stok : "Stok Kosong";
                         let barang = `
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>
                                 <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";></td>
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
-                                <td>${stok}</td>
+                                <td>${value.stok_minimum}</td>
                                 <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                     <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
@@ -74,6 +77,207 @@
                         `;
                         $('#table_id').DataTable().row.add($(barang)).draw(false);
                     });
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $('#button_template_excel').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/barang/excel', // Sesuaikan dengan route Laravel Anda
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob' // Penting untuk mendownload file binary
+                },
+                success: function (data, status, xhr) {
+                    // Mendapatkan nama file dari header 'Content-Disposition' atau fallback ke 'template.xlsx'
+                    let filename = xhr.getResponseHeader('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'template.xlsx';
+
+                    // Membuat URL dari blob
+                    const url = window.URL.createObjectURL(data);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', filename); // Nama file yang diunduh
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error downloading template:', error);
+                    alert('Terjadi kesalahan saat mendownload file. Silakan coba lagi.');
+                }
+            });
+        });
+    </script>
+
+
+    <!-- Show Modal Import Excel -->
+    <script>
+        $('body').on('click', '#button_tambah_barang_excel', function() {
+            $('#modal_tambah_barang_excel').modal('show');
+        });
+
+        $('#import').click(function(e) {
+            e.preventDefault();
+
+            let excel = $('#excel')[0].files[0];
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            let formData = new FormData();
+            formData.append('excel', excel);
+            formData.append('_token', token);
+
+            $.ajax({
+                url: '/barang/excel',
+                type: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${response.message}`,
+                        showConfirmButton: true,
+                        timer: 3000
+                    });
+                    
+                    let data = response.data;
+
+                    for(let i = 1; i < data.length; i++) {
+                        let gambar = null;
+                        if (data[i].kode_barang) {
+                            let canvas = document.createElement('canvas');
+        
+                            JsBarcode(canvas, data[i].kode_barang, {
+                                format: "CODE128",
+                                displayValue: true,
+                                fontSize: 20,
+                                width: 2,
+                                height: 60
+                            });
+                            
+                            let barcodeDataUrl = canvas.toDataURL('image/png');
+            
+                            // Konversi base64 menjadi Blob
+                            const base64Data = barcodeDataUrl.split(',')[1];
+                            const binaryData = atob(base64Data);
+                            const arrayBuffer = new Uint8Array(binaryData.length);
+            
+                            for (let i = 0; i < binaryData.length; i++) {
+                                arrayBuffer[i] = binaryData.charCodeAt(i);
+                            }
+            
+                            gambar = new Blob([arrayBuffer], { type: 'image/png' });
+                        }
+
+                        let formData = new FormData();
+                        formData.append('nama_barang', data[i].nama_barang);
+                        formData.append('kode_barang', data[i].kode_barang);
+                        if (gambar) {
+                            formData.append('gambar', gambar, data[i].kode_barang + '.png');
+                        }
+                        formData.append('stok_minimum', data[i].stok_minimum);
+                        formData.append('jenis_id', data[i].jenis_id);
+                        formData.append('satuan_id', data[i].satuan_id);
+                        formData.append('deskripsi', data[i].deskripsi);
+                        formData.append('_token', token);
+
+                        $.ajax({
+                            url: '/barang',
+                            type: "POST",
+                            cache: false,
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+
+                            success: function(response) {
+                                $.ajax({
+                                    url: '/barang/get-data',
+                                    type: "GET",
+                                    cache: false,
+                                    success: function(response) {
+                                        $('#table-barangs').html(''); // kosongkan tabel terlebih dahulu
+
+                                        let counter = 1;
+                                        $('#table_id').DataTable().clear();
+                                        $.each(response.data, function(key, value) {
+                                            let barang = `
+                                        <tr class="barang-row" id="index_${value.id}">
+                                            <td>${counter++}</td>
+                                            <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
+                                            <td>${value.kode_barang}</td>
+                                            <td>${value.nama_barang}</td>
+                                            <td>${value.stok_minimum}</td>
+                                            <td style="padding: 8px 6px;">
+                                                <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
+                                                <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                                <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
+                                            </td>
+                                            <td style="padding: 8px 6px;">        
+                                                <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
+                                            </td>
+                                        </tr>
+                                    `;
+                                            $('#table_id').DataTable().row.add($(barang)).draw(
+                                                false);
+                                        });
+
+                                        $('#nama_barang').val('');
+                                        $('#kode_barang').val('');
+                                        $('#stok_minimum').val('');
+                                        $('#deskripsi').val('');
+
+                                        $('#modal_tambah_barang').modal('hide');
+
+                                        $('#alert-nama_barang').removeClass('d-block');
+                                        $('#alert-nama_barang').addClass('d-none');
+                                        $('#alert-kode_barang').removeClass('d-block');
+                                        $('#alert-kode_barang').addClass('d-none');
+                                        $('#alert-stok_minimum').removeClass('d-block');
+                                        $('#alert-stok_minimum').addClass('d-none');
+                                        $('#alert-jenis_id').removeClass('d-block');
+                                        $('#alert-jenis_id').addClass('d-none');
+                                        $('#alert-satuan_id').removeClass('d-block');
+                                        $('#alert-satuan_id').addClass('d-none');
+                                        $('#alert-deskripsi').removeClass('d-block');
+                                        $('#alert-deskripsi').addClass('d-none');
+
+                                        let table = $('#table_id').DataTable();
+                                        table.draw();
+                                    },
+                                    error: function(error) {
+                                        console.log(error);
+                                    }
+                                });
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+
+                    $('#modal_tambah_barang_excel').modal('hide');
+                    $('#excel').val('');
+                    $('#alert-excel').removeClass('d-block');
+                    $('#alert-excel').addClass('d-none');
+
+                    let table = $('#table_id').DataTable();
+                    table.draw();
+                },
+
+                error: function(error) {
+                    console.log(error.responseJSON);
+                    
+                    if (error.responseJSON && error.responseJSON.excel && error.responseJSON.excel[0]) {
+                        $('#alert-excel').removeClass('d-none');
+                        $('#alert-excel').addClass('d-block');
+
+                        $('#alert-excel').html(error.responseJSON.excel[0]);
+                    }
                 }
             });
         });
@@ -161,15 +365,13 @@
                             let counter = 1;
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
-                                let stok = value.stok != null ? value.stok :
-                                    "Stok Kosong";
                                 let barang = `
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>
                                 <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
-                                <td>${stok}</td>
+                                <td>${value.stok_minimum}</td>
                                 <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                     <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
@@ -573,15 +775,13 @@
                                 success: function(response) {
                                     let counter = 1;
                                     $.each(response.data, function(key, value) {
-                                        let stok = value.stok != null ?
-                                            value.stok : "Stok Kosong";
                                         let barang = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>
                                             <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                             <td>${value.kode_barang}</td>
                                             <td>${value.nama_barang}</td>
-                                            <td>${stok}</td>
+                                            <td>${value.stok_minimum}</td>
                                             <td style="padding: 8px 6px;">
                                                 <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                                 <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>

@@ -57,11 +57,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Satuan::create([
-            'satuan'        => 'Pcs',
+            'satuan'        => 'mL',
             'user_id'       => 1
         ]);
         Satuan::create([
-            'satuan'        => 'mL',
+            'satuan'        => 'pcs',
             'user_id'       => 1
         ]);
 
