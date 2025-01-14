@@ -47,7 +47,7 @@
                 <th>Tanggal Keluar</th>
                 <th>Nama Barang</th>
                 <th>Jumlah Keluar</th>
-                <th>Supplier</th>
+                <th>Alat</th>
             </tr>
         </thead>
         <tbody>
@@ -58,7 +58,7 @@
                 <td>{{ $item->tanggal_keluar }}</td>
                 <td>{{ $item->nama_barang}} </td>
                 <td>{{ $item->jumlah_keluar}} </td>
-                <td>{{ $item->customer->customer}} </td>
+                <td>{{ $item->alat->alat}} </td>
             </tr>
             @endforeach
         </tbody>

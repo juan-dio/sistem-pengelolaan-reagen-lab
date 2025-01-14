@@ -71,12 +71,6 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1
         ]);
         
-        Supplier::create([
-            'supplier'      => 'PT Saba Indomedika Jaya',
-            'alamat'        => 'Surabaya, Jawa Timur',
-            'user_id'       => 1
-        ]);
-        
         Role::create([
             'role'      => 'superadmin',
             'deskripsi' => 'Superadmin memiliki kendali penuh pada aplikasi termasuk manajemen User'

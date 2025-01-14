@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Dompdf\Dompdf;
-use App\Models\Customer;
+use App\Models\Alat;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -73,10 +73,10 @@ class LaporanBarangKeluarController extends Controller
     /**
      * Get Customer
      */
-    public function getcustomer()
+    public function getAlat()
     {
-        $customer = Customer::all();
-        return response()->json($customer);
+        $alat = Alat::all();
+        return response()->json($alat);
     }
 
     /**

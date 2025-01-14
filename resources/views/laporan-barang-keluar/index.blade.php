@@ -44,7 +44,7 @@
                                 <th>Tanggal Keluar</th>
                                 <th>Nama Barang</th>
                                 <th>Jumlah Masuk</th>
-                                <th>Customer</th>
+                                <th>Alat</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-laporan-barang-keluar">
@@ -90,16 +90,16 @@
 
                     if (response.length > 0) {
                         $.each(response, function(index, item) {
-                            getCustomerName(item.customer_id, function(customer){
+                            getAlatName(item.alat_id, function(alat){
                                 var row = [
                                     (index + 1),
                                     item.kode_transaksi,
                                     item.tanggal_keluar,
                                     item.nama_barang,
                                     item.jumlah_keluar,
-                                    customer
+                                    alat
                                 ];
-                               table.row.add(row).draw(false);
+                                table.row.add(row).draw(false);
                             });
                         });
                     } else {
@@ -111,12 +111,12 @@
                     console.log(error);
                 }
             });
-            function getCustomerName(customerId, callback){
-                $.getJSON('{{ url('api/customer') }}', function(customers){
-                    var customer = customers.find(function(s){
-                        return s.id === customerId;
+            function getAlatName(alatId, callback){
+                $.getJSON('{{ url('api/alat') }}', function(alats){
+                    var alat = alats.find(function(s){
+                        return s.id === alatId;
                     });
-                    callback(customer ? customer.customer : '');
+                    callback(alat ? alat.alat : '');
                 });
             }
         }

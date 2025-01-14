@@ -18,6 +18,7 @@ use App\Http\Controllers\LaporanBarangMasukController;
 use App\Http\Controllers\LaporanStokController;
 use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\UbahPasswordController;
+use App\Http\Controllers\DatabaseController;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
 
@@ -42,36 +43,17 @@ Route::middleware('auth')->group(function () {
     
         Route::get('/hak-akses/get-data', [HakAksesController::class, 'getDataRole']);
         Route::resource('/hak-akses', HakAksesController::class);
+        
+        Route::get('/database', [DatabaseController::class, 'index'])->name('database.index');
+        Route::post('/database/backup', [DatabaseController::class, 'backup'])->name('database.backup');
+        Route::post('/database/restore', [DatabaseController::class, 'restore'])->name('database.restore');
+        Route::delete('/database/delete', [DatabaseController::class, 'delete'])->name('database.delete');
     });
 
     Route::group(['middleware' => 'checkRole:superadmin,kepala gudang'], function(){
         Route::resource('/aktivitas-user', ActivityLogController::class);
         
     });
-
-    Route::group(['middleware' => 'checkRole:kepala gudang,superadmin,admin gudang'], function(){
-        Route::resource('/dashboard', DashboardController::class);
-        Route::get('/', [DashboardController::class, 'index']);
-        
-        Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
-        Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
-        Route::get('/api/satuan/', [LaporanStokController::class, 'getSatuan']);
-        Route::resource('/laporan-stok', LaporanStokController::class);
-       
-        Route::get('/laporan-barang-masuk/get-data', [LaporanBarangMasukController::class, 'getData']);
-        Route::get('/laporan-barang-masuk/print-barang-masuk', [LaporanBarangMasukController::class, 'printBarangMasuk']);
-        Route::get('/api/supplier/', [LaporanBarangMasukController::class, 'getSupplier']);
-        Route::resource('/laporan-barang-masuk', LaporanBarangMasukController::class);
-    
-        Route::get('/laporan-barang-keluar/get-data', [LaporanBarangKeluarController::class, 'getData']);
-        Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
-        Route::get('/api/customer/', [LaporanBarangKeluarController::class, 'getCustomer']);
-        Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
-
-        Route::get('/ubah-password', [UbahPasswordController::class,'index']);
-        Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
-    });
-
 
     Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
         Route::get('/barang/get-data', [BarangController::class, 'getDataBarang']);
@@ -101,6 +83,29 @@ Route::middleware('auth')->group(function () {
         Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
         Route::get('/api/satuan/', [BarangKeluarController::class, 'getSatuan']);
         Route::resource('/barang-keluar', BarangKeluarController::class);
+    });
+
+    Route::group(['middleware' => 'checkRole:superadmin,kepala gudang,admin gudang'], function(){
+        Route::resource('/dashboard', DashboardController::class);
+        Route::get('/', [DashboardController::class, 'index']);
+        
+        Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
+        Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
+        Route::get('/api/satuan/', [LaporanStokController::class, 'getSatuan']);
+        Route::resource('/laporan-stok', LaporanStokController::class);
+       
+        Route::get('/laporan-barang-masuk/get-data', [LaporanBarangMasukController::class, 'getData']);
+        Route::get('/laporan-barang-masuk/print-barang-masuk', [LaporanBarangMasukController::class, 'printBarangMasuk']);
+        Route::get('/api/supplier/', [LaporanBarangMasukController::class, 'getSupplier']);
+        Route::resource('/laporan-barang-masuk', LaporanBarangMasukController::class);
+    
+        Route::get('/laporan-barang-keluar/get-data', [LaporanBarangKeluarController::class, 'getData']);
+        Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
+        Route::get('/api/alat/', [LaporanBarangKeluarController::class, 'getAlat']);
+        Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
+
+        Route::get('/ubah-password', [UbahPasswordController::class,'index']);
+        Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
     });
 
 

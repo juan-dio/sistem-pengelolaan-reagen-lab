@@ -37,14 +37,22 @@
                                 <td>
                                     @if (isset($log->changes['old']))
                                         @foreach ($log->changes['old'] as $key => $itemChange)
-                                            {{ $key }} : {{ $itemChange }} <br>
+                                            @if ($key == 'created_at' || $key == 'updated_at')
+                                                {{ $key }} : {{ \Carbon\Carbon::parse($itemChange)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s') }} <br>
+                                            @else
+                                                {{ $key }} : {{ $itemChange }} <br>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </td>
                                 <td>
                                     @if (isset($log->changes['attributes']))
                                         @foreach ($log->changes['attributes'] as $key => $itemChange)
+                                        @if ($key == 'created_at' || $key == 'updated_at')
+                                            {{ $key }} : {{ \Carbon\Carbon::parse($itemChange)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s') }} <br>
+                                        @else
                                             {{ $key }} : {{ $itemChange }} <br>
+                                        @endif
                                         @endforeach
                                     @endif
                                 </td>
