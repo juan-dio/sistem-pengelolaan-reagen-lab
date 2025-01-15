@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('stok_minimum');
             $table->integer('stok')->nullable()->default(0);
             $table->foreignId('user_id');
-            $table->foreignId('jenis_id');
-            $table->foreignId('satuan_id');
+            $table->foreignId('jenis_id')->constrained();
+            $table->foreignId('satuan_id')->constrained();
         });
     }
 

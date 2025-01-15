@@ -11,17 +11,106 @@
           <div class="modal-body">
 
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Tanggal Masuk</label>
-                  <input type="text" class="form-control" name="tanggal_masuk" id="tanggal_masuk">
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_masuk"></div>
-                </div>
-    
+              <div class="col">
                 <div class="form-group">
                   <label>Kode Transaksi</label>
                   <input type="text" class="form-control" name="kode_transaksi" id="kode_transaksi" readonly>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kode_transaksi"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Tanggal Masuk (yyyy-mm-dd)</label>
+                    <input type="text" class="form-control" name="tanggal_masuk" id="tanggal_masuk">
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_masuk"></div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Tanggal Kadaluarsa (yyyy-mm-dd)</label>
+                    <input type="text" class="form-control" name="tanggal_kadaluarsa" id="tanggal_kadaluarsa">
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_kadaluarsa"></div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Pilih Barang</label>
+                    <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
+                      <option selected>Pilih Barang</option>
+                      @foreach ($barangs as $barang)
+                        <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                      @endforeach
+                    </select>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Supplier</label>
+                  <select class="form-control" name="supplier_id" id="supplier_id">
+                    @foreach ($suppliers as $supplier)
+                        @if (old('supplier_id') == $supplier->id)
+                          <option value="{{ $supplier->id }}" selected>{{ $supplier->supplier}}</option>
+                        @else
+                          <option value="{{ $supplier->id }}">{{ $supplier->supplier}}</option>
+                        @endif
+                    @endforeach
+                  </select>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-supplier_id"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Stok Saat Ini</label>
+                  <input type="number" class="form-control" name="stok" id="stok" disabled>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-stok"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Jumlah Masuk</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control" name="jumlah_masuk" id="jumlah_masuk" min="0" style="width: 75%;">
+                    <div class="input-group-append" style="width: 25%;">
+                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                    </div>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_masuk"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Lokasi</label>
+                  <textarea class="form-control" name="lokasi" id="lokasi"></textarea>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-lokasi"></div>
+                </div>
+              </div>
+            </div>
+
+            {{-- <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Tanggal Masuk (yyyy-mm-dd)</label>
+                  <input type="text" class="form-control" name="tanggal_masuk" id="tanggal_masuk">
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_masuk"></div>
+                </div>
+
+                <div class="form-group">
+                  <label>Tanggal Kadaluarsa (yyyy-mm-dd)</label>
+                  <input type="text" class="form-control" name="tanggal_kadaluarsa" id="tanggal_kadaluarsa">
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_kadaluarsa"></div>
                 </div>
     
                 <div class="form-group">
@@ -34,13 +123,13 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Pilih Barang</label>
-                    <select class="js-example-basic-single" name="nama_barang" id="nama_barang" style="width: 100%">
+                    <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
                       <option selected>Pilih Barang</option>
                       @foreach ($barangs as $barang)
-                        <option value="{{ $barang->nama_barang }}">{{ $barang->nama_barang }}</option>
+                        <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                       @endforeach
                     </select>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama_barang"></div>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
                 </div>
 
                 <div class="form-group">
@@ -69,7 +158,7 @@
                 </div>
 
               </div>
-            </div>            
+            </div> --}}
           </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>

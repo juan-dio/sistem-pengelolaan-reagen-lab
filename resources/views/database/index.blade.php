@@ -29,22 +29,22 @@
         </form>
     </div>
     <div class="col-md-6">
-      <h3>Restore</h3>
-      <form action="{{ route('database.restore') }}" method="POST">
-          @csrf
-          <div class="form-group">
-              <label for="backup_file">Pilih File Backup</label>
-              <select name="backup_file" id="backup_file" class="form-control">
-                  <option value="" disabled selected>Pilih file backup...</option>
-                  @foreach ($backups as $backup)
-                      <option value="{{ $backup['name'] }}">{{ $backup['name'] }} - {{ $backup['size'] }} - {{ $backup['date'] }}</option>
-                  @endforeach
-              </select>
-          </div>
-          <button type="submit" class="btn btn-warning">
-              <i class="fas fa-undo"></i> Restore
-          </button>
-      </form>
+        <h3>Restore</h3>
+        <form action="{{ route('database.restore') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                {{-- <label for="backup_file">Pilih File Backup</label> --}}
+                <select name="backup_file" id="backup_file" class="form-control">
+                    <option value="" disabled selected>Pilih file backup...</option>
+                    @foreach ($backups as $backup)
+                        <option value="{{ $backup['name'] }}">{{ $backup['name'] }} - {{ $backup['size'] }} - {{ $backup['date'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning">
+                <i class="fas fa-undo"></i> Restore
+            </button>
+        </form>
     </div>
 </div>
 

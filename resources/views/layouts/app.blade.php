@@ -112,7 +112,7 @@
                 <aside id="sidebar-wrapper">
 
                     <div class="sidebar-brand text-left p-2" style="line-height: 24px">
-                        <a href="/" style="font-size: 12px;">SISTEM PENGELOLAAN REAGEN LABORATIORUM KLINIK</a>
+                        <a href="/" style="font-size: 12px;">SISTEM PENGELOLAAN REAGEN LABORATORIUM KLINIK</a>
                     </div>
 
                     <ul class="sidebar-menu">

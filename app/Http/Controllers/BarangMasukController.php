@@ -30,6 +30,7 @@ class BarangMasukController extends Controller
         return response()->json([
             'success'   => true,
             'data'      => BarangMasuk::all(),
+            'barangs'    => Barang::all(),
             'supplier'  => Supplier::all()
         ]);
     }
@@ -50,14 +51,20 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal_masuk'     => 'required',
-            'nama_barang'       => 'required',
+            'tanggal_masuk'     => 'required|date',
+            'tanggal_kadaluarsa'=> 'required|date',
             'jumlah_masuk'      => 'required',
+            'jumlah_stok'       => 'required',
+            'lokasi'            => 'required',
+            'barang_id'         => 'required',
             'supplier_id'       => 'required'
         ],[
             'tanggal_masuk.required'    => 'Pilih Barang Terlebih Dahulu !',
-            'nama_barang.required'      => 'Form Nama Barang Wajib Di Isi !',
+            'tanggal_kadaluarsa.required' => 'Form Tanggal Kadaluarsa Wajib Di Isi !',
             'jumlah_masuk.required'     => 'Form Jumlah Stok Masuk Wajib Di Isi !',
+            'jumlah_stok.required'      => 'Form Jumlah Stok Wajib Di Isi !',
+            'lokasi.required'           => 'Form Lokasi Wajib Di Isi !',
+            'barang_id.required'        => 'Pilih Barang !',
             'supplier_id.required'      => 'Pilih Supplier !'
         ]);
 
@@ -67,16 +74,19 @@ class BarangMasukController extends Controller
         }
 
         $barangMasuk = BarangMasuk::create([
-            'tanggal_masuk'     => $request->tanggal_masuk,
-            'nama_barang'       => $request->nama_barang,
-            'jumlah_masuk'      => $request->jumlah_masuk,
-            'supplier_id'       => $request->supplier_id,
             'kode_transaksi'    => $request->kode_transaksi,
+            'tanggal_masuk'     => $request->tanggal_masuk,
+            'tanggal_kadaluarsa'=> $request->tanggal_kadaluarsa,
+            'jumlah_masuk'      => $request->jumlah_masuk,
+            'jumlah_stok'       => $request->jumlah_stok,
+            'lokasi'            => $request->lokasi,
+            'barang_id'         => $request->barang_id,
+            'supplier_id'       => $request->supplier_id,
             'user_id'           => auth()->user()->id
         ]); 
 
         if ($barangMasuk) {
-            $barang = Barang::where('nama_barang', $request->nama_barang)->first();
+            $barang = Barang::where('id', $request->barang_id)->first();
             if ($barang) {
                 $barang->stok += $request->jumlah_masuk;
                 $barang->save();
@@ -126,7 +136,7 @@ class BarangMasukController extends Controller
         $jumlahMasuk = $barangMasuk->jumlah_masuk;
         $barangMasuk->delete();
 
-        $barang = Barang::where('nama_barang', $barangMasuk->nama_barang)->first();
+        $barang = Barang::where('id', $barangMasuk->barang_id)->first();
         if ($barang) {
             $barang->stok -= $jumlahMasuk;
             $barang->save();
@@ -144,10 +154,10 @@ class BarangMasukController extends Controller
      */
     public function getAutoCompleteData(Request $request)
     {
-        $barang = Barang::where('nama_barang', $request->nama_barang)->first();;
+        $barang = Barang::where('id', $request->barang_id)->first();;
         if($barang){
             return response()->json([
-                'nama_barang'   => $barang->nama_barang,
+                'barang'        => $barang,
                 'stok'          => $barang->stok,
                 'satuan_id'     => $barang->satuan_id,
             ]);
@@ -159,9 +169,9 @@ class BarangMasukController extends Controller
      */
     public function getSatuan()
     {
-       $satuans = Satuan::all();
-       
-       return response()->json($satuans);
+        $satuans = Satuan::all();
+        
+        return response()->json($satuans);
     }
 
 }

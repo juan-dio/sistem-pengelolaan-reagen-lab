@@ -8,6 +8,7 @@ use App\Models\Alat;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\BarangMasuk;
 use Illuminate\Support\Facades\Validator;
 
 class BarangKeluarController extends Controller
@@ -20,7 +21,7 @@ class BarangKeluarController extends Controller
         return view('barang-keluar.index', [
             'barangs'           => Barang::all(),
             'barangKeluar'      => BarangKeluar::all(),
-            'alats'         => Alat::all()
+            'alats'             => Alat::all()
         ]);
     }
 
@@ -29,7 +30,8 @@ class BarangKeluarController extends Controller
         return response()->json([
             'success'   => true,
             'data'      => BarangKeluar::all(),
-            'alat'  => Alat::all()
+            'barangMasuk'=> BarangMasuk::all(),
+            'alat'      => Alat::all()
         ]);
     }
 

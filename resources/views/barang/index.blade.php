@@ -311,6 +311,40 @@
             let token = $("meta[name='csrf-token']").attr("content");
 
             if (kode_barang) {
+                // create barcode, with code of app url /verifikasi/kode_barang
+                // let code = window.location.origin + '/verifikasi/' + kode_barang;
+
+                // let barcode = document.createElement('canvas');
+    
+                // JsBarcode(barcode, code, {
+                //     format: "CODE128",
+                //     displayValue: false,
+                //     fontSize: 20,
+                //     width: 2,
+                //     height: 60
+                // });
+                
+                // // add text below barcode
+                // let text = document.createElement('canvas');
+                // text.width = barcode.width;
+                // text.height = 20;
+                // let ctx = text.getContext('2d');
+                // ctx.font = '12px Arial';
+                // ctx.textAlign = 'center';
+                // ctx.fillText(kode_barang + ' ' + nama_barang, text.width / 2, 15);
+
+                // // combine barcode and text
+                // let combinedCanvas = document.createElement('canvas');
+                // combinedCanvas.width = barcode.width;
+                // combinedCanvas.height = barcode.height + text.height;
+                // let combinedCtx = combinedCanvas.getContext('2d');
+                // combinedCtx.drawImage(barcode, 0, 0);
+                // combinedCtx.drawImage(text, 0, barcode.height);
+
+                // // convert canvas to base64
+                
+                // let barcodeDataUrl = combinedCanvas.toDataURL('image/png');
+
                 let canvas = document.createElement('canvas');
     
                 JsBarcode(canvas, kode_barang, {

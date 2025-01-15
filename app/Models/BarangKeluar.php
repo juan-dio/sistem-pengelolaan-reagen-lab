@@ -12,7 +12,7 @@ class BarangKeluar extends Model
     use HasFactory;
     use LogsActivity;
 
-    protected $fillable = ['kode_transaksi', 'tanggal_keluar', 'nama_barang', 'jumlah_keluar', 'alat_id', 'user_id'];
+    protected $fillable = ['kode_transaksi', 'tanggal_keluar', 'jumlah_keluar', 'barang_masuk_id', 'alat_id', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 
@@ -27,6 +27,12 @@ class BarangKeluar extends Model
         return LogOptions::defaults()
             ->logUnguarded()
             ->logOnlyDirty();
+    }
+
+    // 1 barang keluar memiliki satu barang masuk
+    public function barangMasuk()
+    {
+        return $this->belongsTo(BarangMasuk::class, 'barang_masuk_id');
     }
 
     // 1 barang keluar hanya memiliki satu alat

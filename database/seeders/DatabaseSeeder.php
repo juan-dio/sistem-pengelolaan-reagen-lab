@@ -26,6 +26,21 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        Role::create([
+            'role'      => 'superadmin',
+            'deskripsi' => 'Superadmin memiliki kendali penuh pada aplikasi termasuk manajemen User'
+        ]);
+
+        Role::create([
+            'role'      => 'kepala gudang',
+            'deskripsi' => 'Kepala gudang memilki akses untuk mengelola dan mencetak laporan stok, barang masuk, dan barang keluar'
+        ]);
+
+        Role::create([
+            'role'      => 'admin gudang',
+            'deskripsi' => 'Admin gudang memilki akses untuk mengelola stok,  barang masuk, barang keluar dan laporannya'
+        ]);
+
         User::create([
             'name'      => 'Super Admin',
             'email'     => 'superadmin@gmail.com',
@@ -69,21 +84,6 @@ class DatabaseSeeder extends Seeder
             'supplier'      => 'PT Saba Indomedika',
             'alamat'        => 'Surabaya, Jawa Timur',
             'user_id'       => 1
-        ]);
-        
-        Role::create([
-            'role'      => 'superadmin',
-            'deskripsi' => 'Superadmin memiliki kendali penuh pada aplikasi termasuk manajemen User'
-        ]);
-
-        Role::create([
-            'role'      => 'kepala gudang',
-            'deskripsi' => 'Kepala gudang memilki akses untuk mengelola dan mencetak laporan stok, barang masuk, dan barang keluar'
-        ]);
-
-        Role::create([
-            'role'      => 'admin gudang',
-            'deskripsi' => 'Admin gudang memilki akses untuk mengelola stok,  barang masuk, barang keluar dan laporannya'
         ]);
     
     }

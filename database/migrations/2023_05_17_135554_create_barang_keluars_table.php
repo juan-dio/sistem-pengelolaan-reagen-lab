@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('kode_transaksi')->unique();
             $table->date('tanggal_keluar');
-            $table->string('nama_barang');
             $table->integer('jumlah_keluar');
-            $table->foreignId('alat_id');
+            $table->foreignId('barang_masuk_id')->constrained();
+            $table->foreignId('alat_id')->constrained();
             $table->foreignId('user_id');
             $table->timestamps();
         });
