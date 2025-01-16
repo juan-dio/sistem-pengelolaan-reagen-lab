@@ -96,7 +96,7 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        let alat = getAlatName(response.alat, value.alat_id);
+                        let alat = getAlatName(response.alats, value.alat_id);
                         let barangKeluar = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>   
@@ -191,7 +191,7 @@
                             let counter = 1;
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
-                                let alat = getAlatName(response.alat,
+                                let alat = getAlatName(response.alats,
                                     value.alat_id);
                                 let barangKeluar = `
                                 <tr class="barang-row" id="index_${value.id}">
@@ -327,9 +327,7 @@
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
-                                        let alat = getAlatName(
-                                            response.alat, value
-                                            .alat_id);
+                                        let alat = getAlatName(response.alats, value.alat_id);
                                         let barangKeluar = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>   
@@ -347,10 +345,8 @@
                                             $(barangKeluar)).draw(false);
                                     });
 
-                                    function getAlatName(alats,
-                                    alatId) {
-                                        let alat = alats.find(s => s.id ===
-                                            alatId);
+                                    function getAlatName(alats, alatId) {
+                                        let alat = alats.find(s => s.id === alatId);
                                         return alat ? alat.alat : '';
                                     }
                                 }

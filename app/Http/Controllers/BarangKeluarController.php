@@ -21,6 +21,7 @@ class BarangKeluarController extends Controller
         return view('barang-keluar.index', [
             'barangs'           => Barang::all(),
             'barangKeluar'      => BarangKeluar::all(),
+            'barangMasuks'      => BarangMasuk::all(),
             'alats'             => Alat::all()
         ]);
     }
@@ -28,10 +29,10 @@ class BarangKeluarController extends Controller
     public function getDataBarangKeluar()
     {
         return response()->json([
-            'success'   => true,
-            'data'      => BarangKeluar::all(),
-            'barangMasuk'=> BarangMasuk::all(),
-            'alat'      => Alat::all()
+            'success'       => true,
+            'data'          => BarangKeluar::all(),
+            'barangMasuks'  => BarangMasuk::all(),
+            'alats'         => Alat::all()
         ]);
     }
 
@@ -41,9 +42,12 @@ class BarangKeluarController extends Controller
      */
     public function create()
     {
-        return view('barang-keluar.create', [
-            'barangs' => Barang::all()
-        ]);
+        // return view('barang-keluar.create', [
+        //     'barangs' => Barang::all(),
+        //     'alats' => Alat::all()
+        // ]);
+
+        abort(404);
     }
 
     /**
@@ -115,11 +119,13 @@ class BarangKeluarController extends Controller
      */
     public function edit(BarangKeluar $barangKeluar)
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Edit Data Barang',
-            'data'    => $barangKeluar
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Edit Data Barang',
+        //     'data'    => $barangKeluar
+        // ]);
+
+        abort(404);
     }
 
     /**
