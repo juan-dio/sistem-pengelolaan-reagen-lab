@@ -469,68 +469,50 @@
 
                     if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
                         .nama_barang[0]) {
-                        $('#alert-nama_barang').removeClass('d-none');
-                        $('#alert-nama_barang').addClass('d-block');
-
+                        $('#alert-nama_barang').removeClass('d-none').addClass('d-block');
                         $('#alert-nama_barang').html(error.responseJSON.nama_barang[0]);
                     } else {
-                        $('#alert-nama_barang').removeClass('d-block');
-                        $('#alert-nama_barang').addClass('d-none');
+                        $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
                     }
                     
                     if (error.responseJSON && error.responseJSON.kode_barang && error.responseJSON
                         .kode_barang[0]) {
-                        $('#alert-kode_barang').removeClass('d-none');
-                        $('#alert-kode_barang').addClass('d-block');
-
+                        $('#alert-kode_barang').removeClass('d-none').addClass('d-block');
                         $('#alert-kode_barang').html(error.responseJSON.kode_barang[0]);
                     } else {
-                        $('#alert-kode_barang').removeClass('d-block');
-                        $('#alert-kode_barang').addClass('d-none');
+                        $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.stok_minimum && error.responseJSON
                         .stok_minimum[0]) {
-                        $('#alert-stok_minimum').removeClass('d-none');
-                        $('#alert-stok_minimum').addClass('d-block');
-
+                        $('#alert-stok_minimum').removeClass('d-none').addClass('d-block');
                         $('#alert-stok_minimum').html(error.responseJSON.stok_minimum[0]);
                     } else {
-                        $('#alert-stok_minimum').removeClass('d-block');
-                        $('#alert-stok_minimum').addClass('d-none');
+                        $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jenis_id && error.responseJSON
                         .jenis_id[0]) {
-                        $('#alert-jenis_id').removeClass('d-none');
-                        $('#alert-jenis_id').addClass('d-block');
-
+                        $('#alert-jenis_id').removeClass('d-none').addClass('d-block');
                         $('#alert-jenis_id').html(error.responseJSON.jenis_id[0]);
                     } else {
-                        $('#alert-jenis_id').removeClass('d-block');
-                        $('#alert-jenis_id').addClass('d-none');
+                        $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.satuan_id && error.responseJSON
                         .satuan_id[0]) {
-                        $('#alert-satuan_id').removeClass('d-none');
-                        $('#alert-satuan_id').addClass('d-block');
-
+                        $('#alert-satuan_id').removeClass('d-none').addClass('d-block');
                         $('#alert-satuan_id').html(error.responseJSON.satuan_id[0]);
                     } else {
-                        $('#alert-satuan_id').removeClass('d-block');
-                        $('#alert-satuan_id').addClass('d-none');
+                        $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.deskripsi && error.responseJSON
                         .deskripsi[0]) {
-                        $('#alert-deskripsi').removeClass('d-none');
-                        $('#alert-deskripsi').addClass('d-block');
-
+                        $('#alert-deskripsi').removeClass('d-none').addClass('d-block');
                         $('#alert-deskripsi').html(error.responseJSON.deskripsi[0]);
                     } else {
-                        $('#alert-deskripsi').removeClass('d-block');
-                        $('#alert-deskripsi').addClass('d-none');
+                        $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
                     }
                 }
             });

@@ -56,8 +56,8 @@ class BarangMasukController extends Controller
             'jumlah_masuk'      => 'required',
             'jumlah_stok'       => 'required',
             'lokasi'            => 'required',
-            'barang_id'         => 'required',
-            'supplier_id'       => 'required'
+            'barang_id'         => 'required|exists:barangs,id',
+            'supplier_id'       => 'required|exists:suppliers,id'
         ],[
             'tanggal_masuk.required'    => 'Pilih Barang Terlebih Dahulu !',
             'tanggal_kadaluarsa.required' => 'Form Tanggal Kadaluarsa Wajib Di Isi !',
@@ -65,7 +65,9 @@ class BarangMasukController extends Controller
             'jumlah_stok.required'      => 'Form Jumlah Stok Wajib Di Isi !',
             'lokasi.required'           => 'Form Lokasi Wajib Di Isi !',
             'barang_id.required'        => 'Pilih Barang !',
-            'supplier_id.required'      => 'Pilih Supplier !'
+            'barang_id.exists'          => 'Pilih Barang !',
+            'supplier_id.required'      => 'Pilih Supplier !',
+            'supplier_id.exists'        => 'Pilih Supplier !'
         ]);
 
 

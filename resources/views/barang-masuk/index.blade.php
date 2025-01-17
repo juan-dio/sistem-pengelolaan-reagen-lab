@@ -77,8 +77,7 @@
                                 let kodeTransaksi = generateKodeTransaksi(response.barang.kode_barang);
                                 $('#kode_transaksi').val(kodeTransaksi);
                             }
-                            if (response && (response.stok || response.stok === 0) &&
-                                response.satuan_id) {
+                            if (response && (response.stok || response.stok === 0) && response.satuan_id) {
                                 $('#stok').val(response.stok);
                                 getSatuanName(response.satuan_id, function(satuan) {
                                     $('#satuan_id').val(satuan);
@@ -257,7 +256,8 @@
                             });
 
                             $('#kode_transaksi').val('');
-                            $('#nama_barang').val('');
+                            $('#barang_id').val('').prop('selectedIndex', 0).trigger('change');
+                            $('#supplier_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#jumlah_masuk').val('');
                             $('#stok').val('');
 
@@ -266,7 +266,7 @@
                             $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
-                            $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                             $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
@@ -297,6 +297,9 @@
                         $('#alert-kode_transaksi').addClass('d-block');
 
                         $('#alert-kode_transaksi').html(error.responseJSON.kode_transaksi[0]);
+                    } else {
+                        $('#alert-kode_transaksi').removeClass('d-block');
+                        $('#alert-kode_transaksi').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.tanggal_masuk && error.responseJSON
@@ -305,6 +308,9 @@
                         $('#alert-tanggal_masuk').addClass('d-block');
 
                         $('#alert-tanggal_masuk').html(error.responseJSON.tanggal_masuk[0]);
+                    } else {
+                        $('#alert-tanggal_masuk').removeClass('d-block');
+                        $('#alert-tanggal_masuk').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.tanggal_kadaluarsa && error.responseJSON
@@ -313,14 +319,20 @@
                         $('#alert-tanggal_kadaluarsa').addClass('d-block');
 
                         $('#alert-tanggal_kadaluarsa').html(error.responseJSON.tanggal_kadaluarsa[0]);
+                    } else {
+                        $('#alert-tanggal_kadaluarsa').removeClass('d-block');
+                        $('#alert-tanggal_kadaluarsa').addClass('d-none');
                     }
 
-                    if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
-                        .nama_barang[0]) {
-                        $('#alert-nama_barang').removeClass('d-none');
-                        $('#alert-nama_barang').addClass('d-block');
+                    if (error.responseJSON && error.responseJSON.barang_id && error.responseJSON
+                        .barang_id[0]) {
+                        $('#alert-barang_id').removeClass('d-none');
+                        $('#alert-barang_id').addClass('d-block');
 
-                        $('#alert-nama_barang').html(error.responseJSON.nama_barang[0]);
+                        $('#alert-barang_id').html(error.responseJSON.barang_id[0]);
+                    } else {
+                        $('#alert-barang_id').removeClass('d-block');
+                        $('#alert-barang_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jumlah_masuk && error.responseJSON
@@ -329,6 +341,9 @@
                         $('#alert-jumlah_masuk').addClass('d-block');
 
                         $('#alert-jumlah_masuk').html(error.responseJSON.jumlah_masuk[0]);
+                    } else {
+                        $('#alert-jumlah_masuk').removeClass('d-block');
+                        $('#alert-jumlah_masuk').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.supplier_id && error.responseJSON
@@ -337,6 +352,9 @@
                         $('#alert-supplier_id').addClass('d-block');
 
                         $('#alert-supplier_id').html(error.responseJSON.supplier_id[0]);
+                    } else {
+                        $('#alert-supplier_id').removeClass('d-block');
+                        $('#alert-supplier_id').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.lokasi && error.responseJSON
@@ -345,6 +363,9 @@
                         $('#alert-lokasi').addClass('d-block');
 
                         $('#alert-lokasi').html(error.responseJSON.lokasi[0]);
+                    } else {
+                        $('#alert-lokasi').removeClass('d-block');
+                        $('#alert-lokasi').addClass('d-none');
                     }
                 }
             });

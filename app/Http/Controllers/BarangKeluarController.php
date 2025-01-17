@@ -9,6 +9,7 @@ use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\BarangMasuk;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class BarangKeluarController extends Controller
@@ -21,7 +22,6 @@ class BarangKeluarController extends Controller
         return view('barang-keluar.index', [
             'barangs'           => Barang::all(),
             'barangKeluar'      => BarangKeluar::all(),
-            'barangMasuks'      => BarangMasuk::all(),
             'alats'             => Alat::all()
         ]);
     }
@@ -31,7 +31,7 @@ class BarangKeluarController extends Controller
         return response()->json([
             'success'       => true,
             'data'          => BarangKeluar::all(),
-            'barangMasuks'  => BarangMasuk::all(),
+            'barangs'       => Barang::all(),
             'alats'         => Alat::all()
         ]);
     }
@@ -56,25 +56,30 @@ class BarangKeluarController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal_keluar'     => 'required',
-            'nama_barang'        => 'required',
-            'alat_id'        => 'required',
-            'jumlah_keluar'      => [
+            'tanggal_keluar' => 'required|date',
+            'barang_id'      => 'required|exists:barangs,id',
+            'alat_id'        => 'required|exists:alats,id',
+            'jumlah_keluar'  => [
                 'required',
+                'integer',
                 function ($attribute, $value, $fail) use ($request) {
-                    $nama_barang = $request->nama_barang;
-                    $barang = Barang::where('nama_barang', $nama_barang)->first();
-        
+                    $barang = Barang::find($request->barang_id);
+                    if (!$barang) {
+                        $fail("Barang tidak ditemukan!");
+                        return;
+                    }
                     if ($value > $barang->stok) {
-                        $fail("Stok Tidak Cukup !");
+                        $fail("Stok barang tidak cukup!");
                     }
                 },
             ],
-        ],[
-            'tanggal_keluar.required'    => 'Pilih Barang Terlebih Dahulu !',
-            'nama_barang.required'       => 'Form Nama Barang Wajib Di Isi !',
-            'jumlah_keluar.required'     => 'Form Jumlah Stok Masuk Wajib Di Isi !',
-            'alat_id.required'       => 'Pilih Alat !'
+        ], [
+            'tanggal_keluar.required' => 'Form Tanggal Keluar Wajib Diisi !',
+            'barang_id.required'      => 'Pilih Barang !',
+            'barang_id.exists'        => 'Pilih Barang !',
+            'alat_id.required'        => 'Pilih Alat !',
+            'alat_id.exists'          => 'Pilih Alat !',
+            'jumlah_keluar.required'  => 'Form Jumlah Keluar Wajib Diisi !',
         ]);
 
         if($validator->fails()) {
@@ -82,28 +87,74 @@ class BarangKeluarController extends Controller
         }
 
 
-        $barangKeluar = BarangKeluar::create([
-            'tanggal_keluar'    => $request->tanggal_keluar,
-            'nama_barang'       => $request->nama_barang,
-            'jumlah_keluar'     => $request->jumlah_keluar,
-            'alat_id'       => $request->alat_id,
-            'kode_transaksi'    => $request->kode_transaksi,
-            'user_id'           => auth()->user()->id
-        ]); 
+        DB::beginTransaction();
 
-        if ($barangKeluar) {
-            $barang = Barang::where('nama_barang', $request->nama_barang)->first();
-            if ($barang) {
-                $barang->stok -= $request->jumlah_keluar;
-                $barang->save();
+        try {
+            $barangId = $request->barang_id;
+            $jumlahKeluar = $request->jumlah_keluar;
+
+            // FIFO: Ambil batch barang masuk berdasarkan tanggal kedaluwarsa terdekat
+            $batches = BarangMasuk::where('barang_id', $barangId)
+                ->where('jumlah_stok', '>', 0)
+                ->orderBy('tanggal_kadaluarsa')
+                ->get();
+
+            $jumlahKeluarTemp = $jumlahKeluar;
+
+            foreach ($batches as $batch) {
+                if ($jumlahKeluarTemp <= 0) {
+                    break;
+                }
+
+                $stokBatch = $batch->jumlah_stok;
+
+                if ($stokBatch >= $jumlahKeluarTemp) {
+                    $batch->jumlah_stok -= $jumlahKeluarTemp;
+                    $batch->save();
+                    $jumlahKeluarTemp = 0;
+                } else {
+                    $jumlahKeluarTemp -= $stokBatch;
+                    $batch->jumlah_stok = 0;
+                    $batch->save();
+                }
             }
-        }
 
-        return response()->json([
-            'success'   => true,
-            'message'   => 'Data Berhasil Disimpan !',
-            'data'      => $barangKeluar
-        ]);
+            if ($jumlahKeluarTemp > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok tidak mencukupi berdasarkan batch yang tersedia!',
+                ], 422);
+            }
+
+            // Simpan data ke tabel barang_keluars
+            $barangKeluar = BarangKeluar::create([
+                'tanggal_keluar' => $request->tanggal_keluar,
+                'kode_transaksi' => $request->kode_transaksi,
+                'jumlah_keluar'  => $jumlahKeluar,
+                'barang_id'      => $barangId,
+                'alat_id'        => $request->alat_id,
+                'user_id'        => auth()->user()->id,
+            ]);
+
+            // Update stok total di tabel barang
+            $barang = Barang::find($barangId);
+            $barang->stok -= $jumlahKeluar;
+            $barang->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil disimpan!',
+                'data'    => $barangKeluar,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -141,31 +192,84 @@ class BarangKeluarController extends Controller
      */
     public function destroy(BarangKeluar $barangKeluar)
     {
-        $jumlahKeluar = $barangKeluar->jumlah_keluar;
-        $barangKeluar->delete();
+        DB::beginTransaction();
 
-        $barang = Barang::where('nama_barang', $barangKeluar->nama_barang)->first();
-        if($barang){
-            $barang->stok += $jumlahKeluar;
-            $barang->save();
+        try {
+            $jumlahKeluar = $barangKeluar->jumlah_keluar;
+
+            // Cari batch barang_masuk yang terkait dengan barang_id
+            $barangMasuks = BarangMasuk::where('barang_id', $barangKeluar->barang_id)
+                ->orderBy('tanggal_kadaluarsa', 'asc')
+                ->get();
+
+            $jumlahRestore = $jumlahKeluar;
+
+            foreach ($barangMasuks as $batch) {
+                // Jika stok batch ini habis, tambahkan stok kembali
+                $stokSebelumnya = $batch->jumlah_stok;
+
+                if ($stokSebelumnya < $batch->jumlah_masuk) {
+                    $ruangKosong = $batch->jumlah_masuk - $stokSebelumnya;
+
+                    if ($ruangKosong >= $jumlahRestore) {
+                        $batch->jumlah_stok += $jumlahRestore;
+                        $batch->save();
+                        $jumlahRestore = 0;
+                        break;
+                    } else {
+                        $batch->jumlah_stok += $ruangKosong;
+                        $jumlahRestore -= $ruangKosong;
+                        $batch->save();
+                    }
+                }
+            }
+
+            // Jika stok batch belum mencukupi jumlah keluar
+            if ($jumlahRestore > 0) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok batch tidak cukup untuk mengembalikan transaksi ini!',
+                ], 422);
+            }
+
+            // Hapus data barang keluar
+            $barangKeluar->delete();
+
+            // Update stok total barang
+            $barang = Barang::find($barangKeluar->barang_id);
+            if ($barang) {
+                $barang->stok += $jumlahKeluar;
+                $barang->save();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus!',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Dihapus!'
-        ]);
     }
+
 
     /**
      * Create Autocomplete Data
      */
     public function getAutoCompleteData(Request $request)
     {
-        $barang = Barang::where('nama_barang', $request->nama_barang)->first();
+        $barang = Barang::where('id', $request->barang_id)->first();
 
         if($barang){
             return response()->json([
-                'nama_barang'   => $barang->nama_barang,
+                'barang'        => $barang,
                 'stok'          => $barang->stok,
                 'satuan_id'     => $barang->satuan_id,
             ]);

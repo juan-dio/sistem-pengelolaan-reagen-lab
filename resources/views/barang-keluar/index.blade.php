@@ -24,7 +24,7 @@
                                     <th>Kode Transaksi</th>
                                     <th>Tanggal Keluar</th>
                                     <th>Nama Barang</th>
-                                    <th>Stok Keluar</th>
+                                    <th>Jumlah Keluar</th>
                                     <th>Alat</th>
                                     <th>Opsi</th>
                                 </tr>
@@ -38,25 +38,42 @@
         </div>
     </div>
 
+    <!-- Disable enter key on form if not in textarea or button -->
+    <script>
+        $(document).ready(function() {
+            $(window).keydown(function(event) {
+                if (event.keyCode == 13) {
+                    if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'BUTTON') {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
     <!-- Select2 Autocomplete -->
     <script>
         $(document).ready(function() {
             setTimeout(function() {
                 $('.js-example-basic-single').select2();
 
-                $('#nama_barang').on('change', function() {
+                $('#barang_id').on('change', function() {
                     var selectedOption = $(this).find('option:selected');
-                    var nama_barang = selectedOption.text();
+                    var barang_id = selectedOption.val();
 
                     $.ajax({
                         url: 'api/barang-keluar',
                         type: 'GET',
                         data: {
-                            nama_barang: nama_barang,
+                            barang_id: barang_id,
                         },
                         success: function(response) {
-                            if (response && (response.stok || response.stok === 0) &&
-                                response.satuan_id) {
+                            if (response && response.barang) {
+                                let kodeTransaksi = generateKodeTransaksi(response.barang.kode_barang);
+                                $('#kode_transaksi').val(kodeTransaksi);
+                            }
+                            if (response && (response.stok || response.stok === 0) && response.satuan_id) {
                                 $('#stok').val(response.stok);
                                 getSatuanName(response.satuan_id, function(satuan) {
                                     $('#satuan_id').val(satuan);
@@ -75,6 +92,14 @@
                             });
                             callback(satuan ? satuan.satuan : '');
                         });
+                    }
+
+                    function generateKodeTransaksi(kodeBarang) {
+                        let tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
+                        let randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        let kodeTransaksi = kodeBarang + '-IN-' + tanggal + '-' + randomNumber;
+
+                        return kodeTransaksi;
                     }
                 });
             }, 500);
@@ -96,13 +121,14 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
+                        let barang = getBarangName(response.barangs, value.barang_id);
                         let alat = getAlatName(response.alats, value.alat_id);
                         let barangKeluar = `
                 <tr class="barang-row" id="index_${value.id}">
                     <td>${counter++}</td>   
                     <td>${value.kode_transaksi}</td>
                     <td>${value.tanggal_keluar}</td>
-                    <td>${value.nama_barang}</td>
+                    <td>${barang}</td>
                     <td>${value.jumlah_keluar}</td>
                     <td>${alat}</td>
                     <td>       
@@ -112,6 +138,11 @@
             `;
                         $('#table_id').DataTable().row.add($(barangKeluar)).draw(false);
                     });
+
+                    function getBarangName(barangs, barangId) {
+                        let barang = barangs.find(b => b.id === barangId);
+                        return barang ? barang.nama_barang : '';
+                    }
 
                     function getAlatName(alats, alatId) {
                         let alat = alats.find(s => s.id === alatId);
@@ -124,25 +155,25 @@
 
     <!-- Generate Kode Transaksi Otomatis -->
     <script>
-        function generateKodeTransaksi() {
-            var tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
-            var randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            var kodeTransaksi = 'TRX-OUT-' + tanggal + '-' + randomNumber;
+        // function generateKodeTransaksi() {
+        //     var tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
+        //     var randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        //     var kodeTransaksi = 'TRX-OUT-' + tanggal + '-' + randomNumber;
 
-            $('#kode_transaksi').val(kodeTransaksi);
-            return kodeTransaksi;
-        }
+        //     $('#kode_transaksi').val(kodeTransaksi);
+        //     return kodeTransaksi;
+        // }
 
-        $(document).ready(function() {
-            generateKodeTransaksi();
-        });
+        // $(document).ready(function() {
+        //     generateKodeTransaksi();
+        // });
     </script>
 
-    <!-- Show Modal Tambah Jenis Barang -->
+    <!-- Show Modal Tambah Barang Keluar -->
     <script>
         $('body').on('click', '#button_tambah_barangKeluar', function() {
             $('#modal_tambah_barangKeluar').modal('show');
-            $('#kode_transaksi').val(generateKodeTransaksi());
+            // $('#kode_transaksi').val(generateKodeTransaksi());
         });
 
         $('#store').click(function(e) {
@@ -150,7 +181,7 @@
 
             let kode_transaksi = $('#kode_transaksi').val();
             let tanggal_keluar = $('#tanggal_keluar').val();
-            let nama_barang = $('#nama_barang').val();
+            let barang_id = $('#barang_id').val();
             let jumlah_keluar = $('#jumlah_keluar').val();
             let alat_id = $('#alat_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
@@ -158,7 +189,7 @@
             let formData = new FormData();
             formData.append('kode_transaksi', kode_transaksi);
             formData.append('tanggal_keluar', tanggal_keluar);
-            formData.append('nama_barang', nama_barang);
+            formData.append('barang_id', barang_id);
             formData.append('jumlah_keluar', jumlah_keluar);
             formData.append('alat_id', alat_id);
             formData.append('_token', token);
@@ -174,7 +205,6 @@
                 success: function(response) {
 
                     Swal.fire({
-                        type: 'success',
                         icon: 'success',
                         title: `${response.message}`,
                         showConfirmButton: true,
@@ -191,27 +221,28 @@
                             let counter = 1;
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
-                                let alat = getAlatName(response.alats,
-                                    value.alat_id);
+                                let barang = getBarangName(response.barangs, value.barang_id);
+                                let alat = getAlatName(response.alats, value.alat_id);
                                 let barangKeluar = `
                                 <tr class="barang-row" id="index_${value.id}">
                                     <td>${counter++}</td>   
                                     <td>${value.kode_transaksi}</td>
                                     <td>${value.tanggal_keluar}</td>
-                                    <td>${value.nama_barang}</td>
+                                    <td>${barang}</td>
                                     <td>${value.jumlah_keluar}</td>
                                     <td>${alat}</td>
                                     <td>
                                         <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                     </td>
                                 </tr>
-                             `;
+                                `;
                                 $('#table_id').DataTable().row.add($(barangKeluar))
                                     .draw(false);
                             });
 
                             $('#kode_transaksi').val('');
-                            $('#nama_barang').val('');
+                            $('#barang_id').val('').prop('selectedIndex', 0).trigger('change');
+                            $('#alat_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#jumlah_keluar').val('');
                             $('#stok').val('');
 
@@ -219,12 +250,17 @@
 
                             $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_keluar').removeClass('d-block').addClass('d-none');
-                            $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                             $('#alert-jumlah_keluar').removeClass('d-block').addClass('d-none');
                             $('#alert-alat_id').removeClass('d-block').addClass('d-none');
 
                             let table = $('#table_id').DataTable();
                             table.draw(); // memperbarui Datatables
+
+                            function getBarangName(barangs, barangId) {
+                                let barang = barangs.find(b => b.id === barangId);
+                                return barang ? barang.nama_barang : '';
+                            }
 
                             function getAlatName(alats, alatId) {
                                 let alat = alats.find(s => s.id === alatId);
@@ -232,8 +268,8 @@
                             }
                         },
 
-                        error: function() {
-                            //
+                        error: function(error) {
+                            console.log(error);
                         }
 
                     })
@@ -251,30 +287,40 @@
                         .kode_transaksi[0]) {
                         $('#alert-kode_transaksi').removeClass('d-none').addClass('d-block');
                         $('#alert-kode_transaksi').html(error.responseJSON.kode_transaksi[0]);
+                    } else {
+                        $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.tanggal_keluar && error.responseJSON
                         .tanggal_keluar[0]) {
                         $('#alert-tanggal_keluar').removeClass('d-none').addClass('d-block');
                         $('#alert-tanggal_keluar').html(error.responseJSON.tanggal_keluar[0]);
+                    } else {
+                        $('#alert-tanggal_keluar').removeClass('d-block').addClass('d-none');
                     }
 
-                    if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
-                        .nama_barang[0]) {
-                        $('#alert-nama_barang').removeClass('d-none').addClass('d-block');
-                        $('#alert-nama_barang').html(error.responseJSON.nama_barang[0]);
+                    if (error.responseJSON && error.responseJSON.barang_id && error.responseJSON
+                        .barang_id[0]) {
+                        $('#alert-barang_id').removeClass('d-none').addClass('d-block');
+                        $('#alert-barang_id').html(error.responseJSON.barang_id[0]);
+                    } else {
+                        $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jumlah_keluar && error.responseJSON
                         .jumlah_keluar[0]) {
                         $('#alert-jumlah_keluar').removeClass('d-none').addClass('d-block');
                         $('#alert-jumlah_keluar').html(error.responseJSON.jumlah_keluar[0]);
+                    } else {
+                        $('#alert-jumlah_keluar').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.alat_id && error.responseJSON
                         .alat_id[0]) {
                         $('#alert-alat_id').removeClass('d-none').addClass('d-block');
                         $('#alert-alat_id').html(error.responseJSON.alat_id[0]);
+                    } else {
+                        $('#alert-alat_id').removeClass('d-block').addClass('d-none');
                     }
 
                     // Menampilkan kembali modal tambah jika terjadi error
@@ -311,7 +357,6 @@
                         },
                         success: function(response) {
                             Swal.fire({
-                                type: 'success',
                                 icon: 'success',
                                 title: `${response.message}`,
                                 showConfirmButton: true,
@@ -327,13 +372,14 @@
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
+                                        let barang = getBarangName(response.barangs, value.barang_id);
                                         let alat = getAlatName(response.alats, value.alat_id);
                                         let barangKeluar = `
                                         <tr class="barang-row" id="index_${value.id}">
                                             <td>${counter++}</td>   
                                             <td>${value.kode_transaksi}</td>
                                             <td>${value.tanggal_keluar}</td>
-                                            <td>${value.nama_barang}</td>
+                                            <td>${barang}</td>
                                             <td>${value.jumlah_keluar}</td>
                                             <td>${alat}</td>
                                             <td>       
@@ -344,6 +390,11 @@
                                         $('#table_id').DataTable().row.add(
                                             $(barangKeluar)).draw(false);
                                     });
+
+                                    function getBarangName(barangs, barangId) {
+                                        let barang = barangs.find(b => b.id === barangId);
+                                        return barang ? barang.nama_barang : '';
+                                    }
 
                                     function getAlatName(alats, alatId) {
                                         let alat = alats.find(s => s.id === alatId);

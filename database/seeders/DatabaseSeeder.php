@@ -66,6 +66,7 @@ class DatabaseSeeder extends Seeder
             'jenis_barang'  => 'Reagen Dingin',
             'user_id'       => 1
         ]);
+
         Jenis::create([
             'jenis_barang'  => 'Reagen Kering',
             'user_id'       => 1

@@ -12,7 +12,7 @@ class BarangKeluar extends Model
     use HasFactory;
     use LogsActivity;
 
-    protected $fillable = ['kode_transaksi', 'tanggal_keluar', 'jumlah_keluar', 'barang_masuk_id', 'alat_id', 'user_id'];
+    protected $fillable = ['kode_transaksi', 'tanggal_keluar', 'jumlah_keluar', 'barang_id', 'alat_id', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 
@@ -30,9 +30,9 @@ class BarangKeluar extends Model
     }
 
     // 1 barang keluar memiliki satu barang masuk
-    public function barangMasuk()
+    public function barang()
     {
-        return $this->belongsTo(BarangMasuk::class, 'barang_masuk_id');
+        return $this->belongsTo(BarangMasuk::class, 'barang_id');
     }
 
     // 1 barang keluar hanya memiliki satu alat

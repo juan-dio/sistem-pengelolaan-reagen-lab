@@ -11,54 +11,61 @@
           <div class="modal-body">
 
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Tanggal Keluar</label>
-                  <input type="text" class="form-control" name="tanggal_keluar" id="tanggal_keluar">
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_keluar"></div>
-                </div>
-    
+              <div class="col">
                 <div class="form-group">
                   <label>Kode Transaksi</label>
                   <input type="text" class="form-control" name="kode_transaksi" id="kode_transaksi" readonly>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kode_transaksi"></div>
                 </div>
-    
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Tanggal Keluar</label>
+                  <input type="text" class="form-control" name="tanggal_keluar" id="tanggal_keluar">
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal_keluar"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Pilih Barang</label>
+                    <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
+                      <option selected>Pilih Barang</option>
+                      @foreach ($barangs as $barang)
+                        <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                      @endforeach
+                    </select>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Pilih Alat</label>
+                  <select class="js-example-basic-single" name="alat_id" id="alat_id" style="width: 100%">
+                    <option selected>Pilih Alat</option>
+                    @foreach ($alats as $alat)
+                      <option value="{{ $alat->id }}">{{ $alat->alat}}</option>
+                    @endforeach
+                  </select>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-alat_id"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>Stok Saat Ini</label>
                   <input type="number" class="form-control" name="stok" id="stok" disabled>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-stok"></div>
                 </div>
-                
               </div>
-
               <div class="col-md-6">
-
-                <div class="form-group">
-                  <label>Pilih Barang</label>
-                    <select class="js-example-basic-single" name="nama_barang" id="nama_barang" style="width: 100%">
-                      <option selected>Pilih Barang</option>
-                      @foreach ($barangs as $barang)
-                        <option value="{{ $barang->nama_barang }}">{{ $barang->nama_barang }}</option>
-                      @endforeach
-                    </select>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama_barang"></div>
-                </div>
-
-                <div class="form-group">
-                  <label>Alat</label>
-                  <select class="form-control" name="alat_id" id="alat_id">
-                    @foreach ($alats as $alat)
-                        @if (old('alat_id') == $alat->id)
-                          <option value="{{ $alat->id }}" selected>{{ $alat->alat}}</option>
-                        @else
-                          <option value="{{ $alat->id }}">{{ $alat->alat}}</option>
-                        @endif
-                    @endforeach
-                  </select>
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-alat_id"></div>
-                </div>
-  
                 <div class="form-group">
                   <label>Jumlah Keluar</label>
                   <div class="input-group">
@@ -66,17 +73,17 @@
                     <div class="input-group-append" style="width: 25%;">
                       <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
                     </div>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_keluar"></div>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_keluar" style="width: 100%;"></div>
                   </div>
                 </div>
-                
               </div>
-            </div>            
+            </div>  
+            
           </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
-          <button type="button" class="btn btn-primary" id="store">Tambah</button>
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+            <button type="button" class="btn btn-primary" id="store">Tambah</button>
+          </div>
         </form>
       </div>
     </div>

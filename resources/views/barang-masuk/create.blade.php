@@ -41,25 +41,22 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Pilih Barang</label>
-                    <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
-                      <option selected>Pilih Barang</option>
-                      @foreach ($barangs as $barang)
-                        <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                      @endforeach
-                    </select>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
+                  <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
+                    <option selected>Pilih Barang</option>
+                    @foreach ($barangs as $barang)
+                      <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                    @endforeach
+                  </select>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Supplier</label>
-                  <select class="form-control" name="supplier_id" id="supplier_id">
+                  <select class="js-example-basic-single" name="supplier_id" id="supplier_id" style="width: 100%">
+                    <option selected>Pilih Supplier</option>
                     @foreach ($suppliers as $supplier)
-                        @if (old('supplier_id') == $supplier->id)
-                          <option value="{{ $supplier->id }}" selected>{{ $supplier->supplier}}</option>
-                        @else
-                          <option value="{{ $supplier->id }}">{{ $supplier->supplier}}</option>
-                        @endif
+                      <option value="{{ $supplier->id }}">{{ $supplier->supplier}}</option>
                     @endforeach
                   </select>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-supplier_id"></div>
@@ -83,7 +80,7 @@
                     <div class="input-group-append" style="width: 25%;">
                       <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
                     </div>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_masuk"></div>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_masuk" style="width: 100%;"></div>
                   </div>
                 </div>
               </div>
