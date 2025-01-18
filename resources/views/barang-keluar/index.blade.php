@@ -63,21 +63,19 @@
                     var barang_id = selectedOption.val();
 
                     $.ajax({
-                        url: 'api/barang-keluar',
+                        url: '/barang-keluar/get-autocomplete-data',
                         type: 'GET',
                         data: {
                             barang_id: barang_id,
                         },
                         success: function(response) {
-                            if (response && response.barang) {
-                                let kodeTransaksi = generateKodeTransaksi(response.barang.kode_barang);
+                            if (response && response.kode_barang) {
+                                let kodeTransaksi = generateKodeTransaksi(response.kode_barang);
                                 $('#kode_transaksi').val(kodeTransaksi);
                             }
-                            if (response && (response.stok || response.stok === 0) && response.satuan_id) {
+                            if (response && (response.stok || response.stok === 0) && response.satuan) {
                                 $('#stok').val(response.stok);
-                                getSatuanName(response.satuan_id, function(satuan) {
-                                    $('#satuan_id').val(satuan);
-                                });
+                                $('#satuan_id').val(response.satuan);
                             } else if (response && response.stok === 0) {
                                 $('#stok').val(0);
                                 $('#satuan_id').val('');
@@ -85,19 +83,10 @@
                         },
                     });
 
-                    function getSatuanName(satuanId, callback) {
-                        $.getJSON('{{ url('api/satuan') }}', function(satuans) {
-                            var satuan = satuans.find(function(s) {
-                                return s.id === satuanId;
-                            });
-                            callback(satuan ? satuan.satuan : '');
-                        });
-                    }
-
                     function generateKodeTransaksi(kodeBarang) {
                         let tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
                         let randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-                        let kodeTransaksi = kodeBarang + '-IN-' + tanggal + '-' + randomNumber;
+                        let kodeTransaksi = kodeBarang + '-OUT-' + tanggal + '-' + randomNumber;
 
                         return kodeTransaksi;
                     }
@@ -118,62 +107,34 @@
                 type: "GET",
                 dataType: 'JSON',
                 success: function(response) {
+                    console.log(response.data);
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        let barang = getBarangName(response.barangs, value.barang_id);
-                        let alat = getAlatName(response.alats, value.alat_id);
                         let barangKeluar = `
-                <tr class="barang-row" id="index_${value.id}">
-                    <td>${counter++}</td>   
-                    <td>${value.kode_transaksi}</td>
-                    <td>${value.tanggal_keluar}</td>
-                    <td>${barang}</td>
-                    <td>${value.jumlah_keluar}</td>
-                    <td>${alat}</td>
-                    <td>       
-                        <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                    </td>
-                </tr>
-            `;
+                            <tr class="barang-row" id="index_${value.id}">
+                                <td>${counter++}</td>   
+                                <td>${value.kode_transaksi}</td>
+                                <td>${value.tanggal_keluar}</td>
+                                <td>${value.barang.nama_barang}</td>
+                                <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
+                                <td>${value.alat.alat}</td>    
+                                <td>   
+                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                </td>
+                            </tr>
+                        `;
                         $('#table_id').DataTable().row.add($(barangKeluar)).draw(false);
                     });
-
-                    function getBarangName(barangs, barangId) {
-                        let barang = barangs.find(b => b.id === barangId);
-                        return barang ? barang.nama_barang : '';
-                    }
-
-                    function getAlatName(alats, alatId) {
-                        let alat = alats.find(s => s.id === alatId);
-                        return alat ? alat.alat : '';
-                    }
                 }
             });
         });
-    </script>
-
-    <!-- Generate Kode Transaksi Otomatis -->
-    <script>
-        // function generateKodeTransaksi() {
-        //     var tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
-        //     var randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-        //     var kodeTransaksi = 'TRX-OUT-' + tanggal + '-' + randomNumber;
-
-        //     $('#kode_transaksi').val(kodeTransaksi);
-        //     return kodeTransaksi;
-        // }
-
-        // $(document).ready(function() {
-        //     generateKodeTransaksi();
-        // });
     </script>
 
     <!-- Show Modal Tambah Barang Keluar -->
     <script>
         $('body').on('click', '#button_tambah_barangKeluar', function() {
             $('#modal_tambah_barangKeluar').modal('show');
-            // $('#kode_transaksi').val(generateKodeTransaksi());
         });
 
         $('#store').click(function(e) {
@@ -221,20 +182,18 @@
                             let counter = 1;
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
-                                let barang = getBarangName(response.barangs, value.barang_id);
-                                let alat = getAlatName(response.alats, value.alat_id);
                                 let barangKeluar = `
-                                <tr class="barang-row" id="index_${value.id}">
-                                    <td>${counter++}</td>   
-                                    <td>${value.kode_transaksi}</td>
-                                    <td>${value.tanggal_keluar}</td>
-                                    <td>${barang}</td>
-                                    <td>${value.jumlah_keluar}</td>
-                                    <td>${alat}</td>
-                                    <td>
-                                        <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                    </td>
-                                </tr>
+                                    <tr class="barang-row" id="index_${value.id}">
+                                        <td>${counter++}</td>   
+                                        <td>${value.kode_transaksi}</td>
+                                        <td>${value.tanggal_keluar}</td>
+                                        <td>${value.barang.nama_barang}</td>
+                                        <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
+                                        <td>${value.alat.alat}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                        </td>
+                                    </tr>
                                 `;
                                 $('#table_id').DataTable().row.add($(barangKeluar))
                                     .draw(false);
@@ -256,22 +215,7 @@
 
                             let table = $('#table_id').DataTable();
                             table.draw(); // memperbarui Datatables
-
-                            function getBarangName(barangs, barangId) {
-                                let barang = barangs.find(b => b.id === barangId);
-                                return barang ? barang.nama_barang : '';
-                            }
-
-                            function getAlatName(alats, alatId) {
-                                let alat = alats.find(s => s.id === alatId);
-                                return alat ? alat.alat : '';
-                            }
                         },
-
-                        error: function(error) {
-                            console.log(error);
-                        }
-
                     })
                 },
 
@@ -372,35 +316,31 @@
                                     let counter = 1;
                                     $('#table_id').DataTable().clear();
                                     $.each(response.data, function(key, value) {
-                                        let barang = getBarangName(response.barangs, value.barang_id);
-                                        let alat = getAlatName(response.alats, value.alat_id);
                                         let barangKeluar = `
-                                        <tr class="barang-row" id="index_${value.id}">
-                                            <td>${counter++}</td>   
-                                            <td>${value.kode_transaksi}</td>
-                                            <td>${value.tanggal_keluar}</td>
-                                            <td>${barang}</td>
-                                            <td>${value.jumlah_keluar}</td>
-                                            <td>${alat}</td>
-                                            <td>       
-                                                <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
-                                            </td>
-                                        </tr>
-                                    `;
+                                            <tr class="barang-row" id="index_${value.id}">
+                                                <td>${counter++}</td>   
+                                                <td>${value.kode_transaksi}</td>
+                                                <td>${value.tanggal_keluar}</td>
+                                                <td>${value.barang.nama_barang}</td>
+                                                <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
+                                                <td>${value.alat.alat}</td>
+                                                <td>       
+                                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                                </td>
+                                            </tr>
+                                        `;
                                         $('#table_id').DataTable().row.add(
                                             $(barangKeluar)).draw(false);
                                     });
-
-                                    function getBarangName(barangs, barangId) {
-                                        let barang = barangs.find(b => b.id === barangId);
-                                        return barang ? barang.nama_barang : '';
-                                    }
-
-                                    function getAlatName(alats, alatId) {
-                                        let alat = alats.find(s => s.id === alatId);
-                                        return alat ? alat.alat : '';
-                                    }
                                 }
+                            });
+                        },
+                        error: function(error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: `${error.responseJSON.message}`,
+                                showConfirmButton: true,
+                                timer: 3000
                             });
                         }
                     })

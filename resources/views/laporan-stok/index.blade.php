@@ -70,18 +70,17 @@
 
                     let counter = 1;
                     $.each(response, function(index, item) {
-                        var row = [
+                        let row = [
                             counter++,
                             item.kode_barang,
                             item.nama_barang,
-                            item.stok
+                            `${item.stok} ${item.satuan.satuan}`
                         ];
                         table.row.add(row); // Menambahkan baris data ke DataTables
                     });
                     table.draw();
                 }
             });
-
         }
 
         $('#print-stok').on('click', function(){

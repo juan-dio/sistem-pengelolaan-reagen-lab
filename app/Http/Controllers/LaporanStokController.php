@@ -26,15 +26,15 @@ class LaporanStokController extends Controller
         $selectedOption = $request->input('opsi');
 
         if($selectedOption == 'semua'){
-             $barangs = Barang::all();
+            $barangs = Barang::all();
         } elseif ($selectedOption == 'minimum'){
-             $barangs = Barang::where('stok', '<=', 10)->get();
+            $barangs = Barang::where('stok', '<=', 10)->get();
         } elseif ($selectedOption == 'stok-habis'){
-             $barangs = Barang::where('stok', 0)->get();
+            $barangs = Barang::where('stok', 0)->get();
         } else {
-             $barangs = Barang::all();
+            $barangs = Barang::all();
         }
- 
+
         return response()->json($barangs);
     }
 
@@ -110,14 +110,5 @@ class LaporanStokController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    /**
-     * Get Satuan
-     */
-    public function getSatuan()
-    {
-        $satuans = Satuan::all();
-        return response()->json($satuans);
     }
 }

@@ -269,9 +269,9 @@ class BarangKeluarController extends Controller
 
         if($barang){
             return response()->json([
-                'barang'        => $barang,
+                'kode_barang'   => $barang->kode_barang,
                 'stok'          => $barang->stok,
-                'satuan_id'     => $barang->satuan_id,
+                'satuan'        => $barang->satuan->satuan,
             ]);
         }
     }
@@ -291,13 +291,6 @@ class BarangKeluarController extends Controller
         ];
 
         return response()->json($response);
-    }
-
-    public function getSatuan()
-    {
-        $satuans = Satuan::all();
-        
-        return response()->json($satuans);
     }
 
     public function getBarangs(Request $request)

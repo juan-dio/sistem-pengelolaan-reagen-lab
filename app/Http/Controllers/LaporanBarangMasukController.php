@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Dompdf\Dompdf;
 use App\Models\Supplier;
+use App\Models\Barang;
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -69,16 +70,6 @@ class LaporanBarangMasukController extends Controller
         $dompdf->render();
         $dompdf->stream('print-barang-masuk.pdf', ['Attachment' => false]);
     }
-    
-    /**
-     * Get Supplier
-     */
-    public function getSupplier()
-    {
-        $supplier = Supplier::all();
-        return response()->json($supplier);
-    }
-
     
     /**
      * Show the form for creating a new resource.

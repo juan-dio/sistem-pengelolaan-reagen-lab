@@ -58,89 +58,78 @@
 
 <script>
     $(document).ready(function() {
-    var table = $('#table_id').DataTable({ paging: true }); // Simpan objek DataTable dalam variabel
+        let table = $('#table_id').DataTable({ paging: true }); // Simpan objek DataTable dalam letiabel
 
-    loadData(); // Panggil fungsi loadData saat halaman dimuat
+        loadData(); // Panggil fungsi loadData saat halaman dimuat
 
-    $('#filter_form').submit(function(event) {
-        event.preventDefault();
-        loadData(); // Panggil fungsi loadData saat tombol filter ditekan
-    });
+        $('#filter_form').submit(function(event) {
+            event.preventDefault();
+            loadData(); // Panggil fungsi loadData saat tombol filter ditekan
+        });
 
-    $('#refresh_btn').on('click', function() {
-        refreshTable();
-    });
+        $('#refresh_btn').on('click', function() {
+            refreshTable();
+        });
 
-    // Fungsi load data berdasarkan range tanggal_mulai dan tanggal_selesai
-    function loadData() {
-        var tanggalMulai = $('#tanggal_mulai').val();
-        var tanggalSelesai = $('#tanggal_selesai').val();
+        // Fungsi load data berdasarkan range tanggal_mulai dan tanggal_selesai
+        function loadData() {
+            let tanggalMulai = $('#tanggal_mulai').val();
+            let tanggalSelesai = $('#tanggal_selesai').val();
 
-        $.ajax({
-            url: '/laporan-barang-masuk/get-data',
-            type: 'GET',
-            dataType: 'json',
-            data: {
-                tanggal_mulai: tanggalMulai,
-                tanggal_selesai: tanggalSelesai
-            },
-            success: function(response) {
-                table.clear().draw(); // Hapus data yang sudah ada dari DataTable sebelum menambahkan data yang baru
+            $.ajax({
+                url: '/laporan-barang-masuk/get-data',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    tanggal_mulai: tanggalMulai,
+                    tanggal_selesai: tanggalSelesai
+                },
+                success: function(response) {
+                    table.clear().draw(); // Hapus data yang sudah ada dari DataTable sebelum menambahkan data yang baru
 
-                if (response.length > 0) {
-                    $.each(response, function(index, item) {
-                        getSupplierName(item.supplier_id, function(supplier) {
-                            var row = [
+                    if (response.length > 0) {
+                        $.each(response, function(index, item) {
+                            let row = [
                                 (index + 1),
                                 item.kode_transaksi,
                                 item.tanggal_masuk,
-                                item.nama_barang,
-                                item.jumlah_masuk,
-                                supplier
+                                item.barang.nama_barang,
+                                `${item.jumlah_masuk} ${item.barang.satuan.satuan}`,
+                                item.supplier.supplier
                             ];
                             table.row.add(row).draw(false); // Tambahkan data yang baru ke DataTable
                         });
-                    });
-                } else {
-                    var emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', '', ''];
-                    table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
+                    } else {
+                        let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', '', ''];
+                        table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.log(error);
-            }
-        });
-
-        function getSupplierName(supplierId, callback) {
-            $.getJSON('{{ url('api/supplier') }}', function(suppliers) {
-                var supplier = suppliers.find(function(s) {
-                    return s.id === supplierId;
-                });
-                callback(supplier ? supplier.supplier : '');
             });
         }
-    }
 
-    // Fungsi Refresh Tabel
-    function refreshTable() {
-        $('#filter_form')[0].reset();
-        loadData();
-    }
-
-    // Print barang masuk
-    $('#print-barang-masuk').on('click', function() {
-        var tanggalMulai = $('#tanggal_mulai').val();
-        var tanggalSelesai = $('#tanggal_selesai').val();
-
-        var url = '/laporan-barang-masuk/print-barang-masuk';
-
-        if (tanggalMulai && tanggalSelesai) {
-            url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
+        // Fungsi Refresh Tabel
+        function refreshTable() {
+            $('#filter_form')[0].reset();
+            loadData();
         }
 
-        window.location.href = url;
+        // Print barang masuk
+        $('#print-barang-masuk').on('click', function() {
+            let tanggalMulai = $('#tanggal_mulai').val();
+            let tanggalSelesai = $('#tanggal_selesai').val();
+
+            let url = '/laporan-barang-masuk/print-barang-masuk';
+
+            if (tanggalMulai && tanggalSelesai) {
+                url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
+            }
+
+            window.location.href = url;
+        });
     });
-});
 
 </script>
 @endsection

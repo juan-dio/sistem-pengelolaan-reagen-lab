@@ -56,8 +56,8 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $item->kode_transaksi }}</td>
                 <td>{{ $item->tanggal_masuk }}</td>
-                <td>{{ $item->nama_barang}} </td>
-                <td>{{ $item->jumlah_masuk}} </td>
+                <td>{{ $item->barang->nama_barang}} </td>
+                <td>{{ $item->jumlah_masuk}} {{ $item->barang->satuan->satuan }}</td>
                 <td>{{ $item->supplier->supplier}} </td>
             </tr>
             @endforeach

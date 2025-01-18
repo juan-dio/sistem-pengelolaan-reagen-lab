@@ -16,6 +16,8 @@ class BarangMasuk extends Model
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 
+    protected $with = ['supplier', 'barang'];
+
     public function getActivitylogAttributes(): array
     {
         return array_diff($this->fillable, $this->ignoreChangedAttributes);

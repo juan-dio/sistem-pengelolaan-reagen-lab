@@ -56,52 +56,48 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
-        Route::get('/barang/get-data', [BarangController::class, 'getDataBarang']);
         Route::resource('/barang', BarangController::class);
 
         Route::post('/barang/excel', [BarangController::class, 'readExcel']);
         Route::get('/barang/excel', [BarangController::class, 'downloadExcelTemplate']);
     
-        Route::get('/jenis-barang/get-data', [JenisController::class, 'getDataJenisBarang']);
         Route::resource('/jenis-barang', JenisController::class);
     
-        Route::get('/satuan-barang/get-data', [SatuanController::class, 'getDataSatuanBarang']);
         Route::resource('/satuan-barang', SatuanController::class);
     
-        Route::get('/supplier/get-data', [SupplierController::class, 'getDataSupplier']);
         Route::resource('/supplier', SupplierController::class);
     
-        Route::get('/alat/get-data', [AlatController::class, 'getDataAlat']);
         Route::resource('/alat', AlatController::class);
     
-        Route::get('/api/barang-masuk/', [BarangMasukController::class, 'getAutoCompleteData']);
+        Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
-        Route::get('/api/satuan/', [BarangMasukController::class, 'getSatuan']);
         Route::resource('/barang-masuk', BarangMasukController::class);
     
-        Route::get('/api/barang-keluar/', [BarangKeluarController::class, 'getAutoCompleteData']);
+        Route::get('/barang-keluar/get-autocomplete-data', [BarangKeluarController::class, 'getAutoCompleteData']);
         Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
-        Route::get('/api/satuan/', [BarangKeluarController::class, 'getSatuan']);
         Route::resource('/barang-keluar', BarangKeluarController::class);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin,kepala gudang,admin gudang'], function(){
-        Route::resource('/dashboard', DashboardController::class);
         Route::get('/', [DashboardController::class, 'index']);
+        Route::resource('/dashboard', DashboardController::class);
+
+        Route::get('/barang/get-data', [BarangController::class, 'getDataBarang']);
+        Route::get('/jenis-barang/get-data', [JenisController::class, 'getDataJenisBarang']);
+        Route::get('/satuan-barang/get-data', [SatuanController::class, 'getDataSatuanBarang']);
+        Route::get('/supplier/get-data', [SupplierController::class, 'getDataSupplier']);
+        Route::get('/alat/get-data', [AlatController::class, 'getDataAlat']);
         
         Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
         Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
-        Route::get('/api/satuan/', [LaporanStokController::class, 'getSatuan']);
         Route::resource('/laporan-stok', LaporanStokController::class);
-       
+        
         Route::get('/laporan-barang-masuk/get-data', [LaporanBarangMasukController::class, 'getData']);
         Route::get('/laporan-barang-masuk/print-barang-masuk', [LaporanBarangMasukController::class, 'printBarangMasuk']);
-        Route::get('/api/supplier/', [LaporanBarangMasukController::class, 'getSupplier']);
         Route::resource('/laporan-barang-masuk', LaporanBarangMasukController::class);
     
         Route::get('/laporan-barang-keluar/get-data', [LaporanBarangKeluarController::class, 'getData']);
         Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
-        Route::get('/api/alat/', [LaporanBarangKeluarController::class, 'getAlat']);
         Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
 
         Route::get('/ubah-password', [UbahPasswordController::class,'index']);

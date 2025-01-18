@@ -59,7 +59,7 @@
 <!-- Script Get Data -->
 <script>
     $(document).ready(function() {
-        var table = $('#table_id').DataTable({ paging: true});
+        let table = $('#table_id').DataTable({ paging: true});
 
         loadData(); // Panggil fungsi loadData saat halaman dimuat
 
@@ -74,8 +74,8 @@
 
         //Fungsi load data berdasarkan range tanggal_mulai dan tanggal_selesai
         function loadData() {
-            var tanggalMulai = $('#tanggal_mulai').val();
-            var tanggalSelesai = $('#tanggal_selesai').val();
+            let tanggalMulai = $('#tanggal_mulai').val();
+            let tanggalSelesai = $('#tanggal_selesai').val();
             
             $.ajax({
                 url: '/laporan-barang-keluar/get-data',
@@ -90,20 +90,18 @@
 
                     if (response.length > 0) {
                         $.each(response, function(index, item) {
-                            getAlatName(item.alat_id, function(alat){
-                                var row = [
-                                    (index + 1),
-                                    item.kode_transaksi,
-                                    item.tanggal_keluar,
-                                    item.nama_barang,
-                                    item.jumlah_keluar,
-                                    alat
-                                ];
-                                table.row.add(row).draw(false);
-                            });
+                            let row = [
+                                (index + 1),
+                                item.kode_transaksi,
+                                item.tanggal_keluar,
+                                item.barang.nama_barang,
+                                `${item.jumlah_keluar} ${item.barang.satuan.satuan}`,
+                                item.alat.alat
+                            ];
+                            table.row.add(row).draw(false);
                         });
                     } else {
-                        var emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', ''];
+                        let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', ''];
                         table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
                     }
                 },
@@ -111,14 +109,6 @@
                     console.log(error);
                 }
             });
-            function getAlatName(alatId, callback){
-                $.getJSON('{{ url('api/alat') }}', function(alats){
-                    var alat = alats.find(function(s){
-                        return s.id === alatId;
-                    });
-                    callback(alat ? alat.alat : '');
-                });
-            }
         }
 
         //Fungsi Refresh Tabel
@@ -129,10 +119,10 @@
 
         //Print barang keluar
         $('#print-barang-keluar').on('click', function(){
-            var tanggalMulai    = $('#tanggal_mulai').val();
-            var tanggalSelesai  = $('#tanggal_selesai').val();
+            let tanggalMulai    = $('#tanggal_mulai').val();
+            let tanggalSelesai  = $('#tanggal_selesai').val();
             
-            var url = '/laporan-barang-keluar/print-barang-keluar';
+            let url = '/laporan-barang-keluar/print-barang-keluar';
 
             if(tanggalMulai && tanggalSelesai){
                 url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;

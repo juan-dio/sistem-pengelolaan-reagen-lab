@@ -30,7 +30,7 @@ class BarangMasukController extends Controller
         return response()->json([
             'success'   => true,
             'data'      => BarangMasuk::all(),
-            'barangs'    => Barang::all(),
+            'barangs'   => Barang::all(),
             'supplier'  => Supplier::all()
         ]);
     }
@@ -135,20 +135,33 @@ class BarangMasukController extends Controller
      */
     public function destroy(BarangMasuk $barangMasuk)
     {
+        // Periksa apakah stok dari batch ini sudah digunakan
+        $stokTersisa = $barangMasuk->jumlah_stok;
+
+        if ($stokTersisa < $barangMasuk->jumlah_masuk) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Barang Masuk tidak dapat dihapus karena sudah digunakan dalam transaksi.'
+            ], 400);
+        }
+
+        // Lanjutkan penghapusan jika stok belum digunakan
         $jumlahMasuk = $barangMasuk->jumlah_masuk;
         $barangMasuk->delete();
 
+        // Kurangi stok barang utama
         $barang = Barang::where('id', $barangMasuk->barang_id)->first();
         if ($barang) {
             $barang->stok -= $jumlahMasuk;
             $barang->save();
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Data Barang Berhasil Dihapus!'
         ]);
     }
+
 
 
     /**
@@ -159,21 +172,21 @@ class BarangMasukController extends Controller
         $barang = Barang::where('id', $request->barang_id)->first();;
         if($barang){
             return response()->json([
-                'barang'        => $barang,
+                'kode_barang'   => $barang->kode_barang,
                 'stok'          => $barang->stok,
-                'satuan_id'     => $barang->satuan_id,
+                'satuan'        => $barang->satuan->satuan,
             ]);
         }
     }
 
-    /**
-     * Get Satuan
-     */
-    public function getSatuan()
-    {
-        $satuans = Satuan::all();
+    // /**
+    //  * Get Satuan
+    //  */
+    // public function getSatuan()
+    // {
+    //     $satuans = Satuan::all();
         
-        return response()->json($satuans);
-    }
+    //     return response()->json($satuans);
+    // }
 
 }

@@ -16,6 +16,8 @@ class BarangKeluar extends Model
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 
+    protected $with = ['barang', 'alat'];
+
     public function getActivitylogAttributes(): array
     {
         return array_diff($this->fillable, $this->ignoreChangedAttributes);
@@ -32,7 +34,7 @@ class BarangKeluar extends Model
     // 1 barang keluar memiliki satu barang masuk
     public function barang()
     {
-        return $this->belongsTo(BarangMasuk::class, 'barang_id');
+        return $this->belongsTo(Barang::class, 'barang_id');
     }
 
     // 1 barang keluar hanya memiliki satu alat
