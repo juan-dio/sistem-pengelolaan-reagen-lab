@@ -59,5 +59,15 @@
         Dicetak oleh: {{ auth()->user()->name }}<br>
         Tanggal: {{ date('d-m-Y') }}
     </div>
+
+    <script>
+        const previousUrl = document.referrer;
+
+        window.print();
+
+        setTimeout(() => {
+            window.location.href = previousUrl;
+        }, 100);
+    </script>
 </body>
 </html>

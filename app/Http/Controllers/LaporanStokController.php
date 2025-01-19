@@ -55,13 +55,14 @@ class LaporanStokController extends Controller
             $barangs = Barang::all();
         }
 
-        // Generate PDF
-        $dompdf = new Dompdf();
-        $html = view('/laporan-stok/print-stok', compact('barangs', 'selectedOption'))->render();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        $dompdf->stream('print-stok.pdf', ['Attachment' => false]);
+        // $dompdf = new Dompdf();
+        // $html = view('/laporan-stok/print-stok', compact('barangs', 'selectedOption'))->render();
+        // $dompdf->loadHtml($html);
+        // $dompdf->setPaper('A4', 'landscape');
+        // $dompdf->render();
+        // $dompdf->stream('print-stok.pdf', ['Attachment' => false]);
+
+        return view('laporan-stok.print-stok', compact('barangs', 'selectedOption'));
     }
 
     /**

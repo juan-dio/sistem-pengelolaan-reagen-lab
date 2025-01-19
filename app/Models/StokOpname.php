@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class BarangKeluar extends Model
+class StokOpname extends Model
 {
     use HasFactory;
-    use LogsActivity;
 
-    protected $fillable = ['kode_transaksi', 'tanggal_keluar', 'jumlah_keluar', 'barang_id', 'alat_id', 'user_id'];
+    protected $fillable = ['barang_id', 'stok_aktual', 'stok_sistem', 'keterangan', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
-    protected $with = ['barang', 'alat'];
+    protected $with = ['barang'];
 
     public function getActivitylogAttributes(): array
     {
@@ -30,15 +29,8 @@ class BarangKeluar extends Model
             ->logOnlyDirty();
     }
 
-    // 1 barang keluar memiliki satu barang masuk
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_id');
-    }
-
-    // 1 barang keluar hanya memiliki satu alat
-    public function alat()
-    {
-        return $this->belongsTo(Alat::class, 'alat_id');
     }
 }

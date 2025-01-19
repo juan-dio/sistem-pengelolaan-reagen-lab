@@ -19,6 +19,7 @@ use App\Http\Controllers\LaporanStokController;
 use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\StokOpnameController;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
 
@@ -35,48 +36,6 @@ use App\Models\BarangMasuk;
 
 
 Route::middleware('auth')->group(function () {
-
-    Route::group(['middleware' => 'checkRole:superadmin'], function(){
-        Route::get('/data-pengguna/get-data', [ManajemenUserController::class, 'getDataPengguna']);
-        Route::get('/api/role/', [ManajemenUserController::class, 'getRole']);
-        Route::resource('/data-pengguna', ManajemenUserController::class);
-    
-        Route::get('/hak-akses/get-data', [HakAksesController::class, 'getDataRole']);
-        Route::resource('/hak-akses', HakAksesController::class);
-        
-        Route::get('/database', [DatabaseController::class, 'index'])->name('database.index');
-        Route::post('/database/backup', [DatabaseController::class, 'backup'])->name('database.backup');
-        Route::post('/database/restore', [DatabaseController::class, 'restore'])->name('database.restore');
-        Route::delete('/database/delete', [DatabaseController::class, 'delete'])->name('database.delete');
-    });
-
-    Route::group(['middleware' => 'checkRole:superadmin,kepala gudang'], function(){
-        Route::resource('/aktivitas-user', ActivityLogController::class);
-        
-    });
-
-    Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
-        Route::resource('/barang', BarangController::class);
-
-        Route::post('/barang/excel', [BarangController::class, 'readExcel']);
-        Route::get('/barang/excel', [BarangController::class, 'downloadExcelTemplate']);
-    
-        Route::resource('/jenis-barang', JenisController::class);
-    
-        Route::resource('/satuan-barang', SatuanController::class);
-    
-        Route::resource('/supplier', SupplierController::class);
-    
-        Route::resource('/alat', AlatController::class);
-    
-        Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
-        Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
-        Route::resource('/barang-masuk', BarangMasukController::class);
-    
-        Route::get('/barang-keluar/get-autocomplete-data', [BarangKeluarController::class, 'getAutoCompleteData']);
-        Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
-        Route::resource('/barang-keluar', BarangKeluarController::class);
-    });
 
     Route::group(['middleware' => 'checkRole:superadmin,kepala gudang,admin gudang'], function(){
         Route::get('/', [DashboardController::class, 'index']);
@@ -104,6 +63,49 @@ Route::middleware('auth')->group(function () {
         Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
     });
 
+    Route::group(['middleware' => 'checkRole:superadmin,kepala gudang'], function(){
+        Route::resource('/aktivitas-user', ActivityLogController::class);
+    });
+
+    Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
+        Route::resource('/barang', BarangController::class);
+
+        Route::post('/barang/excel', [BarangController::class, 'readExcel']);
+        Route::get('/barang/excel', [BarangController::class, 'downloadExcelTemplate']);
+    
+        Route::resource('/jenis-barang', JenisController::class);
+    
+        Route::resource('/satuan-barang', SatuanController::class);
+    
+        Route::resource('/supplier', SupplierController::class);
+    
+        Route::resource('/alat', AlatController::class);
+    
+        Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
+        Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
+        Route::resource('/barang-masuk', BarangMasukController::class);
+    
+        Route::get('/barang-keluar/get-autocomplete-data', [BarangKeluarController::class, 'getAutoCompleteData']);
+        Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
+        Route::resource('/barang-keluar', BarangKeluarController::class);
+
+        Route::get('/stok-opname', [StokOpnameController::class, 'index']);
+        Route::post('/stok-opname', [StokOpnameController::class, 'store']);
+    });
+
+    Route::group(['middleware' => 'checkRole:superadmin'], function(){
+        Route::get('/data-pengguna/get-data', [ManajemenUserController::class, 'getDataPengguna']);
+        Route::get('/api/role/', [ManajemenUserController::class, 'getRole']);
+        Route::resource('/data-pengguna', ManajemenUserController::class);
+    
+        Route::get('/hak-akses/get-data', [HakAksesController::class, 'getDataRole']);
+        Route::resource('/hak-akses', HakAksesController::class);
+        
+        Route::get('/database', [DatabaseController::class, 'index'])->name('database.index');
+        Route::post('/database/backup', [DatabaseController::class, 'backup'])->name('database.backup');
+        Route::post('/database/restore', [DatabaseController::class, 'restore'])->name('database.restore');
+        Route::delete('/database/delete', [DatabaseController::class, 'delete'])->name('database.delete');
+    });
 
 });
 

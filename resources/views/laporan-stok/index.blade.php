@@ -84,7 +84,7 @@
         }
 
         $('#print-stok').on('click', function(){
-            var selectedOption = $('#opsi-laporan-stok').val();
+            let selectedOption = $('#opsi-laporan-stok').val();
             window.location.href = '/laporan-stok/print-stok?opsi=' + selectedOption;
         });
     });
