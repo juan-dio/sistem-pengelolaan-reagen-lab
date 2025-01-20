@@ -31,15 +31,15 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                              <label for="stok_sistem">Stok Sistem</label>
-                              <input type="number" name="stok_sistem" id="stok_sistem" class="form-control" min="0" readonly>
-                              @error('stok_sistem')
-                                  <small class="text-danger">{{ $message }}</small>
-                              @enderror
-                          </div>
+                                <label for="stok_sistem">Stok Sistem</label>
+                                <input type="text" name="stok_sistem" id="stok_sistem" class="form-control" min="0" readonly>
+                                @error('stok_sistem')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
                             <div class="col-md-4">
                                 <label for="stok_aktual">Stok Aktual</label>
-                                <input type="number" name="stok_aktual" id="stok_aktual" class="form-control" min="0" readonly>
+                                <input type="text" name="stok_aktual" id="stok_aktual" class="form-control" min="0" readonly>
                                 @error('stok_aktual')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -56,7 +56,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3>Daftar Stok Adjustment</h3>
+                    <h3>Riwayat Stok Adjustment</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -82,7 +82,7 @@
                                         <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->stok_aktual }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->stok_sistem - $stok->stok_aktual }} {{ $stok->barang->satuan->satuan }}</td>
-                                        <td>{{ $stok->barang->stok }} {{ $stok->barang->satuan->satuan }}</td>
+                                        <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->keterangan }}</td>
                                         {{-- <td>{{ ($stok->adjusted) ? 'Adjusted' : 'Not yet adjusted' }}</td> --}}
                                         <td>{{ $stok->created_at->format('Y-m-d') }}</td>
@@ -115,8 +115,8 @@
                         stok_opname_id: stok_opname_id
                     },
                     success: function(response) {
-                        $('#stok_sistem').val(response.stok_sistem);
-                        $('#stok_aktual').val(response.stok_aktual);
+                        $('#stok_sistem').val(`${response.stok_sistem} ${response.barang.satuan.satuan}`);
+                        $('#stok_aktual').val(`${response.stok_aktual} ${response.barang.satuan.satuan}`);
                     }
                 });
             });

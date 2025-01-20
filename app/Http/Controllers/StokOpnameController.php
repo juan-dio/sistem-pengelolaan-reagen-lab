@@ -86,8 +86,16 @@ class StokOpnameController extends Controller
 
     public function getDataStok(Request $request)
     {
+        $barang = Barang::where('id', $request->barang_id)->first();
+
+        return response()->json($barang);
+    }
+
+    public function getDataStokOpname(Request $request)
+    {
         $stokOpname = StokOpname::where('id', $request->stok_opname_id)->first();
 
         return response()->json($stokOpname);
     }
+
 }

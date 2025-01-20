@@ -31,13 +31,22 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
+                                <label for="stok_sistem">Stok Sistem</label>
+                                <input type="text" name="stok_sistem" id="stok_sistem" class="form-control" min="0" readonly>
+                                @error('stok_sistem')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="col-md-4">
                                 <label for="stok_aktual">Stok Aktual</label>
                                 <input type="number" name="stok_aktual" id="stok_aktual" class="form-control" min="0">
                                 @error('stok_aktual')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <div class="col-md-4">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
                                 <label for="keterangan">Keterangan</label>
                                 <input type="text" name="keterangan" id="keterangan" class="form-control">
                             </div>
@@ -52,6 +61,9 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
+                <div class="card-header">
+                    <h3>Riwayat Stok Opname</h3>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="table_id" class="display">
@@ -97,6 +109,20 @@
             setTimeout(function() {
                 $('.js-example-basic-single').select2();
             }, 500);
+
+            $('#barang_id').on('change', function() {
+                let barang_id = $(this).val();
+                $.ajax({
+                    url: '/stok-opname/get-data',
+                    type: 'GET',
+                    data: {
+                        barang_id: barang_id
+                    },
+                    success: function(response) {
+                        $('#stok_sistem').val(`${response.stok} ${response.satuan.satuan}`);
+                    }
+                });
+            });
 
         });
     </script>

@@ -97,10 +97,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/stok-opname', [StokOpnameController::class, 'index']);
         Route::post('/stok-opname', [StokOpnameController::class, 'store']);
+        Route::get('/stok-opname/get-data', [StokOpnameController::class, 'getDataStok']);
 
         Route::get('/stok-adjustment', [StokOpnameController::class, 'stokAdjustment']);
         Route::post('/stok-adjustment', [StokOpnameController::class, 'adjust']);
-        Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStok']);
+        Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStokOpname']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){
