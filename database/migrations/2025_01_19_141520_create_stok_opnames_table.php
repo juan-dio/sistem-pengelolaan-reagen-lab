@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('stok_aktual');
             $table->integer('stok_sistem');
             $table->string('keterangan')->nullable();
+            $table->boolean('adjusted')->default(false);
             $table->foreignId('user_id');
             $table->timestamps();
         });

@@ -49,14 +49,14 @@
 <!-- Dropdown -->
 <script>
     $(document).ready(function() {
-        var table = $('#table_id').DataTable({
+        let table = $('#table_id').DataTable({
             paging: true
         });
 
         loadData('semua');
 
         $('#opsi-laporan-stok').on('change', function(){
-            var selectedOption = $(this).val();
+            let selectedOption = $(this).val();
             loadData(selectedOption);
         });
 

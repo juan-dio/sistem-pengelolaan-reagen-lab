@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="table_id" class="display">
+                        <table id="table_id" class="display" style="width: 100%; font-size: 14px;">
                             <thead>
                                 <tr>
                                     <th>No</th>

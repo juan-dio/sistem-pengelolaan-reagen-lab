@@ -10,6 +10,7 @@ use Spatie\Activitylog\LogOptions;
 class StokOpname extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = ['barang_id', 'stok_aktual', 'stok_sistem', 'keterangan', 'user_id'];
     protected $guarded = [''];

@@ -19,6 +19,8 @@ use App\Http\Controllers\LaporanStokController;
 use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\LaporanStokOpnameController;
+use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
@@ -59,6 +61,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
         Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
 
+        Route::get('/laporan-stok-opname', [LaporanStokOpnameController::class, 'index']);
+        Route::get('/laporan-stok-opname/get-data', [LaporanStokOpnameController::class, 'getData']);
+        Route::get('/laporan-stok-opname/print-stok-opname', [LaporanStokOpnameController::class, 'printStokOpname']);
+
         Route::get('/ubah-password', [UbahPasswordController::class,'index']);
         Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
     });
@@ -91,6 +97,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/stok-opname', [StokOpnameController::class, 'index']);
         Route::post('/stok-opname', [StokOpnameController::class, 'store']);
+
+        Route::get('/stok-adjustment', [StokOpnameController::class, 'stokAdjustment']);
+        Route::post('/stok-adjustment', [StokOpnameController::class, 'adjust']);
+        Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStok']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){

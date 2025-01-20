@@ -31,7 +31,7 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Barang Masuk</h1>
+    <h1>Laporan Stok Opname</h1>
     @if ($tanggalMulai && $tanggalSelesai)
         <p>Rentang Tanggal : {{ $tanggalMulai }} - {{ $tanggalSelesai }}<p>
     @else
@@ -43,22 +43,24 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Transaksi</th>
-                <th>Tanggal Keluar</th>
-                <th>Nama Barang</th>
-                <th>Jumlah Keluar</th>
-                <th>Alat</th>
+                <th>Barang</th>
+                <th>Stok Sistem</th>
+                <th>Stok Aktual</th>
+                <th>Selisih</th>
+                <th>Keterangan</th>
+                <th>Tanggal</th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $item->kode_transaksi }}</td>
-                <td>{{ $item->tanggal_keluar }}</td>
                 <td>{{ $item->barang->nama_barang}} </td>
-                <td>{{ $item->jumlah_keluar}} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->alat->alat}} </td>
+                <td>{{ $item->barang->stok }} {{ $item->barang->satuan->satuan }}</td>
+                <td>{{ $item->stok_aktual }} {{ $item->barang->satuan->satuan }}</td>
+                <td>{{ $item->barang->stok - $item->stok_aktual }} {{ $item->barang->satuan->satuan }}</td>
+                <td>{{ $item->keterangan }} </td>
+                <td>{{ $item->created_at->format('Y-m-d') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -68,7 +70,7 @@
         Dicetak oleh: {{ auth()->user()->name }}<br>
         Tanggal: {{ date('d-m-Y') }}
     </div>
-
+    
     <script>
         const previousUrl = document.referrer;
 

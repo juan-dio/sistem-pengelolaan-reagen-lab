@@ -62,13 +62,7 @@ class LaporanBarangMasukController extends Controller
             $data = BarangMasuk::all();
         }
         
-        //Generate PDF
-        $dompdf = new Dompdf();
-        $html = view('/laporan-barang-masuk/print-barang-masuk', compact('data', 'tanggalMulai', 'tanggalSelesai'))->render();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        $dompdf->stream('print-barang-masuk.pdf', ['Attachment' => false]);
+        return view('laporan-barang-masuk.print-barang-masuk', compact('data', 'tanggalMulai', 'tanggalSelesai'));
     }
     
     /**

@@ -69,29 +69,29 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h4>Grafik Barang Masuk & Barang Keluar</h4>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
         <canvas id="summaryChart"></canvas>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h4>Stok Mencapai Batas Minimum</h4>
       </div>
-      <div class="card-body">
-        <table class="table">
+      <div class="card-body overflow-auto">
+        <table class="table table-responsive">
           <thead>
             <tr>
               <th scope="col">No</th>
-              <th scope="col">Kode Barang</th>
-              <th scope="col">Nama Barang</th>
+              <th scope="col">Kode</th>
+              <th scope="col">Nama</th>
               <th scope="col">Stok</th>
             </tr>
           </thead>
@@ -114,52 +114,52 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-var ctx = document.getElementById('summaryChart').getContext('2d');
-    var chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: [
-          @foreach($barangMasukData as $data)
-              '{{ date("F", strtotime($data->date)) }}',
-          @endforeach
-        ],
-        datasets: [
-          {
-            label : 'Barang Masuk',
-            data: [
-                @foreach($barangMasukData as $data)
-                    '{{ $data->total }}',
-                @endforeach
-            ],
-            backgroundColor: 'blue'
-          },
-          {
-            label : 'Barang Keluar',
-            data: [
-                @foreach($barangKeluarData as $data)
-                    '{{ $data->total }}',
-                @endforeach
-            ],
-            backgroundColor: 'red'
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            precision: 0,
-            stepSize: 1,
-            ticks: {
-              callback: function(value) {
-                if (value % 1 === 0) {
-                  return value;
-                }
+  var ctx = document.getElementById('summaryChart').getContext('2d');
+  var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [
+        @foreach($barangMasukData as $data)
+            '{{ date("F", strtotime($data->date)) }}',
+        @endforeach
+      ],
+      datasets: [
+        {
+          label : 'Barang Masuk',
+          data: [
+              @foreach($barangMasukData as $data)
+                  '{{ $data->total }}',
+              @endforeach
+          ],
+          backgroundColor: 'blue'
+        },
+        {
+          label : 'Barang Keluar',
+          data: [
+              @foreach($barangKeluarData as $data)
+                  '{{ $data->total }}',
+              @endforeach
+          ],
+          backgroundColor: 'red'
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          precision: 0,
+          stepSize: 1,
+          ticks: {
+            callback: function(value) {
+              if (value % 1 === 0) {
+                return value;
               }
             }
           }
         }
       }
-    });
+    }
+  });
 </script>
 @endpush

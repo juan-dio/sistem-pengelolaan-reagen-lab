@@ -20,8 +20,8 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="barang_id">Pilih Barang</label>
-                                <select name="barang_id" id="barang_id" class="form-control">
-                                    <option value="">Pilih Barang</option>
+                                <select name="barang_id" id="barang_id" class="js-example-basic-single form-control" style="width: 100%">
+                                    <option selected>Pilih Barang</option>
                                     @foreach($barangs as $barang)
                                         <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                     @endforeach
@@ -63,6 +63,7 @@
                                     <th>Stok Aktual</th>
                                     <th>Selisih</th>
                                     <th>Keterangan</th>
+                                    {{-- <th>Status</th> --}}
                                     <th>Tanggal</th>
                                 </tr>
                             </thead>
@@ -71,11 +72,12 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $stokOpname->barang->nama_barang }}</td>
-                                        <td>{{ $stokOpname->barang->stok }} {{ $stokOpname->barang->satuan->satuan }}</td>
+                                        <td>{{ $stokOpname->stok_sistem }} {{ $stokOpname->barang->satuan->satuan }}</td>
                                         <td>{{ $stokOpname->stok_aktual }} {{ $stokOpname->barang->satuan->satuan }}</td>
-                                        <td>{{ $stokOpname->barang->stok - $stokOpname->stok_aktual }} {{ $stokOpname->barang->satuan->satuan }}</td>
+                                        <td>{{ $stokOpname->stok_sistem - $stokOpname->stok_aktual }} {{ $stokOpname->barang->satuan->satuan }}</td>
                                         <td>{{ $stokOpname->keterangan }}</td>
-                                        <td>{{ $stokOpname->created_at->format('d-m-Y') }}</td>
+                                        {{-- <td>{{ ($stokOpname->adjusted) ? 'Adjusted' : 'Not yet adjusted' }}</td> --}}
+                                        <td>{{ $stokOpname->created_at->format('Y-m-d') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -91,6 +93,11 @@
             $('#table_id').DataTable({
                 paging: true
             });
+
+            setTimeout(function() {
+                $('.js-example-basic-single').select2();
+            }, 500);
+
         });
     </script>
 

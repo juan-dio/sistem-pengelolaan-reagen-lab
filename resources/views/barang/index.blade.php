@@ -21,7 +21,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="table_id" class="display">
+                        <table id="table_id" class="display" style="width: 100%; font-size: 14px;">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -30,7 +30,6 @@
                                     <th>Nama</th>
                                     <th>Stok Minimum</th>
                                     <th colspan="2">Opsi</th>
-                                    {{-- <th></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +70,6 @@
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
-                        // let stok = value.stok != null ? value.stok : "Stok Kosong";
                         let barang = `
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>
@@ -311,40 +309,6 @@
             let token = $("meta[name='csrf-token']").attr("content");
 
             if (kode_barang) {
-                // create barcode, with code of app url /verifikasi/kode_barang
-                // let code = window.location.origin + '/verifikasi/' + kode_barang;
-
-                // let barcode = document.createElement('canvas');
-    
-                // JsBarcode(barcode, code, {
-                //     format: "CODE128",
-                //     displayValue: false,
-                //     fontSize: 20,
-                //     width: 2,
-                //     height: 60
-                // });
-                
-                // // add text below barcode
-                // let text = document.createElement('canvas');
-                // text.width = barcode.width;
-                // text.height = 20;
-                // let ctx = text.getContext('2d');
-                // ctx.font = '12px Arial';
-                // ctx.textAlign = 'center';
-                // ctx.fillText(kode_barang + ' ' + nama_barang, text.width / 2, 15);
-
-                // // combine barcode and text
-                // let combinedCanvas = document.createElement('canvas');
-                // combinedCanvas.width = barcode.width;
-                // combinedCanvas.height = barcode.height + text.height;
-                // let combinedCtx = combinedCanvas.getContext('2d');
-                // combinedCtx.drawImage(barcode, 0, 0);
-                // combinedCtx.drawImage(text, 0, barcode.height);
-
-                // // convert canvas to base64
-                
-                // let barcodeDataUrl = combinedCanvas.toDataURL('image/png');
-
                 let canvas = document.createElement('canvas');
     
                 JsBarcode(canvas, kode_barang, {
@@ -408,24 +372,23 @@
                             $('#table_id').DataTable().clear();
                             $.each(response.data, function(key, value) {
                                 let barang = `
-                            <tr class="barang-row" id="index_${value.id}">
-                                <td>${counter++}</td>
-                                <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
-                                <td>${value.kode_barang}</td>
-                                <td>${value.nama_barang}</td>
-                                <td>${value.stok_minimum}</td>
-                                <td style="padding: 8px 6px;">
-                                    <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
-                                    <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                    <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
-                                </td>
-                                <td style="padding: 8px 6px;">        
-                                    <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
-                                </td>
-                            </tr>
-                        `;
-                                $('#table_id').DataTable().row.add($(barang)).draw(
-                                    false);
+                                    <tr class="barang-row" id="index_${value.id}">
+                                        <td>${counter++}</td>
+                                        <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
+                                        <td>${value.kode_barang}</td>
+                                        <td>${value.nama_barang}</td>
+                                        <td>${value.stok_minimum}</td>
+                                        <td style="padding: 8px 6px;">
+                                            <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
+                                            <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                            <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
+                                        </td>
+                                        <td style="padding: 8px 6px;">        
+                                            <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
+                                        </td>
+                                    </tr>
+                                `;
+                                $('#table_id').DataTable().row.add($(barang)).draw(false);
                             });
 
                             $('#nama_barang').val('');
@@ -435,21 +398,12 @@
 
                             $('#modal_tambah_barang').modal('hide');
 
-                            $('#alert-nama_barang').removeClass('d-block');
-                            $('#alert-nama_barang').addClass('d-none');
-                            $('#alert-kode_barang').removeClass('d-block');
-                            $('#alert-kode_barang').addClass('d-none');
-                            $('#alert-stok_minimum').removeClass('d-block');
-                            $('#alert-stok_minimum').addClass('d-none');
-                            $('#alert-jenis_id').removeClass('d-block');
-                            $('#alert-jenis_id').addClass('d-none');
-                            $('#alert-satuan_id').removeClass('d-block');
-                            $('#alert-satuan_id').addClass('d-none');
-                            $('#alert-deskripsi').removeClass('d-block');
-                            $('#alert-deskripsi').addClass('d-none');
-
-                            let table = $('#table_id').DataTable();
-                            table.draw();
+                            $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
+                            $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
+                            $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
+                            $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
+                            $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
                         },
                         error: function(error) {
                             console.log(error);
@@ -459,13 +413,6 @@
                 },
 
                 error: function(error) {
-                    // if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
-                    //         0]) {
-                    //     $('#alert-gambar').removeClass('d-none');
-                    //     $('#alert-gambar').addClass('d-block');
-
-                    //     $('#alert-gambar').html(error.responseJSON.gambar[0]);
-                    // }
 
                     if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
                         .nama_barang[0]) {
@@ -558,14 +505,12 @@
                 cache: false,
                 success: function(response) {
                     $('#barang_id').val(response.data.id);
-                    // $('#edit_gambar').val(null);
                     $('#edit_nama_barang').val(response.data.nama_barang);
                     $('#edit_kode_barang').val(response.data.kode_barang);
                     $('#edit_stok_minimum').val(response.data.stok_minimum);
                     $('#edit_jenis_id').val(response.data.jenis_id);
                     $('#edit_satuan_id').val(response.data.satuan_id);
                     $('#edit_deskripsi').val(response.data.deskripsi);
-                    // $('#edit_gambar_preview').attr('src', '/storage/' + response.data.gambar);
 
                     $('#modal_edit_barang').modal('show');
                 }
@@ -577,7 +522,6 @@
             e.preventDefault();
 
             let barang_id = $('#barang_id').val();
-            // let gambar = $('#edit_gambar')[0].files[0];
             let nama_barang = $('#edit_nama_barang').val();
             let kode_barang = $('#edit_kode_barang').val();
             let gambar = null;
@@ -614,7 +558,6 @@
 
             // Buat objek FormData
             let formData = new FormData();
-            // formData.append('gambar', gambar);
             formData.append('nama_barang', nama_barang);
             formData.append('kode_barang', kode_barang);
             if (gambar) {
@@ -680,13 +623,6 @@
                 },
 
                 error: function(error) {
-                    // if (error.responseJSON && error.responseJSON.gambar && error.responseJSON.gambar[
-                    //         0]) {
-                    //     $('#alert-gambar').removeClass('d-none');
-                    //     $('#alert-gambar').addClass('d-block');
-
-                    //     $('#alert-gambar').html(error.responseJSON.gambar[0]);
-                    // }
 
                     if (error.responseJSON && error.responseJSON.nama_barang && error.responseJSON
                         .nama_barang[0]) {
@@ -816,8 +752,7 @@
                                             </td>
                                         </tr>
                                     `;
-                                        $('#table_id').DataTable().row.add(
-                                            $(barang)).draw(false);
+                                        $('#table_id').DataTable().row.add($(barang)).draw(false);
                                     });
                                 }
                             });

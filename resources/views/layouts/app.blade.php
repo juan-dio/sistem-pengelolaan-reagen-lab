@@ -18,8 +18,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/components.css">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
 
     <!-- Select2 -->
@@ -140,7 +139,7 @@
 
                             <li class="sidebar-item dropdown">
                                 <a href="#"
-                                    class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
+                                    class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('stok-adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
                                     data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -153,7 +152,7 @@
                                         <a class="nav-link {{ Request::is('stok-opname') ? 'active' : '' }}" href="/stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
                                     </li>
                                     <li>
-                                        <a class="nav-link {{ Request::is('adjustment') ? 'active' : '' }}" href="/adjustment"><i class="fa-regular fa-pen-to-square"></i><span>Adjustment</span></a>
+                                        <a class="nav-link {{ Request::is('stok-adjustment') ? 'active' : '' }}" href="/stok-adjustment"><i class="fa-regular fa-pen-to-square"></i><span>Stok Adjustment</span></a>
                                     </li>
                                     <li>
                                         <a class="nav-link {{ Request::is('transfer') ? 'active' : '' }}" href="/transfer"><i class="fa fa-solid fa-arrows-rotate"></i><span>Transfer</span></a>

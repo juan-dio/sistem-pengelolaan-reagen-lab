@@ -61,22 +61,7 @@ class LaporanBarangKeluarController extends Controller
             $data = BarangKeluar::all();
         }
         
-        //Generate PDF
-        $dompdf = new Dompdf();
-        $html = view('/laporan-barang-keluar/print-barang-keluar', compact('data', 'tanggalMulai', 'tanggalSelesai'))->render();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-        $dompdf->stream('print-barang-keluar.pdf', ['Attachment' => false]);
-    }
-
-    /**
-     * Get Customer
-     */
-    public function getAlat()
-    {
-        $alat = Alat::all();
-        return response()->json($alat);
+        return view('laporan-barang-keluar.print-barang-keluar', compact('data', 'tanggalMulai', 'tanggalSelesai'));
     }
 
     /**
