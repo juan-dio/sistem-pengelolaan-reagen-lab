@@ -86,16 +86,36 @@ class BarangKeluarController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Simpan data ke tabel barang_keluars
+        $barangKeluar = BarangKeluar::create([
+            'tanggal_keluar' => $request->tanggal_keluar,
+            'kode_transaksi' => $request->kode_transaksi,
+            'jumlah_keluar'  => $request->jumlah_keluar,
+            'barang_id'      => $request->barang_id,
+            'alat_id'        => $request->alat_id,
+            'user_id'        => auth()->user()->id,
+        ]);
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil disimpan!',
+            'data'    => $barangKeluar,
+        ]);
+    }
+
+    public function approve(Request $request)
+    {
         DB::beginTransaction();
 
         try {
+            $barangKeluar = BarangKeluar::find($request->barang_keluar_id);
             $barangId = $request->barang_id;
             $jumlahKeluar = $request->jumlah_keluar;
 
             // FIFO: Ambil batch barang masuk berdasarkan tanggal kedaluwarsa terdekat
             $batches = BarangMasuk::where('barang_id', $barangId)
                 ->where('jumlah_stok', '>', 0)
+                ->where('approved', 1)
                 ->orderBy('tanggal_kadaluarsa')
                 ->get();
 
@@ -120,40 +140,89 @@ class BarangKeluarController extends Controller
             }
 
             if ($jumlahKeluarTemp > 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Stok tidak mencukupi berdasarkan batch yang tersedia!',
-                ], 422);
+                return redirect()->back()->with('error', 'Stok tidak mencukupi berdasarkan batch yang tersedia!');
             }
 
-            // Simpan data ke tabel barang_keluars
-            $barangKeluar = BarangKeluar::create([
-                'tanggal_keluar' => $request->tanggal_keluar,
-                'kode_transaksi' => $request->kode_transaksi,
-                'jumlah_keluar'  => $jumlahKeluar,
-                'barang_id'      => $barangId,
-                'alat_id'        => $request->alat_id,
-                'user_id'        => auth()->user()->id,
-            ]);
-
-            // Update stok total di tabel barang
+            // Kurangi stok barang
             $barang = Barang::find($barangId);
-            $barang->stok -= $jumlahKeluar;
-            $barang->save();
+            if ($barang) {
+                $barang->stok -= $jumlahKeluar;
+                $barang->save();
+            }
+
+            // Set approved menjadi true
+            $barangKeluar->approved = true;
+            $barangKeluar->save();
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil disimpan!',
-                'data'    => $barangKeluar,
-            ]);
+            return redirect()->back()->with('success', 'Barang keluar berhasil disetujui!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 500);
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function approveAll(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $barangKeluars = BarangKeluar::where('approved', false)->get();
+
+            foreach ($barangKeluars as $barangKeluar) {
+                $barangId = $barangKeluar->barang_id;
+                $jumlahKeluar = $barangKeluar->jumlah_keluar;
+
+                // FIFO: Ambil batch barang masuk berdasarkan tanggal kedaluwarsa terdekat
+                $batches = BarangMasuk::where('barang_id', $barangId)
+                    ->where('jumlah_stok', '>', 0)
+                    ->where('approved', 1)
+                    ->orderBy('tanggal_kadaluarsa')
+                    ->get();
+
+                $jumlahKeluarTemp = $jumlahKeluar;
+
+                foreach ($batches as $batch) {
+                    if ($jumlahKeluarTemp <= 0) {
+                        break;
+                    }
+
+                    $stokBatch = $batch->jumlah_stok;
+
+                    if ($stokBatch >= $jumlahKeluarTemp) {
+                        $batch->jumlah_stok -= $jumlahKeluarTemp;
+                        $batch->save();
+                        $jumlahKeluarTemp = 0;
+                    } else {
+                        $jumlahKeluarTemp -= $stokBatch;
+                        $batch->jumlah_stok = 0;
+                        $batch->save();
+                    }
+                }
+
+                if ($jumlahKeluarTemp > 0) {
+                    return redirect()->back()->with('error', 'Stok tidak mencukupi berdasarkan batch yang tersedia!');
+                }
+
+                // Kurangi stok barang
+                $barang = Barang::find($barangId);
+                if ($barang) {
+                    $barang->stok -= $jumlahKeluar;
+                    $barang->save();
+                }
+
+                // Set approved menjadi true
+                $barangKeluar->approved = true;
+                $barangKeluar->save();
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Semua barang keluar berhasil di setujui!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -162,7 +231,7 @@ class BarangKeluarController extends Controller
      */
     public function show(BarangKeluar $barangKeluar)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -184,7 +253,7 @@ class BarangKeluarController extends Controller
      */
     public function update(Request $request, BarangKeluar $barangKeluar)
     {
-        //
+        abort(404);
     }
 
     /**

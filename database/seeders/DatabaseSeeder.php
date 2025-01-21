@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Alat;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Jenis;
@@ -85,6 +87,11 @@ class DatabaseSeeder extends Seeder
             'supplier'      => 'PT Saba Indomedika',
             'alamat'        => 'Surabaya, Jawa Timur',
             'user_id'       => 1
+        ]);
+
+        Alat::create([
+            'alat'      => 'Analyzer',
+            'user_id'   => 1
         ]);
     
     }

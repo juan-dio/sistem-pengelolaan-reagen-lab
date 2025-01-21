@@ -12,7 +12,7 @@ class BarangMasuk extends Model
     use HasFactory;
     use LogsActivity;
 
-    protected $fillable = ['kode_transaksi', 'tanggal_masuk', 'tanggal_kadaluarsa', 'jumlah_masuk', 'jumlah_stok', 'lokasi', 'barang_id', 'supplier_id', 'user_id'];
+    protected $fillable = ['kode_transaksi', 'tanggal_masuk', 'tanggal_kadaluarsa', 'jumlah_masuk', 'jumlah_stok', 'lokasi', 'approved', 'barang_id', 'supplier_id', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kode_transaksi')->unique();
             $table->date('tanggal_keluar');
             $table->integer('jumlah_keluar');
+            $table->boolean('approved')->default(false);
             $table->foreignId('barang_id')->constrained();
             $table->foreignId('alat_id')->constrained();
             $table->foreignId('user_id');

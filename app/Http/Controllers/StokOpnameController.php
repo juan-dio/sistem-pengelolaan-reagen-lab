@@ -22,13 +22,13 @@ class StokOpnameController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'barang_id' => 'required|exists:barangs,id',
-            'stok_aktual' => 'required|integer|min:0',
+            'stok_fisik' => 'required|integer|min:0',
         ], [
             'barang_id.required' => 'Barang harus dipilih.',
             'barang_id.exists' => 'Barang tidak ditemukan.',
-            'stok_aktual.required' => 'Stok aktual harus diisi.',
-            'stok_aktual.integer' => 'Stok aktual harus berupa angka.',
-            'stok_aktual.min' => 'Stok aktual tidak boleh kurang dari 0.',
+            'stok_fisik.required' => 'Stok aktual harus diisi.',
+            'stok_fisik.integer' => 'Stok aktual harus berupa angka.',
+            'stok_fisik.min' => 'Stok aktual tidak boleh kurang dari 0.',
         ]);
 
         if ($validator->fails()) {
@@ -40,19 +40,39 @@ class StokOpnameController extends Controller
 
         $stokOpname = StokOpname::create([
             'barang_id' => $request->barang_id,
-            'stok_aktual' => $request->stok_aktual,
+            'stok_fisik' => $request->stok_fisik,
             'stok_sistem' => $stokSistem,
             'keterangan' => $request->keterangan,
-            'adjusted' => false,
             'user_id' => auth()->user()->id,
         ]);
 
         return redirect()->back()->with('success', 'Stok opname berhasil disimpan.');
     }
 
+    public function approve(Request $request, StokOpname $stokOpname)
+    {
+
+        $stokOpname->approved = true;
+        $stokOpname->save();
+
+        return redirect()->back()->with('success', 'Stok opname berhasil disetujui!');
+    }
+
+    public function approveAll(Request $request)
+    {
+        $stokOpnames = StokOpname::where('approved', false)->get();
+
+        foreach ($stokOpnames as $stokOpname) {
+            $stokOpname->approved = true;
+            $stokOpname->save();
+        }
+
+        return redirect()->back()->with('success', 'Semua stok opname berhasil disetujui!');
+    }
+
     public function stokAdjustment(Request $request)
     {
-        $stokAdjustments = StokOpname::where('adjusted', false)->latest()->get();
+        $stokAdjustments = StokOpname::where('adjusted', false)->where('approved', 1)->latest()->get();
         
         $adjustedStokOpnames = StokOpname::where('adjusted', true)->latest()->get();
 
@@ -64,21 +84,18 @@ class StokOpnameController extends Controller
 
     public function adjust(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'stok_opname_id' => 'required|exists:stok_opnames,id',
-        ], [
-            'stok_opname_id.required' => 'Stok opname harus dipilih.',
-            'stok_opname_id.exists' => 'Stok opname tidak ditemukan.',
-        ]);
-
         $stokOpname = StokOpname::findOrFail($request->stok_opname_id);
+
+        if ($stokOpname->approved == 0) {
+            return redirect()->back()->with('error', 'Stok opname belum disetujui.');
+        }
 
         $stokOpname->adjusted = true;
         $stokOpname->save();
 
         // Update stok barang
         $barang = Barang::find($stokOpname->barang_id);
-        $barang->stok = $stokOpname->stok_aktual;
+        $barang->stok = $stokOpname->stok_fisik;
         $barang->save();
 
         return redirect()->back()->with('success', 'Stok berhasil disesuaikan.');

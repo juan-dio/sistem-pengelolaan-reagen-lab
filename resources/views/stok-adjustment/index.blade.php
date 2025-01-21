@@ -38,9 +38,9 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label for="stok_aktual">Stok Aktual</label>
-                                <input type="text" name="stok_aktual" id="stok_aktual" class="form-control" min="0" readonly>
-                                @error('stok_aktual')
+                                <label for="stok_fisik">Stok Fisik</label>
+                                <input type="text" name="stok_fisik" id="stok_fisik" class="form-control" min="0" readonly>
+                                @error('stok_fisik')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -80,12 +80,12 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $stok->barang->nama_barang }}</td>
                                         <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
-                                        <td>{{ $stok->stok_aktual }} {{ $stok->barang->satuan->satuan }}</td>
-                                        <td>{{ $stok->stok_sistem - $stok->stok_aktual }} {{ $stok->barang->satuan->satuan }}</td>
+                                        <td>{{ $stok->stok_fisik }} {{ $stok->barang->satuan->satuan }}</td>
+                                        <td>{{ $stok->stok_sistem - $stok->stok_fisik }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->keterangan }}</td>
                                         {{-- <td>{{ ($stok->adjusted) ? 'Adjusted' : 'Not yet adjusted' }}</td> --}}
-                                        <td>{{ $stok->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ $stok->updated_at }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -116,7 +116,7 @@
                     },
                     success: function(response) {
                         $('#stok_sistem').val(`${response.stok_sistem} ${response.barang.satuan.satuan}`);
-                        $('#stok_aktual').val(`${response.stok_aktual} ${response.barang.satuan.satuan}`);
+                        $('#stok_fisik').val(`${response.stok_fisik} ${response.barang.satuan.satuan}`);
                     }
                 });
             });

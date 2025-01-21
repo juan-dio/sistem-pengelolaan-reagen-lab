@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="table_id" class="display">
+                        <table id="table_id" class="display" style="width: 100%; font-size: 14px;">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -26,6 +26,7 @@
                                     <th>Nama Barang</th>
                                     <th>Jumlah Keluar</th>
                                     <th>Alat</th>
+                                    <th>Status</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
@@ -118,7 +119,9 @@
                                 <td>${value.tanggal_keluar}</td>
                                 <td>${value.barang.nama_barang}</td>
                                 <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
-                                <td>${value.alat.alat}</td>    
+                                <td>${value.alat.alat}</td>
+                                <td>
+                                    ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                 <td>   
                                     <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                 </td>
@@ -190,6 +193,9 @@
                                         <td>${value.barang.nama_barang}</td>
                                         <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
                                         <td>${value.alat.alat}</td>
+                                        <td>
+                                            ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                        </td>
                                         <td>
                                             <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                         </td>
@@ -324,6 +330,9 @@
                                                 <td>${value.barang.nama_barang}</td>
                                                 <td>${value.jumlah_keluar} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.alat.alat}</td>
+                                                <td>
+                                                    ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                                </td>
                                                 <td>       
                                                     <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                                 </td>

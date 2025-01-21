@@ -12,7 +12,7 @@ class StokOpname extends Model
     use HasFactory;
     use LogsActivity;
 
-    protected $fillable = ['barang_id', 'stok_aktual', 'stok_sistem', 'keterangan', 'user_id'];
+    protected $fillable = ['barang_id', 'stok_fisik', 'stok_sistem', 'keterangan', 'user_id'];
     protected $guarded = [''];
     protected $ignoreChangedAttributes = ['updated_at'];
     protected $with = ['barang'];

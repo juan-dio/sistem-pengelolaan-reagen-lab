@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('stok_opnames', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_id')->constrained();
-            $table->integer('stok_aktual');
             $table->integer('stok_sistem');
+            $table->integer('stok_fisik');
             $table->string('keterangan')->nullable();
             $table->boolean('adjusted')->default(false);
+            $table->boolean('approved')->default(false);
             $table->foreignId('user_id');
             $table->timestamps();
         });

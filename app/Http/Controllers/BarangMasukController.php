@@ -40,9 +40,11 @@ class BarangMasukController extends Controller
      */
     public function create()
     {
-        return view('barang-masuk.create', [
-            'barangs'   => Barang::all()
-        ]);
+        // return view('barang-masuk.create', [
+        //     'barangs'   => Barang::all()
+        // ]);
+
+        abort(404);
     }
 
     /**
@@ -87,14 +89,6 @@ class BarangMasukController extends Controller
             'user_id'           => auth()->user()->id
         ]); 
 
-        if ($barangMasuk) {
-            $barang = Barang::where('id', $request->barang_id)->first();
-            if ($barang) {
-                $barang->stok += $request->jumlah_masuk;
-                $barang->save();
-            }
-        }
-
         return response()->json([
             'success'   => true,
             'message'   => 'Data Berhasil Disimpan !',
@@ -102,12 +96,45 @@ class BarangMasukController extends Controller
         ]);
     }
 
+    public function approve(Request $request, BarangMasuk $barangMasuk)
+    {
+        $barangMasuk->approved = true;
+        $barangMasuk->save();
+
+        // Tambahkan stok barang
+        $barang = Barang::where('id', $barangMasuk->barang_id)->first();
+        if ($barang) {
+            $barang->stok += $barangMasuk->jumlah_masuk;
+            $barang->save();
+        }
+
+        return redirect()->back()->with('success', 'Barang basuk berhasil disetujui!');
+    }
+
+    public function approveAll(Request $request)
+    {
+        $barangMasuk = BarangMasuk::where('approved', false)->get();
+        foreach ($barangMasuk as $bm) {
+            $bm->approved = true;
+            $bm->save();
+
+            // Tambahkan stok barang
+            $barang = Barang::where('id', $bm->barang_id)->first();
+            if ($barang) {
+                $barang->stok += $bm->jumlah_masuk;
+                $barang->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Semua barang basuk berhasil disetujui!');
+    }
+
     /**
      * Display the specified resource.
      */
     public function show(BarangMasuk $barangMasuk)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -127,7 +154,7 @@ class BarangMasukController extends Controller
      */
     public function update(Request $request, BarangMasuk $barangMasuk)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -178,15 +205,5 @@ class BarangMasukController extends Controller
             ]);
         }
     }
-
-    // /**
-    //  * Get Satuan
-    //  */
-    // public function getSatuan()
-    // {
-    //     $satuans = Satuan::all();
-        
-    //     return response()->json($satuans);
-    // }
 
 }

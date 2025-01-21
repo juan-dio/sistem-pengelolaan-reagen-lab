@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('jumlah_masuk');
             $table->integer('jumlah_stok');
             $table->string('lokasi');
+            $table->boolean('approved')->default(false);
             $table->foreignId('barang_id')->constrained();
             $table->foreignId('supplier_id')->constrained();
             $table->foreignId('user_id');

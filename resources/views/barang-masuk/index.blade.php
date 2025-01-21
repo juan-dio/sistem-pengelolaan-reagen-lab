@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive" style="overflow-x: auto;">
-                        <table id="table_id" class="display">
+                        <table id="table_id" class="display" style="width: 100%; font-size: 14px;">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -29,6 +29,7 @@
                                     <th>Stok</th>
                                     <th>Lokasi</th>
                                     <th>Supplier</th>
+                                    <th>Status</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
@@ -126,6 +127,9 @@
                                 <td>${value.lokasi}</td>
                                 <td>${value.supplier.supplier}</td>
                                 <td>
+                                    ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                </td>
+                                <td>
                                     <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                 </td>
                             </tr>
@@ -202,6 +206,9 @@
                                         <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                         <td>${value.lokasi}</td>
                                         <td>${value.supplier.supplier}</td>
+                                        <td>
+                                            ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                        </td>
                                         <td>
                                             <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                         </td>
@@ -368,6 +375,9 @@
                                                 <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.lokasi}</td>
                                                 <td>${value.supplier.supplier}</td>
+                                                <td>
+                                                    ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                                </td>
                                                 <td>
                                                     <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
                                                 </td>

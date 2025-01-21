@@ -22,6 +22,7 @@ use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\LaporanStokOpnameController;
 use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
+use App\Http\Controllers\VerifikasiController;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
 
@@ -102,6 +103,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/stok-adjustment', [StokOpnameController::class, 'stokAdjustment']);
         Route::post('/stok-adjustment', [StokOpnameController::class, 'adjust']);
         Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStokOpname']);
+
+        Route::get('/verifikasi', [VerifikasiController::class, 'index']);
+        Route::post('/verifikasi-barang-masuk', [BarangMasukController::class, 'approveAll']);
+        Route::post('/verifikasi-barang-keluar', [BarangKeluarController::class, 'approveAll']);
+        Route::post('/verifikasi-stok-opname', [StokOpnameController::class, 'approveAll']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){

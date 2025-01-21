@@ -38,9 +38,9 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label for="stok_aktual">Stok Aktual</label>
-                                <input type="number" name="stok_aktual" id="stok_aktual" class="form-control" min="0">
-                                @error('stok_aktual')
+                                <label for="stok_fisik">Stok Fisik</label>
+                                <input type="number" name="stok_fisik" id="stok_fisik" class="form-control" min="0">
+                                @error('stok_fisik')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -72,11 +72,11 @@
                                     <th>No</th>
                                     <th>Barang</th>
                                     <th>Stok Sistem</th>
-                                    <th>Stok Aktual</th>
+                                    <th>Stok Fisik</th>
                                     <th>Selisih</th>
                                     <th>Keterangan</th>
-                                    {{-- <th>Status</th> --}}
                                     <th>Tanggal</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,11 +85,17 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $stokOpname->barang->nama_barang }}</td>
                                         <td>{{ $stokOpname->stok_sistem }} {{ $stokOpname->barang->satuan->satuan }}</td>
-                                        <td>{{ $stokOpname->stok_aktual }} {{ $stokOpname->barang->satuan->satuan }}</td>
-                                        <td>{{ $stokOpname->stok_sistem - $stokOpname->stok_aktual }} {{ $stokOpname->barang->satuan->satuan }}</td>
+                                        <td>{{ $stokOpname->stok_fisik }} {{ $stokOpname->barang->satuan->satuan }}</td>
+                                        <td>{{ $stokOpname->stok_sistem - $stokOpname->stok_fisik }} {{ $stokOpname->barang->satuan->satuan }}</td>
                                         <td>{{ $stokOpname->keterangan }}</td>
-                                        {{-- <td>{{ ($stokOpname->adjusted) ? 'Adjusted' : 'Not yet adjusted' }}</td> --}}
-                                        <td>{{ $stokOpname->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ $stokOpname->created_at }}</td>
+                                        <td>
+                                            @if($stokOpname->approved == 0)
+                                                <span class="badge badge-warning">Pending</span>
+                                            @else
+                                                <span class="badge badge-success">Approved</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
