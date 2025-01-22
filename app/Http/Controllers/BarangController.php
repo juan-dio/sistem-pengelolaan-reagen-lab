@@ -54,7 +54,8 @@ class BarangController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
-            'kode_barang'   => 'required|unique:barangs,kode_barang',
+            'kode_barang'   => 'required',
+            'lot'           => 'required|unique:barangs,lot',
             'gambar'        => 'required|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
@@ -62,7 +63,8 @@ class BarangController extends Controller
         ], [
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
-            'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
+            'lot.required'          => 'Form Lot Wajib Di Isi !',
+            'lot.unique'            => 'Lot Sudah Ada, Gunakan Lot Lain !',
             'gambar.required'       => 'Tambahkan Gambar !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
@@ -86,6 +88,7 @@ class BarangController extends Controller
         $barang = Barang::create([
             'nama_barang' => $request->nama_barang,
             'kode_barang' => $request->kode_barang,
+            'lot'         => $request->lot,
             'stok_minimum'=> $request->stok_minimum,
             'deskripsi'   => $request->deskripsi,
             'gambar'      => $gambar,
@@ -132,7 +135,8 @@ class BarangController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_barang'   => 'required',
-            'kode_barang'   => 'required|unique:barangs,kode_barang,' . $barang->id,
+            'kode_barang'   => 'required',
+            'lot'           => 'required|unique:barangs,lot,' . $barang->id,
             'gambar'        => 'nullable|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
             'jenis_id'      => 'required',
@@ -140,7 +144,8 @@ class BarangController extends Controller
         ], [
             'nama_barang.required'  => 'Form Nama Barang Wajib Di Isi !',
             'kode_barang.required'  => 'Form Kode Barang Wajib Di Isi !',
-            'kode_barang.unique'    => 'Kode Barang Sudah Ada, Gunakan Kode Barang Lain !',
+            'lot.required'          => 'Form Lot Wajib Di Isi !',
+            'lot.unique'            => 'Lot Sudah Ada, Gunakan Lot Lain !',
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
             'stok_minimum.numeric'  => 'Gunakan Angka Untuk Mengisi Form Ini !',
@@ -170,6 +175,7 @@ class BarangController extends Controller
         $barang->update([
             'nama_barang'   => $request->nama_barang,
             'kode_barang'   => $request->kode_barang,
+            'lot'           => $request->lot,
             'stok_minimum'  => $request->stok_minimum, 
             'deskripsi'     => $request->deskripsi,
             'user_id'       => auth()->user()->id,
@@ -260,10 +266,11 @@ class BarangController extends Controller
             // Mendapatkan nilai dari setiap sel
             $rowData['kode_barang'] = $sheet->getCell('A' . $row->getRowIndex())->getValue();
             $rowData['nama_barang'] = $sheet->getCell('B' . $row->getRowIndex())->getValue();
-            $rowData['stok_minimum'] = $sheet->getCell('C' . $row->getRowIndex())->getValue();
-            $rowData['deskripsi'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
-            $rowData['jenis_id'] = ($sheet->getCell('E' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
-            $rowData['satuan_id'] = (in_array($sheet->getCell('F' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
+            $rowData['lot'] = $sheet->getCell('C' . $row->getRowIndex())->getValue();
+            $rowData['stok_minimum'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
+            $rowData['deskripsi'] = $sheet->getCell('E' . $row->getRowIndex())->getValue();
+            $rowData['jenis_id'] = ($sheet->getCell('F' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
+            $rowData['satuan_id'] = (in_array($sheet->getCell('G' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
 
             $data[] = $rowData;
         }

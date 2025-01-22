@@ -21,7 +21,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Satuan Barang</th>
+                                    <th>Nama Satuan</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>

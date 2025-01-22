@@ -27,6 +27,16 @@
                 <input type="text" class="form-control" name="nama_barang" id="detail_nama_barang" disabled>
               </div>
 
+              <div class="form-group">
+                <label>Kode Barang</label>
+                <input type="text" class="form-control" name="kode_barang" id="detail_kode_barang" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>Lot</label>
+                <input type="text" class="form-control" name="lot" id="detail_lot" disabled>
+              </div>
+
              <div class="form-group">
               <label>Jenis Barang</label>
               <select class="form-control" name="jenis_id" id="detail_jenis_id" disabled>

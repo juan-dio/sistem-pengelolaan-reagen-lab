@@ -181,9 +181,6 @@
                                         <a class="nav-link {{ Request::is('laporan-stok-opname') ? 'active' : '' }}" href="/laporan-stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
                                     </li>
                                     <li>
-                                        <a class="nav-link {{ Request::is('laporan-pemakaian') ? 'active' : '' }}" href="/laporan-pemakaian"><i class="fa-solid fa-file-circle-minus"></i><span>Pemakaian</span></a>
-                                    </li>
-                                    <li>
                                         <a class="nav-link {{ Request::is('laporan-forecast') ? 'active' : '' }}" href="/laporan-forecast"><i class="fa-solid fa-calculator"></i><span>Forecast</span></a>
                                     </li>
                                     <li>

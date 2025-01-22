@@ -26,6 +26,12 @@
                 <input type="text" class="form-control" name="kode_barang" id="edit_kode_barang">
                 <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_kode_barang"></div>
               </div>
+              
+              <div class="form-group">
+                <label>Lot</label>
+                <input type="text" class="form-control" name="lot" id="edit_lot">
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_lot"></div>
+              </div>
 
               <div class="form-group">
                 <label>Jenis Barang</label>
