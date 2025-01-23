@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +20,7 @@ class BarangMasukController extends Controller
     public function index()
     {
         return view('barang-masuk.index', [
-            'barangs'      => Barang::all(),
+            'orders'       => Order::where('status', 'approved')->get(),
             'barangsMasuk' => BarangMasuk::all(),
             'suppliers'    => Supplier::all()
         ]);
@@ -30,8 +31,6 @@ class BarangMasukController extends Controller
         return response()->json([
             'success'   => true,
             'data'      => BarangMasuk::all(),
-            'barangs'   => Barang::all(),
-            'supplier'  => Supplier::all()
         ]);
     }
 
@@ -53,21 +52,26 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'kode_transaksi'    => 'required|unique',
+            'lot'               => 'required',
             'tanggal_masuk'     => 'required|date',
             'tanggal_kadaluarsa'=> 'required|date',
             'jumlah_masuk'      => 'required',
             'jumlah_stok'       => 'required',
             'lokasi'            => 'required',
-            'barang_id'         => 'required|exists:barangs,id',
+            'order_id'         => 'required|exists:orders,id',
             'supplier_id'       => 'required|exists:suppliers,id'
         ],[
+            'kode_transaksi.required'   => 'Form Kode Transaksi Wajib Di Isi !',
+            'kode_transaksi.unique'     => 'Kode Transaksi Sudah Ada !',
+            'lot.required'              => 'Form Lot Wajib Di Isi !',
             'tanggal_masuk.required'    => 'Pilih Barang Terlebih Dahulu !',
             'tanggal_kadaluarsa.required' => 'Form Tanggal Kadaluarsa Wajib Di Isi !',
             'jumlah_masuk.required'     => 'Form Jumlah Stok Masuk Wajib Di Isi !',
             'jumlah_stok.required'      => 'Form Jumlah Stok Wajib Di Isi !',
             'lokasi.required'           => 'Form Lokasi Wajib Di Isi !',
-            'barang_id.required'        => 'Pilih Barang !',
-            'barang_id.exists'          => 'Pilih Barang !',
+            'order_id.required'         => 'Pilih Barang !',
+            'order_id.exists'           => 'Pilih Barang !',
             'supplier_id.required'      => 'Pilih Supplier !',
             'supplier_id.exists'        => 'Pilih Supplier !'
         ]);
@@ -79,12 +83,13 @@ class BarangMasukController extends Controller
 
         $barangMasuk = BarangMasuk::create([
             'kode_transaksi'    => $request->kode_transaksi,
+            'lot'               => $request->lot,
             'tanggal_masuk'     => $request->tanggal_masuk,
             'tanggal_kadaluarsa'=> $request->tanggal_kadaluarsa,
             'jumlah_masuk'      => $request->jumlah_masuk,
             'jumlah_stok'       => $request->jumlah_stok,
             'lokasi'            => $request->lokasi,
-            'barang_id'         => $request->barang_id,
+            'order_id'          => $request->order_id,
             'supplier_id'       => $request->supplier_id,
             'user_id'           => auth()->user()->id
         ]); 

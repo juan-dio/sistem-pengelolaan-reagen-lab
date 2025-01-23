@@ -22,8 +22,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Kode Transaksi</th>
+                                    <th>Kode Order</th>
+                                    <th>Lot</th>
                                     <th>Tanggal Masuk</th>
-                                    <th>Tanggal Kadaluarsa</th>
+                                    <th>Expired</th>
                                     <th>Nama Barang</th>
                                     <th>Jumlah Masuk</th>
                                     <th>Stok</th>
@@ -119,9 +121,11 @@
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>   
                                 <td>${value.kode_transaksi}</td>
+                                <td>${value.order.kode_transaksi}</td>
+                                <td>${value.lot}</td>
                                 <td>${value.tanggal_masuk}</td>
                                 <td>${value.tanggal_kadaluarsa}</td>
-                                <td>${value.barang.nama_barang}</td>
+                                <td>${value.order.barang.nama_barang}</td>
                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
                                 <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                 <td>${value.lokasi}</td>
@@ -151,23 +155,25 @@
             e.preventDefault();
 
             let kode_transaksi = $('#kode_transaksi').val();
+            let lot = $('#lot').val();
             let tanggal_masuk = $('#tanggal_masuk').val();
             let tanggal_kadaluarsa = $('#tanggal_kadaluarsa').val();
             let jumlah_masuk = $('#jumlah_masuk').val();
             let jumlah_stok = jumlah_masuk;
             let lokasi = $('#lokasi').val();
-            let barang_id = $('#barang_id').val();
+            let order_id = $('#order_id').val();
             let supplier_id = $('#supplier_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
             let formData = new FormData();
             formData.append('kode_transaksi', kode_transaksi);
+            formData.append('lot', lot);
             formData.append('tanggal_masuk', tanggal_masuk);
             formData.append('tanggal_kadaluarsa', tanggal_kadaluarsa);
             formData.append('jumlah_masuk', jumlah_masuk);
             formData.append('jumlah_stok', jumlah_stok);
             formData.append('lokasi', lokasi);
-            formData.append('barang_id', barang_id);
+            formData.append('order_id', order_id);
             formData.append('supplier_id', supplier_id);
             formData.append('_token', token);
 
@@ -199,9 +205,11 @@
                                     <tr class="barang-row" id="index_${value.id}">
                                         <td>${counter++}</td>   
                                         <td>${value.kode_transaksi}</td>
+                                        <td>${value.order.kode_transaksi}</td>
+                                        <td>${value.lot}</td>
                                         <td>${value.tanggal_masuk}</td>
                                         <td>${value.tanggal_kadaluarsa}</td>
-                                        <td>${value.barang.nama_barang}</td>
+                                        <td>${value.order.barang.nama_barang}</td>
                                         <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
                                         <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                         <td>${value.lokasi}</td>
@@ -218,7 +226,8 @@
                             });
 
                             $('#kode_transaksi').val('');
-                            $('#barang_id').val('').prop('selectedIndex', 0).trigger('change');
+                            $('#lot').val('');
+                            $('#order_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#supplier_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#jumlah_masuk').val('');
                             $('#stok').val('');
@@ -226,9 +235,10 @@
                             $('#modal_tambah_barangMasuk').modal('hide');
 
                             $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
+                            $('#alert-lot').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
-                            $('#alert-barang_id').removeClass('d-block').addClass('d-none');
+                            $('#alert-order_id').removeClass('d-block').addClass('d-none');
                             $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
@@ -245,79 +255,65 @@
                 error: function(error) {
                     if (error.responseJSON && error.responseJSON.kode_transaksi && error.responseJSON
                         .kode_transaksi[0]) {
-                        $('#alert-kode_transaksi').removeClass('d-none');
-                        $('#alert-kode_transaksi').addClass('d-block');
-
+                        $('#alert-kode_transaksi').removeClass('d-none').addClass('d-block');
                         $('#alert-kode_transaksi').html(error.responseJSON.kode_transaksi[0]);
                     } else {
-                        $('#alert-kode_transaksi').removeClass('d-block');
-                        $('#alert-kode_transaksi').addClass('d-none');
+                        $('#alert-kode_transaksi').removeClass('d-block').addClass('d-none');
+                    }
+
+                    if (error.responseJSON && error.responseJSON.lot && error.responseJSON.lot[0]) {
+                        $('#alert-lot').removeClass('d-none').addClass('d-block');
+                        $('#alert-lot').html(error.responseJSON.lot[0]);
+                    } else {
+                        $('#alert-lot').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.tanggal_masuk && error.responseJSON
                         .tanggal_masuk[0]) {
-                        $('#alert-tanggal_masuk').removeClass('d-none');
-                        $('#alert-tanggal_masuk').addClass('d-block');
-
+                        $('#alert-tanggal_masuk').removeClass('d-none').addClass('d-block');
                         $('#alert-tanggal_masuk').html(error.responseJSON.tanggal_masuk[0]);
                     } else {
-                        $('#alert-tanggal_masuk').removeClass('d-block');
-                        $('#alert-tanggal_masuk').addClass('d-none');
+                        $('#alert-tanggal_masuk').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.tanggal_kadaluarsa && error.responseJSON
                         .tanggal_kadaluarsa[0]) {
-                        $('#alert-tanggal_kadaluarsa').removeClass('d-none');
-                        $('#alert-tanggal_kadaluarsa').addClass('d-block');
-
+                        $('#alert-tanggal_kadaluarsa').removeClass('d-none').addClass('d-block');
                         $('#alert-tanggal_kadaluarsa').html(error.responseJSON.tanggal_kadaluarsa[0]);
                     } else {
-                        $('#alert-tanggal_kadaluarsa').removeClass('d-block');
-                        $('#alert-tanggal_kadaluarsa').addClass('d-none');
+                        $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
                     }
 
-                    if (error.responseJSON && error.responseJSON.barang_id && error.responseJSON
-                        .barang_id[0]) {
-                        $('#alert-barang_id').removeClass('d-none');
-                        $('#alert-barang_id').addClass('d-block');
-
-                        $('#alert-barang_id').html(error.responseJSON.barang_id[0]);
+                    if (error.responseJSON && error.responseJSON.order_id && error.responseJSON
+                        .order_id[0]) {
+                        $('#alert-order_id').removeClass('d-none').addClass('d-block');
+                        $('#alert-order_id').html(error.responseJSON.order_id[0]);
                     } else {
-                        $('#alert-barang_id').removeClass('d-block');
-                        $('#alert-barang_id').addClass('d-none');
+                        $('#alert-order_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jumlah_masuk && error.responseJSON
                         .jumlah_masuk[0]) {
-                        $('#alert-jumlah_masuk').removeClass('d-none');
-                        $('#alert-jumlah_masuk').addClass('d-block');
-
+                        $('#alert-jumlah_masuk').removeClass('d-none').addClass('d-block');
                         $('#alert-jumlah_masuk').html(error.responseJSON.jumlah_masuk[0]);
                     } else {
-                        $('#alert-jumlah_masuk').removeClass('d-block');
-                        $('#alert-jumlah_masuk').addClass('d-none');
+                        $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.supplier_id && error.responseJSON
                         .supplier_id[0]) {
-                        $('#alert-supplier_id').removeClass('d-none');
-                        $('#alert-supplier_id').addClass('d-block');
-
+                        $('#alert-supplier_id').removeClass('d-none').addClass('d-block');
                         $('#alert-supplier_id').html(error.responseJSON.supplier_id[0]);
                     } else {
-                        $('#alert-supplier_id').removeClass('d-block');
-                        $('#alert-supplier_id').addClass('d-none');
+                        $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.lokasi && error.responseJSON
                         .lokasi[0]) {
-                        $('#alert-lokasi').removeClass('d-none');
-                        $('#alert-lokasi').addClass('d-block');
-
+                        $('#alert-lokasi').removeClass('d-none').addClass('d-block');
                         $('#alert-lokasi').html(error.responseJSON.lokasi[0]);
                     } else {
-                        $('#alert-lokasi').removeClass('d-block');
-                        $('#alert-lokasi').addClass('d-none');
+                        $('#alert-lokasi').removeClass('d-block').addClass('d-none');
                     }
                 }
             });
@@ -368,9 +364,11 @@
                                             <tr class="barang-row" id="index_${value.id}">
                                                 <td>${counter++}</td>   
                                                 <td>${value.kode_transaksi}</td>
+                                                <td>${value.order.kode_transaksi}</td>
+                                                <td>${value.lot}</td>
                                                 <td>${value.tanggal_masuk}</td>
                                                 <td>${value.tanggal_kadaluarsa}</td>
-                                                <td>${value.barang.nama_barang}</td>
+                                                <td>${value.order.barang.nama_barang}</td>
                                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.lokasi}</td>

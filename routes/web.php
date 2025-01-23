@@ -20,6 +20,7 @@ use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\LaporanStokOpnameController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
 use App\Http\Controllers\VerifikasiController;
@@ -88,6 +89,10 @@ Route::middleware('auth')->group(function () {
     
         Route::resource('/alat', AlatController::class);
     
+        Route::get('/order/get-autocomplete-data', [OrderController::class, 'getAutoCompleteData']);
+        Route::get('/order/get-data', [OrderController::class, 'getDataOrder']);
+        Route::resource('/order', OrderController::class);
+
         Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
         Route::resource('/barang-masuk', BarangMasukController::class);

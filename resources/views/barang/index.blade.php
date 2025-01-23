@@ -27,7 +27,6 @@
                                     <th>No</th>
                                     <th>Barcode</th>
                                     <th>Kode</th>
-                                    <th>Lot</th>
                                     <th>Nama</th>
                                     <th>Stok Minimum</th>
                                     <th colspan="2">Opsi</th>
@@ -76,7 +75,6 @@
                                 <td>${counter++}</td>
                                 <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";></td>
                                 <td>${value.kode_barang}</td>
-                                <td>${value.lot}</td>
                                 <td>${value.nama_barang}</td>
                                 <td>${value.stok_minimum}</td>
                                 <td style="padding: 8px 6px;">
@@ -191,7 +189,6 @@
                         let formData = new FormData();
                         formData.append('nama_barang', data[i].nama_barang);
                         formData.append('kode_barang', data[i].kode_barang);
-                        formData.append('lot', data[i].lot);
                         if (gambar) {
                             formData.append('gambar', gambar, data[i].kode_barang + '.png');
                         }
@@ -225,7 +222,6 @@
                                                     <td>${counter++}</td>
                                                     <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                                     <td>${value.kode_barang}</td>
-                                                    <td>${value.lot}</td>
                                                     <td>${value.nama_barang}</td>
                                                     <td>${value.stok_minimum}</td>
                                                     <td style="padding: 8px 6px;">
@@ -303,7 +299,6 @@
 
             let nama_barang = $('#nama_barang').val();
             let kode_barang = $('#kode_barang').val();
-            let lot = $('#lot').val();
             let gambar = null;
             let stok_minimum = $('#stok_minimum').val();
             let jenis_id = $('#jenis_id').val();
@@ -339,7 +334,6 @@
             let formData = new FormData();
             formData.append('nama_barang', nama_barang);
             formData.append('kode_barang', kode_barang);
-            formData.append('lot', lot);
             if (gambar) {
                 formData.append('gambar', gambar, kode_barang + '.png');
             }
@@ -380,7 +374,6 @@
                                         <td>${counter++}</td>
                                         <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                         <td>${value.kode_barang}</td>
-                                        <td>${value.lot}</td>
                                         <td>${value.nama_barang}</td>
                                         <td>${value.stok_minimum}</td>
                                         <td style="padding: 8px 6px;">
@@ -405,7 +398,6 @@
 
                             $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
                             $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
-                            $('#alert-lot').removeClass('d-block').addClass('d-none');
                             $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
                             $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
                             $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
@@ -434,14 +426,6 @@
                         $('#alert-kode_barang').html(error.responseJSON.kode_barang[0]);
                     } else {
                         $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
-                    }
-
-                    if (error.responseJSON && error.responseJSON.lot && error.responseJSON
-                        .lot[0]) {
-                        $('#alert-lot').removeClass('d-none').addClass('d-block');
-                        $('#alert-lot').html(error.responseJSON.lot[0]);
-                    } else {
-                        $('#alert-lot').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.stok_minimum && error.responseJSON
@@ -497,8 +481,7 @@
                     $('#detail_lot').val(response.data.lot);
                     $('#detail_jenis_id').val(response.data.jenis_id);
                     $('#detail_satuan_id').val(response.data.satuan_id);
-                    $('#detail_stok').val(response.data.stok !== null && response.data.stok !== '' ?
-                        response.data.stok : 'Stok Kosong');
+                    $('#detail_stok').val(response.data.stok !== null && response.data.stok !== '' ? response.data.stok : 'Stok Kosong');
                     $('#detail_stok_minimum').val(response.data.stok_minimum);
                     $('#detail_deskripsi').val(response.data.deskripsi);
                     $('#detail_gambar_preview').attr('src', '/storage/' + response.data.gambar);
@@ -522,7 +505,6 @@
                     $('#barang_id').val(response.data.id);
                     $('#edit_nama_barang').val(response.data.nama_barang);
                     $('#edit_kode_barang').val(response.data.kode_barang);
-                    $('#edit_lot').val(response.data.lot);
                     $('#edit_stok_minimum').val(response.data.stok_minimum);
                     $('#edit_jenis_id').val(response.data.jenis_id);
                     $('#edit_satuan_id').val(response.data.satuan_id);
@@ -540,7 +522,6 @@
             let barang_id = $('#barang_id').val();
             let nama_barang = $('#edit_nama_barang').val();
             let kode_barang = $('#edit_kode_barang').val();
-            let lot = $('#edit_lot').val();
             let gambar = null;
             let stok_minimum = $('#edit_stok_minimum').val();
             let deskripsi = $('#edit_deskripsi').val();
@@ -577,7 +558,6 @@
             let formData = new FormData();
             formData.append('nama_barang', nama_barang);
             formData.append('kode_barang', kode_barang);
-            formData.append('lot', lot);
             if (gambar) {
                 formData.append('gambar', gambar, kode_barang + '.png');
             }
@@ -628,7 +608,6 @@
 
                     $('#alert-edit_nama_barang').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_kode_barang').removeClass('d-block').addClass('d-none');
-                    $('#alert-edit_lot').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_stok_minimum').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_jenis_id').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_satuan_id').removeClass('d-block').addClass('d-none');
@@ -651,14 +630,6 @@
                         $('#alert-edit_kode_barang').html(error.responseJSON.kode_barang[0]);
                     } else {
                         $('#alert-edit_kode_barang').removeClass('d-block').addClass('d-none');
-                    }
-
-                    if (error.responseJSON && error.responseJSON.lot && error.responseJSON
-                        .lot[0]) {
-                        $('#alert-edit_lot').removeClass('d-none').addClass('d-block');
-                        $('#alert-edit_lot').html(error.responseJSON.lot[0]);
-                    } else {
-                        $('#alert-edit_lot').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.stok_minimum && error.responseJSON
@@ -743,7 +714,6 @@
                                             <td>${counter++}</td>
                                             <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                             <td>${value.kode_barang}</td>
-                                            <td>${value.lot}</td>
                                             <td>${value.nama_barang}</td>
                                             <td>${value.stok_minimum}</td>
                                             <td style="padding: 8px 6px;">

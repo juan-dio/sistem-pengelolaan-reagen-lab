@@ -143,6 +143,9 @@
                                     data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
                                 <ul class="dropdown-menu">
                                     <li>
+                                        <a class="nav-link {{ Request::is('order') ? 'active' : '' }}" href="/order"><i class="fa-solid fa-truck-fast"></i><span>Order</span></a>
+                                    </li>
+                                    <li>
                                         <a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a>
                                     </li>
                                     <li>

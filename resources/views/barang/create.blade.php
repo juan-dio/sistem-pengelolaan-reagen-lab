@@ -23,11 +23,6 @@
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kode_barang"></div>
                 </div>
                 <div class="form-group">
-                  <label>Lot</label>
-                  <input type="text" class="form-control" name="lot" id="lot">
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-lot"></div>
-                </div>
-                <div class="form-group">
                   <label>Jenis Barang</label>
                   <select class="form-control" name="jenis_id" id="jenis_id">
                     @foreach ($jenis_barangs as $jenis)
