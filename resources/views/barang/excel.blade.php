@@ -14,7 +14,7 @@
               <div class="form-group">
                 <label>
                   File Excel <br>
-                  Import file excel dengan kolom kode_barang, nama_barang, stok_minimum, deskripsi, jenis (dingin, kering), satuan (mL, pcs)
+                  Import file excel dengan kolom kode_barang, nama_barang, stok_minimum, test_group, deskripsi, jenis (dingin, kering), satuan (mL, pcs)
                 </label>
                 <label>
                   <a href="/storage/excel/template.xlsx">Download Template Excel</a>

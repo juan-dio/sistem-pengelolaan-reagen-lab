@@ -24,6 +24,7 @@
                   <input type="text" class="form-control" name="lot" id="lot">
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-lot"></div>
                 </div>
+              </div>
             </div>
 
             <div class="row">
@@ -47,13 +48,13 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Pilih Barang</label>
-                  <select class="js-example-basic-single" name="order_id" id="order_id" style="width: 100%">
-                    <option selected>Pilih Barang</option>
-                    @foreach ($orders as $order)
-                      <option value="{{ $order->id }}">{{ $order->barang->nama_barang }} {{ $order->kode_transaksi }}</option>
+                  <select class="js-example-basic-single" name="barang_id" id="barang_id" style="width: 100%">
+                    <option selected value="">Pilih Barang</option>
+                    @foreach ($barangs as $barang)
+                      <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                     @endforeach
                   </select>
-                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-order_id"></div>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-barang_id"></div>
                 </div>
               </div>
               <div class="col-md-6">

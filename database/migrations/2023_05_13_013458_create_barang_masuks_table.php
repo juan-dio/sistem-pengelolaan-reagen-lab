@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('barang_masuks', function (Blueprint $table) {
             $table->id();
             $table->string('kode_transaksi')->unique();
-            $table->string('lot')->unique();
+            $table->string('lot');
             $table->date('tanggal_masuk');
             $table->date('tanggal_kadaluarsa');
             $table->integer('jumlah_masuk');
             $table->integer('jumlah_stok');
             $table->string('lokasi');
             $table->boolean('approved')->default(false);
-            $table->foreignId('order_id')->constrained();
+            $table->foreignId('barang_id')->constrained();
             $table->foreignId('supplier_id')->constrained();
             $table->foreignId('user_id');
             $table->timestamps();

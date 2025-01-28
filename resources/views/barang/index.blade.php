@@ -28,6 +28,7 @@
                                     <th>Barcode</th>
                                     <th>Kode</th>
                                     <th>Nama</th>
+                                    <th>Test Group</th>
                                     <th>Stok Minimum</th>
                                     <th colspan="2">Opsi</th>
                                 </tr>
@@ -76,6 +77,7 @@
                                 <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";></td>
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
+                                <td>${value.test_group}</td>
                                 <td>${value.stok_minimum}</td>
                                 <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
@@ -193,6 +195,7 @@
                             formData.append('gambar', gambar, data[i].kode_barang + '.png');
                         }
                         formData.append('stok_minimum', data[i].stok_minimum);
+                        formData.append('test_group', data[i].test_group);
                         formData.append('jenis_id', data[i].jenis_id);
                         formData.append('satuan_id', data[i].satuan_id);
                         formData.append('deskripsi', data[i].deskripsi);
@@ -223,6 +226,7 @@
                                                     <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                                     <td>${value.kode_barang}</td>
                                                     <td>${value.nama_barang}</td>
+                                                    <td>${value.test_group}</td>
                                                     <td>${value.stok_minimum}</td>
                                                     <td style="padding: 8px 6px;">
                                                         <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
@@ -237,19 +241,19 @@
                                             $('#table_id').DataTable().row.add($(barang)).draw(false);
                                         });
 
-                                        $('#nama_barang').val('');
-                                        $('#kode_barang').val('');
-                                        $('#stok_minimum').val('');
-                                        $('#deskripsi').val('');
+                                        // $('#nama_barang').val('');
+                                        // $('#kode_barang').val('');
+                                        // $('#stok_minimum').val('');
+                                        // $('#deskripsi').val('');
 
-                                        $('#modal_tambah_barang').modal('hide');
+                                        // $('#modal_tambah_barang').modal('hide');
 
-                                        $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
-                                        $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
-                                        $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
-                                        $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
-                                        $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
-                                        $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
+                                        // $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
 
                                         let table = $('#table_id').DataTable();
                                         table.draw();
@@ -301,6 +305,7 @@
             let kode_barang = $('#kode_barang').val();
             let gambar = null;
             let stok_minimum = $('#stok_minimum').val();
+            let test_group = $('#test_group').val();
             let jenis_id = $('#jenis_id').val();
             let satuan_id = $('#satuan_id').val();
             let deskripsi = $('#deskripsi').val();
@@ -338,6 +343,7 @@
                 formData.append('gambar', gambar, kode_barang + '.png');
             }
             formData.append('stok_minimum', stok_minimum);
+            formData.append('test_group', test_group);
             formData.append('jenis_id', jenis_id);
             formData.append('satuan_id', satuan_id);
             formData.append('deskripsi', deskripsi);
@@ -375,6 +381,7 @@
                                         <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                         <td>${value.kode_barang}</td>
                                         <td>${value.nama_barang}</td>
+                                        <td>${value.test_group}</td>
                                         <td>${value.stok_minimum}</td>
                                         <td style="padding: 8px 6px;">
                                             <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
@@ -436,6 +443,14 @@
                         $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
                     }
 
+                    if (error.responseJSON && error.responseJSON.test_group && error.responseJSON
+                        .test_group[0]) {
+                        $('#alert-test_group').removeClass('d-none').addClass('d-block');
+                        $('#alert-test_group').html(error.responseJSON.test_group[0]);
+                    } else {
+                        $('#alert-test_group').removeClass('d-block').addClass('d-none');
+                    }
+
                     if (error.responseJSON && error.responseJSON.jenis_id && error.responseJSON
                         .jenis_id[0]) {
                         $('#alert-jenis_id').removeClass('d-none').addClass('d-block');
@@ -479,6 +494,7 @@
                     $('#detail_nama_barang').val(response.data.nama_barang);
                     $('#detail_kode_barang').val(response.data.kode_barang);
                     $('#detail_lot').val(response.data.lot);
+                    $('#detail_test_group').val(response.data.test_group);
                     $('#detail_jenis_id').val(response.data.jenis_id);
                     $('#detail_satuan_id').val(response.data.satuan_id);
                     $('#detail_stok').val(response.data.stok !== null && response.data.stok !== '' ? response.data.stok : 'Stok Kosong');
@@ -506,6 +522,7 @@
                     $('#edit_nama_barang').val(response.data.nama_barang);
                     $('#edit_kode_barang').val(response.data.kode_barang);
                     $('#edit_stok_minimum').val(response.data.stok_minimum);
+                    $('#edit_test_group').val(response.data.test_group);
                     $('#edit_jenis_id').val(response.data.jenis_id);
                     $('#edit_satuan_id').val(response.data.satuan_id);
                     $('#edit_deskripsi').val(response.data.deskripsi);
@@ -524,6 +541,7 @@
             let kode_barang = $('#edit_kode_barang').val();
             let gambar = null;
             let stok_minimum = $('#edit_stok_minimum').val();
+            let test_group = $('#edit_test_group').val();
             let deskripsi = $('#edit_deskripsi').val();
             let jenis_id = $('#edit_jenis_id').val();
             let satuan_id = $('#edit_satuan_id').val();
@@ -562,6 +580,7 @@
                 formData.append('gambar', gambar, kode_barang + '.png');
             }
             formData.append('stok_minimum', stok_minimum);
+            formData.append('test_group', test_group);
             formData.append('deskripsi', deskripsi);
             formData.append('jenis_id', jenis_id);
             formData.append('satuan_id', satuan_id);
@@ -600,15 +619,18 @@
                     // Memperbarui data pada kolom nama barang (indeks 3)
                     rowData.eq(3).text(response.data.nama_barang);
 
-                    // Memperbarui data pada kolom stok (indeks 4)
-                    let stok = response.data.stok != null ? response.data.stok : "Stok Kosong";
-                    rowData.eq(4).text(stok);
+                    // Memperbarui data pada kolom test group (indeks 4)
+                    rowData.eq(4).text(response.data.test_group);
+
+                    // Memperbarui data pada kolom stok minimum (indeks 4)
+                    rowData.eq(5).text(response.data.stok_minimum);
 
                     $('#modal_edit_barang').modal('hide');
 
                     $('#alert-edit_nama_barang').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_kode_barang').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_stok_minimum').removeClass('d-block').addClass('d-none');
+                    $('#alert-edit-test_group').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_jenis_id').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_satuan_id').removeClass('d-block').addClass('d-none');
                     $('#alert-edit_deskripsi').removeClass('d-block').addClass('d-none');
@@ -638,6 +660,14 @@
                         $('#alert-edit_stok_minimum').html(error.responseJSON.stok_minimum[0]);
                     } else {
                         $('#alert-edit_stok_minimum').removeClass('d-block').addClass('d-none');
+                    }
+
+                    if (error.responseJSON && error.responseJSON.test_group && error.responseJSON
+                        .test_group[0]) {
+                        $('#alert-edit_test_group').removeClass('d-none').addClass('d-block');
+                        $('#alert-edit_test_group').html(error.responseJSON.test_group[0]);
+                    } else {
+                        $('#alert-edit_test_group').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jenis_id && error.responseJSON
@@ -715,6 +745,7 @@
                                             <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
                                             <td>${value.kode_barang}</td>
                                             <td>${value.nama_barang}</td>
+                                            <td>${value.test_group}</td>
                                             <td>${value.stok_minimum}</td>
                                             <td style="padding: 8px 6px;">
                                                 <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>

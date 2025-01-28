@@ -9,6 +9,7 @@ use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\BarangMasuk;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -261,71 +262,97 @@ class BarangKeluarController extends Controller
      */
     public function destroy(BarangKeluar $barangKeluar)
     {
-        DB::beginTransaction();
-
-        try {
-            $jumlahKeluar = $barangKeluar->jumlah_keluar;
-
-            // Cari batch barang_masuk yang terkait dengan barang_id
-            $barangMasuks = BarangMasuk::where('barang_id', $barangKeluar->barang_id)
-                ->orderBy('tanggal_kadaluarsa', 'asc')
-                ->get();
-
-            $jumlahRestore = $jumlahKeluar;
-
-            foreach ($barangMasuks as $batch) {
-                // Jika stok batch ini habis, tambahkan stok kembali
-                $stokSebelumnya = $batch->jumlah_stok;
-
-                if ($stokSebelumnya < $batch->jumlah_masuk) {
-                    $ruangKosong = $batch->jumlah_masuk - $stokSebelumnya;
-
-                    if ($ruangKosong >= $jumlahRestore) {
-                        $batch->jumlah_stok += $jumlahRestore;
-                        $batch->save();
-                        $jumlahRestore = 0;
-                        break;
-                    } else {
-                        $batch->jumlah_stok += $ruangKosong;
-                        $jumlahRestore -= $ruangKosong;
-                        $batch->save();
-                    }
-                }
-            }
-
-            // Jika stok batch belum mencukupi jumlah keluar
-            if ($jumlahRestore > 0) {
-                DB::rollBack();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Stok batch tidak cukup untuk mengembalikan transaksi ini!',
-                ], 422);
-            }
-
-            // Hapus data barang keluar
-            $barangKeluar->delete();
-
-            // Update stok total barang
-            $barang = Barang::find($barangKeluar->barang_id);
-            if ($barang) {
-                $barang->stok += $jumlahKeluar;
-                $barang->save();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil dihapus!',
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
+        if ($barangKeluar->approved) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 500);
+                'message' => 'Data barang keluar yang sudah disetujui tidak bisa dihapus!',
+            ]);
         }
+
+        $barangKeluar->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil dihapus!',
+        ]);
+
+        // if(!$barangKeluar->approved) {
+        //     $barangKeluar->delete();
+
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'Data berhasil dihapus!',
+        //     ]);
+        // }
+
+        // DB::beginTransaction();
+
+        // try {
+        //     $jumlahKeluar = $barangKeluar->jumlah_keluar;
+
+        //     $orders = Order::where('barang_id', $barangKeluar->barang_id)->get();
+
+        //     // Cari batch barang_masuk yang terkait dengan barang_id
+        //     $barangMasuks = BarangMasuk::whereIn('order_id', $orders->pluck('id'))
+        //         ->where('approved', 1)
+        //         ->orderBy('tanggal_kadaluarsa', 'asc')
+        //         ->get();
+
+        //     $jumlahRestore = $jumlahKeluar;
+
+        //     foreach ($barangMasuks as $batch) {
+        //         // Jika stok batch ini habis, tambahkan stok kembali
+        //         $stokSebelumnya = $batch->jumlah_stok;
+
+        //         if ($stokSebelumnya < $batch->jumlah_masuk) {
+        //             $ruangKosong = $batch->jumlah_masuk - $stokSebelumnya;
+
+        //             if ($ruangKosong >= $jumlahRestore) {
+        //                 $batch->jumlah_stok += $jumlahRestore;
+        //                 $batch->save();
+        //                 $jumlahRestore = 0;
+        //                 break;
+        //             } else {
+        //                 $batch->jumlah_stok += $ruangKosong;
+        //                 $jumlahRestore -= $ruangKosong;
+        //                 $batch->save();
+        //             }
+        //         }
+        //     }
+
+        //     // Jika stok batch belum mencukupi jumlah keluar
+        //     if ($jumlahRestore > 0) {
+        //         DB::rollBack();
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Stok batch tidak cukup untuk mengembalikan transaksi ini!',
+        //         ], 422);
+        //     }
+
+        //     // Hapus data barang keluar
+        //     $barangKeluar->delete();
+
+        //     // Update stok total barang
+        //     $barang = Barang::find($barangKeluar->barang_id);
+        //     if ($barang) {
+        //         $barang->stok += $jumlahKeluar;
+        //         $barang->save();
+        //     }
+
+        //     DB::commit();
+
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'Data berhasil dihapus!',
+        //     ]);
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+        //     ], 500);
+        // }
     }
 
 

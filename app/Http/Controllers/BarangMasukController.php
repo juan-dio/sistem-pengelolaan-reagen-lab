@@ -8,7 +8,6 @@ use App\Models\Supplier;
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +19,7 @@ class BarangMasukController extends Controller
     public function index()
     {
         return view('barang-masuk.index', [
-            'orders'       => Order::where('status', 'approved')->get(),
+            'barangs'      => Barang::all(),
             'barangsMasuk' => BarangMasuk::all(),
             'suppliers'    => Supplier::all()
         ]);
@@ -52,14 +51,14 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'kode_transaksi'    => 'required|unique',
+            'kode_transaksi'    => 'required|unique:barang_masuks,kode_transaksi',
             'lot'               => 'required',
             'tanggal_masuk'     => 'required|date',
             'tanggal_kadaluarsa'=> 'required|date',
             'jumlah_masuk'      => 'required',
             'jumlah_stok'       => 'required',
             'lokasi'            => 'required',
-            'order_id'         => 'required|exists:orders,id',
+            'barang_id'         => 'required|exists:barangs,id',
             'supplier_id'       => 'required|exists:suppliers,id'
         ],[
             'kode_transaksi.required'   => 'Form Kode Transaksi Wajib Di Isi !',
@@ -70,8 +69,8 @@ class BarangMasukController extends Controller
             'jumlah_masuk.required'     => 'Form Jumlah Stok Masuk Wajib Di Isi !',
             'jumlah_stok.required'      => 'Form Jumlah Stok Wajib Di Isi !',
             'lokasi.required'           => 'Form Lokasi Wajib Di Isi !',
-            'order_id.required'         => 'Pilih Barang !',
-            'order_id.exists'           => 'Pilih Barang !',
+            'barang_id.required'         => 'Pilih Barang !',
+            'barang_id.exists'           => 'Pilih Barang !',
             'supplier_id.required'      => 'Pilih Supplier !',
             'supplier_id.exists'        => 'Pilih Supplier !'
         ]);
@@ -89,7 +88,7 @@ class BarangMasukController extends Controller
             'jumlah_masuk'      => $request->jumlah_masuk,
             'jumlah_stok'       => $request->jumlah_stok,
             'lokasi'            => $request->lokasi,
-            'order_id'          => $request->order_id,
+            'barang_id'          => $request->barang_id,
             'supplier_id'       => $request->supplier_id,
             'user_id'           => auth()->user()->id
         ]); 
@@ -167,31 +166,54 @@ class BarangMasukController extends Controller
      */
     public function destroy(BarangMasuk $barangMasuk)
     {
-        // Periksa apakah stok dari batch ini sudah digunakan
-        $stokTersisa = $barangMasuk->jumlah_stok;
-
-        if ($stokTersisa < $barangMasuk->jumlah_masuk) {
+        if($barangMasuk->approved) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Barang Masuk tidak dapat dihapus karena sudah digunakan dalam transaksi.'
+                'message' => 'Data barang masuk yang sudah disetujui tidak bisa dihapus!'
             ], 400);
         }
 
-        // Lanjutkan penghapusan jika stok belum digunakan
-        $jumlahMasuk = $barangMasuk->jumlah_masuk;
         $barangMasuk->delete();
-
-        // Kurangi stok barang utama
-        $barang = Barang::where('id', $barangMasuk->barang_id)->first();
-        if ($barang) {
-            $barang->stok -= $jumlahMasuk;
-            $barang->save();
-        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Barang Berhasil Dihapus!'
+            'message' => 'Data berhasil dihapus!'
         ]);
+
+        // if(!$barangMasuk->approved) {
+        //     $barangMasuk->delete();
+
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Data berhasil dihapus!'
+        //     ]);
+        // }
+
+        // // Periksa apakah stok dari batch ini sudah digunakan
+        // $stokTersisa = $barangMasuk->jumlah_stok;
+
+        // if ($stokTersisa < $barangMasuk->jumlah_masuk) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Data Barang Masuk tidak dapat dihapus karena sudah digunakan dalam transaksi.'
+        //     ], 400);
+        // }
+
+        // // Lanjutkan penghapusan jika stok belum digunakan
+        // $jumlahMasuk = $barangMasuk->jumlah_masuk;
+        // $barangMasuk->delete();
+
+        // // Kurangi stok barang utama
+        // $barang = Barang::where('id', $barangMasuk->barang_id)->first();
+        // if ($barang) {
+        //     $barang->stok -= $jumlahMasuk;
+        //     $barang->save();
+        // }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Data Barang Berhasil Dihapus!'
+        // ]);
     }
 
 
@@ -201,7 +223,8 @@ class BarangMasukController extends Controller
      */
     public function getAutoCompleteData(Request $request)
     {
-        $barang = Barang::where('id', $request->barang_id)->first();;
+        $barang = Barang::where('id', $request->barang_id)->first();
+        
         if($barang){
             return response()->json([
                 'kode_barang'   => $barang->kode_barang,
@@ -209,6 +232,10 @@ class BarangMasukController extends Controller
                 'satuan'        => $barang->satuan->satuan,
             ]);
         }
+
+        return response()->json([
+            'message' => 'Data Tidak Ditemukan !'
+        ]);
     }
 
 }

@@ -67,7 +67,6 @@
                                     <th>Barang</th>
                                     <th>Stok Sistem</th>
                                     <th>Stok Aktual</th>
-                                    <th>Selisih</th>
                                     <th>Stok Akhir</th>
                                     <th>Keterangan</th>
                                     {{-- <th>Status</th> --}}
@@ -81,8 +80,7 @@
                                         <td>{{ $stok->barang->nama_barang }}</td>
                                         <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->stok_fisik }} {{ $stok->barang->satuan->satuan }}</td>
-                                        <td>{{ $stok->stok_sistem - $stok->stok_fisik }} {{ $stok->barang->satuan->satuan }}</td>
-                                        <td>{{ $stok->stok_sistem }} {{ $stok->barang->satuan->satuan }}</td>
+                                        <td>{{ $stok->stok_fisik }} {{ $stok->barang->satuan->satuan }}</td>
                                         <td>{{ $stok->keterangan }}</td>
                                         {{-- <td>{{ ($stok->adjusted) ? 'Adjusted' : 'Not yet adjusted' }}</td> --}}
                                         <td>{{ $stok->updated_at }}</td>

@@ -30,6 +30,11 @@
               </div>
 
               <div class="form-group">
+                <label>Test Group</label>
+                <input type="number" class="form-control" name="test_group" id="detail_test_group" disabled>
+              </div>
+
+              <div class="form-group">
                 <label>Jenis Barang</label>
                 <select class="form-control" name="jenis_id" id="detail_jenis_id" disabled>
                   @foreach ($jenis_barangs as $jenis)

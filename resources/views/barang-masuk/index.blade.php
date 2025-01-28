@@ -22,13 +22,11 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Kode Transaksi</th>
-                                    <th>Kode Order</th>
                                     <th>Lot</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Expired</th>
                                     <th>Nama Barang</th>
                                     <th>Jumlah Masuk</th>
-                                    <th>Stok</th>
                                     <th>Lokasi</th>
                                     <th>Supplier</th>
                                     <th>Status</th>
@@ -79,12 +77,17 @@
                             if (response && response.kode_barang) {
                                 let kodeTransaksi = generateKodeTransaksi(response.kode_barang);
                                 $('#kode_transaksi').val(kodeTransaksi);
+                            } else {
+                                $('#kode_transaksi').val('');
                             }
                             if (response && (response.stok || response.stok === 0) && response.satuan) {
                                 $('#stok').val(response.stok);
                                 $('#satuan_id').val(response.satuan);
                             } else if (response && response.stok === 0) {
                                 $('#stok').val(0);
+                                $('#satuan_id').val('');
+                            } else {
+                                $('#stok').val('');
                                 $('#satuan_id').val('');
                             }
                         },
@@ -121,13 +124,11 @@
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>   
                                 <td>${value.kode_transaksi}</td>
-                                <td>${value.order.kode_transaksi}</td>
                                 <td>${value.lot}</td>
                                 <td>${value.tanggal_masuk}</td>
                                 <td>${value.tanggal_kadaluarsa}</td>
-                                <td>${value.order.barang.nama_barang}</td>
+                                <td>${value.barang.nama_barang}</td>
                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
-                                <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                 <td>${value.lokasi}</td>
                                 <td>${value.supplier.supplier}</td>
                                 <td>
@@ -161,7 +162,7 @@
             let jumlah_masuk = $('#jumlah_masuk').val();
             let jumlah_stok = jumlah_masuk;
             let lokasi = $('#lokasi').val();
-            let order_id = $('#order_id').val();
+            let barang_id = $('#barang_id').val();
             let supplier_id = $('#supplier_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
@@ -173,7 +174,7 @@
             formData.append('jumlah_masuk', jumlah_masuk);
             formData.append('jumlah_stok', jumlah_stok);
             formData.append('lokasi', lokasi);
-            formData.append('order_id', order_id);
+            formData.append('barang_id', barang_id);
             formData.append('supplier_id', supplier_id);
             formData.append('_token', token);
 
@@ -205,13 +206,11 @@
                                     <tr class="barang-row" id="index_${value.id}">
                                         <td>${counter++}</td>   
                                         <td>${value.kode_transaksi}</td>
-                                        <td>${value.order.kode_transaksi}</td>
                                         <td>${value.lot}</td>
                                         <td>${value.tanggal_masuk}</td>
                                         <td>${value.tanggal_kadaluarsa}</td>
-                                        <td>${value.order.barang.nama_barang}</td>
+                                        <td>${value.barang.nama_barang}</td>
                                         <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
-                                        <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                         <td>${value.lokasi}</td>
                                         <td>${value.supplier.supplier}</td>
                                         <td>
@@ -227,7 +226,7 @@
 
                             $('#kode_transaksi').val('');
                             $('#lot').val('');
-                            $('#order_id').val('').prop('selectedIndex', 0).trigger('change');
+                            $('#barang_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#supplier_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#jumlah_masuk').val('');
                             $('#stok').val('');
@@ -238,7 +237,7 @@
                             $('#alert-lot').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
-                            $('#alert-order_id').removeClass('d-block').addClass('d-none');
+                            $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                             $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
                             $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
@@ -284,12 +283,12 @@
                         $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
                     }
 
-                    if (error.responseJSON && error.responseJSON.order_id && error.responseJSON
-                        .order_id[0]) {
-                        $('#alert-order_id').removeClass('d-none').addClass('d-block');
-                        $('#alert-order_id').html(error.responseJSON.order_id[0]);
+                    if (error.responseJSON && error.responseJSON.barang_id && error.responseJSON
+                        .barang_id[0]) {
+                        $('#alert-barang_id').removeClass('d-none').addClass('d-block');
+                        $('#alert-barang_id').html(error.responseJSON.barang_id[0]);
                     } else {
-                        $('#alert-order_id').removeClass('d-block').addClass('d-none');
+                        $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                     }
 
                     if (error.responseJSON && error.responseJSON.jumlah_masuk && error.responseJSON
@@ -364,13 +363,11 @@
                                             <tr class="barang-row" id="index_${value.id}">
                                                 <td>${counter++}</td>   
                                                 <td>${value.kode_transaksi}</td>
-                                                <td>${value.order.kode_transaksi}</td>
                                                 <td>${value.lot}</td>
                                                 <td>${value.tanggal_masuk}</td>
                                                 <td>${value.tanggal_kadaluarsa}</td>
-                                                <td>${value.order.barang.nama_barang}</td>
+                                                <td>${value.barang.nama_barang}</td>
                                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
-                                                <td>${value.jumlah_stok} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.lokasi}</td>
                                                 <td>${value.supplier.supplier}</td>
                                                 <td>

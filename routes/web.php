@@ -23,6 +23,7 @@ use App\Http\Controllers\LaporanStokOpnameController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
+use App\Http\Controllers\TransferItemController;
 use App\Http\Controllers\VerifikasiController;
 use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
@@ -89,9 +90,9 @@ Route::middleware('auth')->group(function () {
     
         Route::resource('/alat', AlatController::class);
     
-        Route::get('/order/get-autocomplete-data', [OrderController::class, 'getAutoCompleteData']);
-        Route::get('/order/get-data', [OrderController::class, 'getDataOrder']);
-        Route::resource('/order', OrderController::class);
+        // Route::get('/order/get-autocomplete-data', [OrderController::class, 'getAutoCompleteData']);
+        // Route::get('/order/get-data', [OrderController::class, 'getDataOrder']);
+        // Route::resource('/order', OrderController::class);
 
         Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
@@ -108,6 +109,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/stok-adjustment', [StokOpnameController::class, 'stokAdjustment']);
         Route::post('/stok-adjustment', [StokOpnameController::class, 'adjust']);
         Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStokOpname']);
+
+        Route::get('transfer-item', [TransferItemController::class, 'index']);
+        Route::post('transfer-item', [TransferItemController::class, 'store']);
+        Route::get('transfer-item/get-data', [TransferItemController::class, 'getDataLokasi']);
 
         Route::get('/verifikasi', [VerifikasiController::class, 'index']);
         Route::post('/verifikasi-barang-masuk', [BarangMasukController::class, 'approveAll']);

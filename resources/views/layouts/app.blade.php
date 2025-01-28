@@ -18,20 +18,24 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/components.css">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script> --}}
+    <script src="assets/modules/jquery-3.7.0.min.js"></script>
 
 
     <!-- Select2 -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+    <link href="assets/modules/select2/dist/css/select2.min.css" rel="stylesheet" />
 
     {{-- <!-- Javascript -->
     @vite('resources/js/app.js') --}}
 
 
     <!-- Datatable Jquery -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"> --}}
+    <link rel="stylesheet" href="assets/modules/datatables/jquery.dataTables.min.css">
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.4.1/css/dataTables.dateTime.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.4.1/css/dataTables.dateTime.min.css"> --}}
+    <link rel="stylesheet" href="assets/modules/datatables/dataTables.dateTime.min.css">
 
     <!-- Start GA -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
@@ -81,11 +85,11 @@
                                     confirmButtonColor: '#3085d6',
                                     cancelButtonColor: '#d33',
                                     confirmButtonText: 'Ya, Keluar!'
-                                  }).then((result) => {
+                                }).then((result) => {
                                     if (result.isConfirmed) {
-                                      document.getElementById('logout-form').submit();
+                                        document.getElementById('logout-form').submit();
                                     }
-                                  });">
+                                });">
                                 <i class="fas fa-sign-out-alt"></i> {{ __('Keluar') }}
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -142,9 +146,9 @@
                                     class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('stok-adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
                                     data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
                                 <ul class="dropdown-menu">
-                                    <li>
+                                    {{-- <li>
                                         <a class="nav-link {{ Request::is('order') ? 'active' : '' }}" href="/order"><i class="fa-solid fa-truck-fast"></i><span>Order</span></a>
-                                    </li>
+                                    </li> --}}
                                     <li>
                                         <a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a>
                                     </li>
@@ -158,7 +162,7 @@
                                         <a class="nav-link {{ Request::is('stok-adjustment') ? 'active' : '' }}" href="/stok-adjustment"><i class="fa-regular fa-pen-to-square"></i><span>Stok Adjustment</span></a>
                                     </li>
                                     <li>
-                                        <a class="nav-link {{ Request::is('transfer') ? 'active' : '' }}" href="/transfer"><i class="fa fa-solid fa-arrows-rotate"></i><span>Transfer</span></a>
+                                        <a class="nav-link {{ Request::is('transfer-item') ? 'active' : '' }}" href="/transfer-item"><i class="fa fa-solid fa-arrows-rotate"></i><span>Transfer Item</span></a>
                                     </li>
                                     <li>
                                         <a class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}" href="/verifikasi"><i class="fa-solid fa-clipboard-check"></i><span>Verifikasi</span></a>
@@ -344,10 +348,11 @@
     <!-- JS Libraies -->
 
     <!-- Select2 Jquery -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    {{-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+    <script type="text/javascript" src="assets/modules/select2/dist/js/select2.min.js"></script>
 
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
-        integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+    {{-- <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script> --}}
+    <script src="assets/modules/jquery-ui/jquery-ui.min.js"></script>
 
     <!-- Page Specific JS File -->
 
@@ -356,18 +361,20 @@
     <script src="assets/js/custom.js"></script>
 
     <!-- Datatables Jquery -->
-    <script type="text/javascript" src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    {{-- <script type="text/javascript" src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> --}}
+    <script type="text/javascript" src="assets/modules/datatables/jquery.dataTables.min.js"></script>
 
     <!-- Sweet Alert -->
     @include('sweetalert::alert')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> --}}
+    <script src="assets/modules/sweetalert/sweetalert-2.10.min.js"></script>
 
     <!-- Day Js Format -->
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script> --}}
+    <script src="assets/modules/dayjs.min.js"></script>
 
 
     @stack('scripts')
-
 
     <script>
         $(document).ready(function() {

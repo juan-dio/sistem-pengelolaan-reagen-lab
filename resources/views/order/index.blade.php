@@ -73,6 +73,8 @@
                             if (response && response.kode_barang) {
                                 let kodeTransaksi = generateKodeTransaksi(response.kode_barang);
                                 $('#kode_transaksi').val(kodeTransaksi);
+                            } else {
+                                $('#kode_transaksi').val('');
                             }
                         },
                     });
@@ -279,6 +281,8 @@
                         timer: 3000
                     });
 
+                    $('#modal_edit_order').modal('hide');
+
                     $.ajax({
                         url: "/order/get-data",
                         type: "GET",
@@ -340,7 +344,9 @@
                                 showConfirmButton: true,
                                 timer: 3000
                             });
-                            $(`#index_${order_id}`).remove();
+
+                            // Hapus data dari cache DataTables
+                            $('#table_id').DataTable().clear().draw();
 
                             $.ajax({
                                 url: "/order/get-data",

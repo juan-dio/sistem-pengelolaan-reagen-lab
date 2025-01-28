@@ -7,6 +7,7 @@ use App\Models\Barang;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\BarangMasuk;
 use App\Models\Satuan;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +25,14 @@ class BarangController extends Controller
         return view('barang.index', [
             'barangs'         => Barang::all(),
             'jenis_barangs'   => Jenis::all(),
-            'satuans'         => Satuan::all()
+            'satuans'         => Satuan::all(),
+            'test_group'      => [
+                'HM' => 'Hematology (HM)',
+                'IM' => 'Immunology (IM)',
+                'SR' => 'Serology (SR)',
+                'UR' => 'Urine (UR)',
+                'CH'   => 'Chemistry (CH)',
+            ]
         ]);
     }
 
@@ -57,6 +65,7 @@ class BarangController extends Controller
             'kode_barang'   => 'required|unique:barangs,kode_barang',
             'gambar'        => 'required|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
+            'test_group'    => 'required',
             'jenis_id'      => 'required',
             'satuan_id'     => 'required'
         ], [
@@ -66,6 +75,7 @@ class BarangController extends Controller
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
             'stok_minimum.numeric'  => 'Gunakan Angka Untuk Mengisi Form Ini !',
+            'test_group.required'   => 'Pilih Test Group !',
             'jenis_id.required'     => 'Pilih Jenis Barang !',
             'satuan_id.required'    => 'Pilih Jenis Barang !'
         ]);
@@ -86,6 +96,7 @@ class BarangController extends Controller
             'nama_barang' => $request->nama_barang,
             'kode_barang' => $request->kode_barang,
             'stok_minimum'=> $request->stok_minimum,
+            'test_group'  => $request->test_group,
             'deskripsi'   => $request->deskripsi,
             'gambar'      => $gambar,
             'user_id'     => auth()->user()->id,
@@ -134,6 +145,7 @@ class BarangController extends Controller
             'kode_barang'   => 'required|unique:barangs,kode_barang,'.$barang->id,
             'gambar'        => 'nullable|mimes:jpeg,png,jpg',
             'stok_minimum'  => 'required|numeric',
+            'test_group'    => 'required',
             'jenis_id'      => 'required',
             'satuan_id'     => 'required'
         ], [
@@ -143,6 +155,7 @@ class BarangController extends Controller
             'gambar.mimes'          => 'Gunakan Gambar Yang Memiliki Format jpeg, png, jpg !',
             'stok_minimum.required' => 'Form Stok Minimum Wajib Di Isi !',
             'stok_minimum.numeric'  => 'Gunakan Angka Untuk Mengisi Form Ini !',
+            'test_group.required'   => 'Pilih Test Group !',
             'jenis_id.required'     => 'Pilih Jenis Barang !',
             'satuan_id.required'    => 'Pilih Satuan Barang !'
         ]);
@@ -169,7 +182,8 @@ class BarangController extends Controller
         $barang->update([
             'nama_barang'   => $request->nama_barang,
             'kode_barang'   => $request->kode_barang,
-            'stok_minimum'  => $request->stok_minimum, 
+            'stok_minimum'  => $request->stok_minimum,
+            'test_group'    => $request->test_group, 
             'deskripsi'     => $request->deskripsi,
             'user_id'       => auth()->user()->id,
             'gambar'        => $gambar,
@@ -190,6 +204,15 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
+        $barangMasuks = BarangMasuk::where('barang_id', $barang->id)->get();
+
+        if($barangMasuks->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Barang Tidak Bisa Dihapus Karena Terkait Dengan Data Barang Masuk !'
+            ]);
+        }
+
         unlink('.'.Storage::url($barang->gambar));
     
         Barang::destroy($barang->id);
@@ -260,9 +283,10 @@ class BarangController extends Controller
             $rowData['kode_barang'] = $sheet->getCell('A' . $row->getRowIndex())->getValue();
             $rowData['nama_barang'] = $sheet->getCell('B' . $row->getRowIndex())->getValue();
             $rowData['stok_minimum'] = $sheet->getCell('C' . $row->getRowIndex())->getValue();
-            $rowData['deskripsi'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
-            $rowData['jenis_id'] = ($sheet->getCell('E' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
-            $rowData['satuan_id'] = (in_array($sheet->getCell('F' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
+            $rowData['test_group'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
+            $rowData['deskripsi'] = $sheet->getCell('E' . $row->getRowIndex())->getValue();
+            $rowData['jenis_id'] = ($sheet->getCell('F' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
+            $rowData['satuan_id'] = (in_array($sheet->getCell('G' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
 
             $data[] = $rowData;
         }

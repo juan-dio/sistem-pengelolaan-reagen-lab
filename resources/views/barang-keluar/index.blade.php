@@ -108,7 +108,7 @@
                 type: "GET",
                 dataType: 'JSON',
                 success: function(response) {
-                    console.log(response.data);
+                    // console.log(response.data);
                     let counter = 1;
                     $('#table_id').DataTable().clear();
                     $.each(response.data, function(key, value) {
@@ -312,7 +312,10 @@
                                 showConfirmButton: true,
                                 timer: 3000
                             });
-                            $(`#index_${barangKeluar_id}`).remove();
+                            // $(`#index_${barangKeluar_id}`).remove();
+
+                            // Hapus data dari cache DataTables
+                            $('#table_id').DataTable().clear().draw();
 
                             $.ajax({
                                 url: "/barang-keluar/get-data",
@@ -338,8 +341,7 @@
                                                 </td>
                                             </tr>
                                         `;
-                                        $('#table_id').DataTable().row.add(
-                                            $(barangKeluar)).draw(false);
+                                        $('#table_id').DataTable().row.add($(barangKeluar)).draw(false);
                                     });
                                 }
                             });
