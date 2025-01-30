@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    @if($barangMasuk->count() == 0 && $barangKeluar->count() == 0 && $stokOpname->count() == 0)
+    @if($barangMasuk->count() == 0 && $barangKeluar->count() == 0 && $stokOpname->count() == 0 && $transferItem->count() == 0)
         <div class="alert alert-info">
             Tidak ada data yang perlu diverifikasi
         </div>
@@ -182,6 +182,64 @@
                                             <td>{{ $value->stok_sistem }} {{ $value->barang->satuan->satuan }}</td>
                                             <td>{{ $value->stok_fisik }} {{ $value->barang->satuan->satuan }}</td>
                                             <td>{{ $value->stok_sistem - $value->stok_fisik }} {{ $value->barang->satuan->satuan }}</td>
+                                            <td>{{ $value->created_at }}</td>
+                                            <td>
+                                                @if($value->approved == 0)
+                                                <span class="badge bg-warning text-white">pending</span>
+                                                @else
+                                                <span class="badge bg-success text-white">approved</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if ($transferItem->count() > 0)
+        <div class="accordion" id="accordionTransferItem">
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-header" id="headingTransferItem">
+                    <button class="btn btn-link btn-block text-left expand d-flex align-items-center" type="button" data-toggle="collapse" data-target="#collapseTransferItem" aria-expanded="true" aria-controls="collapseTransferItem" style="text-decoration: none">
+                        <h4 class="mr-2">Transfer Item ({{ $transferItem->count() }})</h4>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 18px"></i>
+                    </button>
+                    <form action="/verifikasi-transfer-item" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-lg btn-primary text-white" style="border-radius: .3rem; padding: .55rem 1.5rem;">
+                            Approve
+                        </button>
+                    </form>
+                </div>
+            
+                <div id="collapseTransferItem" class="collapse" aria-labelledby="headingTransferItem" data-parent="#accordionTransferItem">
+                    <div class="card-body">
+                        <div class="table table-responsive" style="overflow-x: auto;">
+                            <table id="table_id" class="display" style="width: 100%; font-size: 14px;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>Lokasi Sebelumnya</th>
+                                        <th>Lokasi Baru</th>
+                                        <th>Keterangan</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($transferItem as $key => $value)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $value->barang_masuk->barang->nama_barang }} {{ $value->barang_masuk->kode_transaksi }}</td>
+                                            <td>{{ $value->previous_location }}</td>
+                                            <td>{{ $value->new_location }}</td>
+                                            <td>{{ $value->keterangan }}</td>
                                             <td>{{ $value->created_at }}</td>
                                             <td>
                                                 @if($value->approved == 0)

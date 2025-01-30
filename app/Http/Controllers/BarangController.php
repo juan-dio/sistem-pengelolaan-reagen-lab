@@ -304,4 +304,12 @@ class BarangController extends Controller
             'message' => 'Data Berhasil Di Import !'
         ]);
     }
+
+    public function printBarcode($id) {
+        $barang = Barang::find($id);
+
+        return view('barang.print', [
+            'barang' => $barang
+        ]);
+    }
 }

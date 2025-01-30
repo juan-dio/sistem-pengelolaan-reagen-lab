@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="section-header">
-  <h1>Database Backup & Restore</h1>
+    <h1>Database Backup & Restore</h1>
 </div>
 
 @if (session('success'))

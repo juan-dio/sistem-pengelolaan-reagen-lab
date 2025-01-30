@@ -156,6 +156,9 @@
                                         <a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i><span>Barang Keluar</span></a>
                                     </li>
                                     <li>
+                                        <a class="nav-link {{ Request::is('print-barcode') ? 'active' : '' }}" href="/print-barcode"><i class="fa-regular fa-note-sticky"></i><span>Print Barcode</span></a>
+                                    </li>
+                                    <li>
                                         <a class="nav-link {{ Request::is('stok-opname') ? 'active' : '' }}" href="/stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
                                     </li>
                                     <li>

@@ -21,6 +21,7 @@ use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\LaporanStokOpnameController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PrintBarcodeController;
 use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
 use App\Http\Controllers\TransferItemController;
@@ -78,9 +79,9 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['middleware' => 'checkRole:superadmin,admin gudang'], function(){
         Route::resource('/barang', BarangController::class);
-
         Route::post('/barang/excel', [BarangController::class, 'readExcel']);
         Route::get('/barang/excel', [BarangController::class, 'downloadExcelTemplate']);
+        Route::get('/barang/{barang}/print', [BarangController::class, 'printBarcode']);
     
         Route::resource('/jenis-barang', JenisController::class);
     
@@ -89,10 +90,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('/supplier', SupplierController::class);
     
         Route::resource('/alat', AlatController::class);
-    
-        // Route::get('/order/get-autocomplete-data', [OrderController::class, 'getAutoCompleteData']);
-        // Route::get('/order/get-data', [OrderController::class, 'getDataOrder']);
-        // Route::resource('/order', OrderController::class);
 
         Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
@@ -100,6 +97,7 @@ Route::middleware('auth')->group(function () {
     
         Route::get('/barang-keluar/get-autocomplete-data', [BarangKeluarController::class, 'getAutoCompleteData']);
         Route::get('/barang-keluar/get-data', [BarangKeluarController::class, 'getDataBarangKeluar']);
+        Route::get('/barang-keluar/get-barang', [BarangKeluarController::class, 'getBarangByKodeBarang']);
         Route::resource('/barang-keluar', BarangKeluarController::class);
 
         Route::get('/stok-opname', [StokOpnameController::class, 'index']);
@@ -110,14 +108,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/stok-adjustment', [StokOpnameController::class, 'adjust']);
         Route::get('/stok-adjustment/get-data', [StokOpnameController::class, 'getDataStokOpname']);
 
-        Route::get('transfer-item', [TransferItemController::class, 'index']);
-        Route::post('transfer-item', [TransferItemController::class, 'store']);
-        Route::get('transfer-item/get-data', [TransferItemController::class, 'getDataLokasi']);
+        Route::get('/transfer-item', [TransferItemController::class, 'index']);
+        Route::post('/transfer-item', [TransferItemController::class, 'store']);
+        Route::get('/transfer-item/get-data', [TransferItemController::class, 'getDataLokasi']);
+
+        Route::get('/print-barcode', [PrintBarcodeController::class, 'index']);
+        Route::post('/print-barcode/print-one', [PrintBarcodeController::class, 'printOne']);
 
         Route::get('/verifikasi', [VerifikasiController::class, 'index']);
         Route::post('/verifikasi-barang-masuk', [BarangMasukController::class, 'approveAll']);
         Route::post('/verifikasi-barang-keluar', [BarangKeluarController::class, 'approveAll']);
         Route::post('/verifikasi-stok-opname', [StokOpnameController::class, 'approveAll']);
+        Route::post('/verifikasi-transfer-item', [TransferItemController::class, 'approveAll']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){

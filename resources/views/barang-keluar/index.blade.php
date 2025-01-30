@@ -59,40 +59,81 @@
             setTimeout(function() {
                 $('.js-example-basic-single').select2();
 
-                $('#barang_id').on('change', function() {
-                    var selectedOption = $(this).find('option:selected');
-                    var barang_id = selectedOption.val();
+                // $('#barang_id').on('change', function() {
+                //     // let selectedOption = $(this).find('option:selected');
+                //     // let barang_id = selectedOption.val();
+                //     let barang_id = $(this).val();
 
-                    $.ajax({
-                        url: '/barang-keluar/get-autocomplete-data',
-                        type: 'GET',
-                        data: {
-                            barang_id: barang_id,
-                        },
-                        success: function(response) {
-                            if (response && response.kode_barang) {
-                                let kodeTransaksi = generateKodeTransaksi(response.kode_barang);
-                                $('#kode_transaksi').val(kodeTransaksi);
-                            }
-                            if (response && (response.stok || response.stok === 0) && response.satuan) {
-                                $('#stok').val(response.stok);
-                                $('#satuan_id').val(response.satuan);
-                            } else if (response && response.stok === 0) {
-                                $('#stok').val(0);
-                                $('#satuan_id').val('');
-                            }
-                        },
-                    });
+                //     $.ajax({
+                //         url: '/barang-keluar/get-autocomplete-data',
+                //         type: 'GET',
+                //         data: {
+                //             barang_id: barang_id,
+                //         },
+                //         success: function(response) {
+                //             if (response && response.kode_barang) {
+                //                 let kodeTransaksi = generateKodeTransaksi(response.kode_barang);
+                //                 $('#kode_transaksi').val(kodeTransaksi);
+                //             }
+                //             if (response && (response.stok || response.stok === 0) && response.satuan) {
+                //                 $('#stok').val(response.stok);
+                //                 $('#satuan_id').val(response.satuan);
+                //             } else if (response && response.stok === 0) {
+                //                 $('#stok').val(0);
+                //                 $('#satuan_id').val('');
+                //             }
+                //         },
+                //     });
 
-                    function generateKodeTransaksi(kodeBarang) {
-                        let tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
-                        let randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-                        let kodeTransaksi = kodeBarang + '-OUT-' + tanggal + '-' + randomNumber;
+                //     function generateKodeTransaksi(kodeBarang) {
+                //         let tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
+                //         let randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                //         let kodeTransaksi = kodeBarang + '-OUT-' + tanggal + '-' + randomNumber;
 
-                        return kodeTransaksi;
+                //         return kodeTransaksi;
+                //     }
+                // });
+            }, 500);
+
+            $('#kode_barang').on('change', function() {
+                // let kode_barang = $(this).val();
+                let selectedOption = $(this).find('option:selected');
+                let kode_barang = selectedOption.val();
+                
+                $.ajax({
+                    url: '/barang-keluar/get-barang',
+                    type: 'GET',
+                    data: {
+                        kode_barang: kode_barang,
+                    },
+                    success: function(response) {
+                        if (response.nama_barang && response.id) {
+                            $('#nama_barang').val(response.nama_barang);
+                            $('#barang_id').val(response.id);
+                            $('#kode_transaksi').val(generateKodeTransaksi(response.kode_barang));
+                            $('#stok').val(response.stok);
+                            $('#satuan_id').val(response.satuan.satuan);
+                        } else {
+                            $('#nama_barang').val('');
+                            $('#barang_id').val('');
+                            $('#kode_transaksi').val('');
+                            $('#stok').val('');
+                            $('#satuan_id').val('');
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
                     }
                 });
-            }, 500);
+
+                function generateKodeTransaksi(kodeBarang) {
+                    let tanggal = new Date().toLocaleDateString('id-ID').split('/').reverse().join('-');
+                    let randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                    let kodeTransaksi = kodeBarang + '-OUT-' + tanggal + '-' + randomNumber;
+
+                    return kodeTransaksi;
+                }
+            });
         });
     </script>
 
@@ -123,7 +164,7 @@
                                 <td>
                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                 <td>   
-                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                 </td>
                             </tr>
                         `;
@@ -138,6 +179,10 @@
     <script>
         $('body').on('click', '#button_tambah_barangKeluar', function() {
             $('#modal_tambah_barangKeluar').modal('show');
+            setTimeout(function() {
+                // $('#kode_barang').select2();
+                $('#kode_barang').select2('open');
+            }, 500);
         });
 
         $('#store').click(function(e) {
@@ -197,7 +242,7 @@
                                             ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                         </td>
                                         <td>
-                                            <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                            <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                         </td>
                                     </tr>
                                 `;
@@ -337,7 +382,7 @@
                                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                                 </td>
                                                 <td>       
-                                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i> </a>
+                                                    <a href="javascript:void(0)" id="button_hapus_barangKeluar" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                                 </td>
                                             </tr>
                                         `;
@@ -363,15 +408,15 @@
     <!-- Create Tanggal -->
     <script>
         // Mendapatkan tanggal hari ini
-        var today = new Date();
+        let today = new Date();
 
         // Mendapatkan nilai tahun, bulan, dan tanggal
-        var year = today.getFullYear();
-        var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Ditambahkan +1 karena indeks bulan dimulai dari 0
-        var day = today.getDate().toString().padStart(2, '0');
+        let year = today.getFullYear();
+        let month = (today.getMonth() + 1).toString().padStart(2, '0'); // Ditambahkan +1 karena indeks bulan dimulai dari 0
+        let day = today.getDate().toString().padStart(2, '0');
 
         // Menggabungkan nilai tahun, bulan, dan tanggal menjadi format "YYYY-MM-DD"
-        var formattedDate = year + '-' + month + '-' + day;
+        let formattedDate = year + '-' + month + '-' + day;
 
         // Mengisi nilai input field dengan tanggal hari ini
         document.getElementById('tanggal_keluar').value = formattedDate;

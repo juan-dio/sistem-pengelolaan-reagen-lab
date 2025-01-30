@@ -85,7 +85,7 @@
                                     <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fa fa-trash" style="padding: 0 1px;"></i> </a>
                                 </td>
                                 <td style="padding: 8px 6px;">        
-                                    <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
+                                    <a href="/barang/${value.id}/print" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
                                 </td>
                             </tr>
                         `;

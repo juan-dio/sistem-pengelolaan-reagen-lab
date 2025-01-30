@@ -389,11 +389,11 @@ class BarangKeluarController extends Controller
         return response()->json($response);
     }
 
-    public function getBarangs(Request $request)
+    public function getBarangByKodeBarang(Request $request)
     {
-        if ($request->has('q')) {
-            $barangs = Barang::where('nama_barang', 'like', '%' . $request->input('q') . '%')->get();
-            return response()->json($barangs);
+        if ($request->kode_barang) {
+            $barang = Barang::where('kode_barang', $request->kode_barang)->first();
+            return response()->json($barang);
         }
 
         return response()->json([]);

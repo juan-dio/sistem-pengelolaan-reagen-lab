@@ -102,7 +102,7 @@
                             table.row.add(row).draw(false); // Tambahkan data yang baru ke DataTable
                         });
                     } else {
-                        let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', '', ''];
+                        // let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', '', ''];
                         table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
                     }
                 },

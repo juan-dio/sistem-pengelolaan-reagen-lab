@@ -32,14 +32,14 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="previous_location">Lokasi Saat Ini</label>
-                                <input type="text" name="previous_location" id="previous_location" class="form-control" min="0" readonly>
+                                <input type="text" name="previous_location" id="previous_location" class="form-control" readonly>
                                 @error('previous_location')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="col-md-4">
                                 <label for="new_location">Transfer</label>
-                                <input type="number" name="new_location" id="new_location" class="form-control" min="0">
+                                <input type="text" name="new_location" id="new_location" class="form-control">
                                 @error('new_location')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -76,13 +76,14 @@
                                     <th>Keterangan</th>
                                     <th>Tanggal</th>
                                     <th>Status</th>
+                                    <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($transferItems as $transferItem)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $transferItem->barang_masuk->barang->nama_barang }} {{ $transferItem->barangMasuk->kode_transaksi }}</td>
+                                        <td>{{ $transferItem->barang_masuk->barang->nama_barang }} {{ $transferItem->barang_masuk->kode_transaksi }}</td>
                                         <td>{{ $transferItem->previous_location }}</td>
                                         <td>{{ $transferItem->new_location }}</td>
                                         <td>{{ $transferItem->keterangan }}</td>
@@ -93,6 +94,9 @@
                                             @else
                                                 <span class="badge badge-success">Approved</span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            <a href="" class="btn btn-icon btn-danger btn-lg" style="padding: 0.20rem 1.5rem"><i class="fas fa-trash"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

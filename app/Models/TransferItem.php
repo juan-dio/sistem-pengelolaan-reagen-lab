@@ -38,7 +38,7 @@ class TransferItem extends Model
     }
 
     // Satu Barang memiliki 1 jenis
-    public function barangMasuk()
+    public function barang_masuk()
     {
         return $this->belongsTo(BarangMasuk::class, 'barang_masuk_id');
     }
