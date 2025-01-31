@@ -102,6 +102,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/stok-opname', [StokOpnameController::class, 'index']);
         Route::post('/stok-opname', [StokOpnameController::class, 'store']);
+        Route::delete('/stok-opname/{stokOpname}', [StokOpnameController::class, 'destroy']);
         Route::get('/stok-opname/get-data', [StokOpnameController::class, 'getDataStok']);
 
         Route::get('/stok-adjustment', [StokOpnameController::class, 'stokAdjustment']);
@@ -110,6 +111,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/transfer-item', [TransferItemController::class, 'index']);
         Route::post('/transfer-item', [TransferItemController::class, 'store']);
+        Route::delete('/transfer-item/{transferItem}', [TransferItemController::class, 'destroy']);
         Route::get('/transfer-item/get-data', [TransferItemController::class, 'getDataLokasi']);
 
         Route::get('/print-barcode', [PrintBarcodeController::class, 'index']);

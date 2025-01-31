@@ -115,4 +115,14 @@ class StokOpnameController extends Controller
         return response()->json($stokOpname);
     }
 
+    public function destroy(StokOpname $stokOpname)
+    {
+        if ($stokOpname->approved == 1) {
+            return redirect()->back()->with('error', 'Stok opname yang sudah disetujui tidak dapat dihapus.');
+        }
+        $stokOpname->delete();
+
+        return redirect()->back()->with('success', 'Stok opname berhasil dihapus.');
+    }
+
 }

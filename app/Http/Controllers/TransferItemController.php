@@ -119,7 +119,13 @@ class TransferItemController extends Controller
      */
     public function destroy(TransferItem $transferItem)
     {
-        //
+        if($transferItem->approved == 1) {
+            return redirect()->back()->with('error', 'Transfer item yang sudah disetujui tidak dapat dihapus.');
+        }
+
+        $transferItem->delete();
+
+        return redirect()->back()->with('success', 'Transfer item berhasil dihapus.');
     }
 
     public function getDataLokasi(Request $request)

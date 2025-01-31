@@ -169,7 +169,7 @@ class BarangMasukController extends Controller
         if($barangMasuk->approved) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data barang masuk yang sudah disetujui tidak bisa dihapus!'
+                'message' => 'Data barang masuk yang sudah disetujui tidak dapat dihapus!'
             ], 400);
         }
 

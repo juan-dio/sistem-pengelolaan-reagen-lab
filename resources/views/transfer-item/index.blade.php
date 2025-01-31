@@ -15,6 +15,12 @@
                         </div>
                     @endif
 
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <form action="/transfer-item" method="POST">
                         @csrf
                         <div class="row mb-3">
@@ -96,7 +102,11 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="" class="btn btn-icon btn-danger btn-lg" style="padding: 0.20rem 1.5rem"><i class="fas fa-trash"></i></a>
+                                            <form action="/transfer-item/{{ $transferItem->id }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn-delete btn btn-icon btn-danger btn-lg" style="padding: 0.20rem 1.5rem"><i class="fas fa-trash"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -128,6 +138,23 @@
                     },
                     success: function(response) {
                         $('#previous_location').val(`${response.lokasi}`);
+                    }
+                });
+            });
+
+            $('.btn-delete').on('click', function(e) {
+                e.preventDefault();
+                let form = $(this).parent();
+                Swal.fire({
+                    title: 'Apakah Kamu Yakin?',
+                    text: "ingin menghapus data ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'TIDAK',
+                    confirmButtonText: 'YA, HAPUS!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
                     }
                 });
             });

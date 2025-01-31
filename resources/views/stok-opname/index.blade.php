@@ -15,6 +15,12 @@
                         </div>
                     @endif
 
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <form action="/stok-opname" method="POST">
                         @csrf
                         <div class="row mb-3">
@@ -70,13 +76,14 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Barang</th>
+                                    <th>Item</th>
                                     <th>Stok Sistem</th>
                                     <th>Stok Fisik</th>
                                     <th>Selisih</th>
                                     <th>Keterangan</th>
                                     <th>Tanggal</th>
                                     <th>Status</th>
+                                    <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,6 +102,13 @@
                                             @else
                                                 <span class="badge badge-success">Approved</span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            <form action="/stok-opname/{{ $stokOpname->id }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn-delete btn btn-icon btn-danger btn-lg" style="padding: 0.20rem 1.5rem"><i class="fa fa-trash" style="padding: 0 1px;"></i> </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -126,6 +140,23 @@
                     },
                     success: function(response) {
                         $('#stok_sistem').val(`${response.stok} ${response.satuan.satuan}`);
+                    }
+                });
+            });
+
+            $('.btn-delete').on('click', function(e) {
+                e.preventDefault();
+                let form = $(this).parent();
+                Swal.fire({
+                    title: 'Apakah Kamu Yakin?',
+                    text: "ingin menghapus data ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'TIDAK',
+                    confirmButtonText: 'YA, HAPUS!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
                     }
                 });
             });
