@@ -14,14 +14,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table_id" class="display">
+                    <table id="log_table" class="display">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>User</th>
-                                <th>Before</th>
-                                <th>After</th>
-                                <th>Description</th>
+                                {{-- <th>Event</th> --}}
+                                <th>Data</th>
+                                <th>Deskripsi</th>
                                 <th>Log At</th>
                             </tr>
                         </thead>
@@ -29,35 +29,18 @@
                             @foreach ($logs as $log)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $log->causer->name ?? 'System' }}</td>
+                                {{-- <td>{{ ucfirst($log->event) }}</td> --}}
                                 <td>
-                                    @if ($log->causer !== null)
-                                        {{ $log->causer->name }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if (isset($log->changes['old']))
-                                        @foreach ($log->changes['old'] as $key => $itemChange)
-                                            @if ($key == 'created_at' || $key == 'updated_at')
-                                                {{ $key }} : {{ \Carbon\Carbon::parse($itemChange)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s') }} <br>
-                                            @else
-                                                {{ $key }} : {{ $itemChange }} <br>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                </td>
-                                <td>
-                                    @if (isset($log->changes['attributes']))
-                                        @foreach ($log->changes['attributes'] as $key => $itemChange)
-                                        @if ($key == 'created_at' || $key == 'updated_at')
-                                            {{ $key }} : {{ \Carbon\Carbon::parse($itemChange)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s') }} <br>
-                                        @else
-                                            {{ $key }} : {{ $itemChange }} <br>
+                                    @foreach ($log->properties['attributes'] ?? [] as $key => $value)
+                                        @if (!in_array($key, ['created_at', 'updated_at']))  {{-- Filter agar tidak menampilkan created_at & updated_at --}}
+                                            <strong>{{ $key }}</strong>: {{ $value }} <br>
                                         @endif
-                                        @endforeach
-                                    @endif
+                                    @endforeach
                                 </td>
                                 <td>{{ $log->description }}</td>
-                                <td>{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
+                                {{-- <td>{{ $log->created_at->format('d-m-Y H:i:s') }}</td> --}}
+                                <td>{{ \Carbon\Carbon::parse($log->created_at)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s') }}</td>
                             </tr>
                             @endforeach                        
                         </tbody>
@@ -71,11 +54,12 @@
 <!-- Datatables Jquery -->
 <script>
     $(document).ready(function(){
-        $('#table_id').DataTable({
+        $('#log_table').DataTable({
             paging: true
         });
     })
 </script>
+
 
 
 @endsection

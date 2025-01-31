@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('deskripsi')->nullable();
             $table->string('gambar')->nullable();
             $table->integer('stok_minimum');
-            $table->integer('stok')->nullable()->default(0);
+            $table->integer('stok')->default(0);
             $table->string('control')->nullable();
             $table->string('test_group');
             $table->foreignId('user_id');

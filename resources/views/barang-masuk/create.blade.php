@@ -72,13 +72,13 @@
             </div>
 
             <div class="row">
-              <div class="col-md-6">
+              {{-- <div class="col-md-6">
                 <div class="form-group">
                   <label>Stok Saat Ini</label>
                   <input type="number" class="form-control" name="stok" id="stok" disabled>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-stok"></div>
                 </div>
-              </div>
+              </div> --}}
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Jumlah Masuk</label>
@@ -89,6 +89,28 @@
                     </div>
                     <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_masuk" style="width: 100%;"></div>
                   </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Outstanding</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control" name="outstanding" id="outstanding" min="0" style="width: 75%;">
+                    <div class="input-group-append" style="width: 25%;">
+                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                    </div>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-outstanding" style="width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Harga</label>
+                  <input type="harga" class="form-control" name="harga" id="harga" min="0" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="Rp0,00">
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-harga"></div>
                 </div>
               </div>
             </div>

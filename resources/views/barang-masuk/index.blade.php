@@ -26,6 +26,8 @@
                                     <th>Expired</th>
                                     <th>Nama Barang</th>
                                     <th>Jumlah Masuk</th>
+                                    <th>Outstanding</th>
+                                    <th>Harga</th>
                                     <th>Lokasi</th>
                                     <th>Supplier</th>
                                     <th>Status</th>
@@ -55,6 +57,91 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            // Format mata uang.
+            $("input[data-type='currency']").on({
+                keyup: function() {
+                    formatCurrency($(this));
+                },
+                blur: function() { 
+                    formatCurrency($(this), "blur");
+                }
+            });
+        });
+
+        function formatNumber(n) {
+            // format number 1000000 to 1.234.567
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
+
+        function formatCurrency(input, blur) {
+            // appends $ to value, validates decimal side
+            // and puts cursor back in right position.
+            
+            // get input value
+            var input_val = input.val();
+            
+            // don't validate empty input
+            if (input_val === "") { return; }
+            
+            // original length
+            var original_len = input_val.length;
+
+            // initial caret position 
+            var caret_pos = input.prop("selectionStart");
+                
+            // check for decimal
+            if (input_val.indexOf(",") >= 0) {
+
+                // get position of first decimal
+                // this prevents multiple decimals from
+                // being entered
+                var decimal_pos = input_val.indexOf(",");
+
+                // split number by decimal point
+                var left_side = input_val.substring(0, decimal_pos);
+                var right_side = input_val.substring(decimal_pos);
+
+                // add commas to left side of number
+                left_side = formatNumber(left_side);
+
+                // validate right side
+                right_side = formatNumber(right_side);
+                
+                // On blur make sure 2 numbers after decimal
+                if (blur === "blur") {
+                right_side += "00";
+                }
+                
+                // Limit decimal to only 2 digits
+                right_side = right_side.substring(0, 2);
+
+                // join number by ,
+                input_val = "Rp" + left_side + "," + right_side;
+
+            } else {
+                // no decimal entered
+                // add commas to number
+                // remove all non-digits
+                input_val = formatNumber(input_val);
+                input_val = "Rp" + input_val;
+                
+                // final formatting
+                if (blur === "blur") {
+                input_val += ",00";
+                }
+            }
+            
+            // send updated string to input
+            input.val(input_val);
+
+            // put caret back in the right position
+            var updated_len = input_val.length;
+            caret_pos = updated_len - original_len + caret_pos;
+            input[0].setSelectionRange(caret_pos, caret_pos);
+        }
+    </script>
 
     <!-- Select2 Autocomplete -->
     <script>
@@ -128,6 +215,8 @@
                                 <td>${value.tanggal_kadaluarsa}</td>
                                 <td>${value.barang.nama_barang}</td>
                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
+                                <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
+                                <td>Rp${formatNumber(value.harga.toString())},00</td>
                                 <td>${value.lokasi}</td>
                                 <td>${value.supplier.supplier}</td>
                                 <td>
@@ -159,7 +248,9 @@
             let tanggal_masuk = $('#tanggal_masuk').val();
             let tanggal_kadaluarsa = $('#tanggal_kadaluarsa').val();
             let jumlah_masuk = $('#jumlah_masuk').val();
+            let outstanding = $('#outstanding').val();
             let jumlah_stok = jumlah_masuk;
+            let harga = $('#harga').val().split(',')[0].replace('Rp', '').replace('.', '');
             let lokasi = $('#lokasi').val();
             let barang_id = $('#barang_id').val();
             let supplier_id = $('#supplier_id').val();
@@ -171,7 +262,9 @@
             formData.append('tanggal_masuk', tanggal_masuk);
             formData.append('tanggal_kadaluarsa', tanggal_kadaluarsa);
             formData.append('jumlah_masuk', jumlah_masuk);
+            formData.append('outstanding', outstanding);
             formData.append('jumlah_stok', jumlah_stok);
+            formData.append('harga', harga);
             formData.append('lokasi', lokasi);
             formData.append('barang_id', barang_id);
             formData.append('supplier_id', supplier_id);
@@ -210,6 +303,8 @@
                                         <td>${value.tanggal_kadaluarsa}</td>
                                         <td>${value.barang.nama_barang}</td>
                                         <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
+                                        <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
+                                        <td>${value.harga}</td>
                                         <td>${value.lokasi}</td>
                                         <td>${value.supplier.supplier}</td>
                                         <td>
@@ -228,6 +323,9 @@
                             $('#barang_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#supplier_id').val('').prop('selectedIndex', 0).trigger('change');
                             $('#jumlah_masuk').val('');
+                            $('#outstanding').val('');
+                            $('#harga').val('');
+                            $('#lokasi').val('');
                             $('#stok').val('');
 
                             $('#modal_tambah_barangMasuk').modal('hide');
@@ -238,6 +336,9 @@
                             $('#alert-tanggal_kadaluarsa').removeClass('d-block').addClass('d-none');
                             $('#alert-barang_id').removeClass('d-block').addClass('d-none');
                             $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
+                            $('#alert-outstanding').removeClass('d-block').addClass('d-none');
+                            $('#alert-harga').removeClass('d-block').addClass('d-none');
+                            $('#alert-lokasi').removeClass('d-block').addClass('d-none');
                             $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
 
@@ -298,6 +399,21 @@
                         $('#alert-jumlah_masuk').removeClass('d-block').addClass('d-none');
                     }
 
+                    if (error.responseJSON && error.responseJSON.outstanding && error.responseJSON
+                        .outstanding[0]) {
+                        $('#alert-outstanding').removeClass('d-none').addClass('d-block');
+                        $('#alert-outstanding').html(error.responseJSON.outstanding[0]);
+                    } else {
+                        $('#alert-outstanding').removeClass('d-block').addClass('d-none');
+                    }
+
+                    if (error.responseJSON && error.responseJSON.harga && error.responseJSON.harga[0]) {
+                        $('#alert-harga').removeClass('d-none').addClass('d-block');
+                        $('#alert-harga').html(error.responseJSON.harga[0]);
+                    } else {
+                        $('#alert-harga').removeClass('d-block').addClass('d-none');
+                    }
+
                     if (error.responseJSON && error.responseJSON.supplier_id && error.responseJSON
                         .supplier_id[0]) {
                         $('#alert-supplier_id').removeClass('d-none').addClass('d-block');
@@ -317,7 +433,6 @@
             });
         });
     </script>
-
 
     <!-- Hapus Data Barang -->
     <script>
@@ -367,6 +482,8 @@
                                                 <td>${value.tanggal_kadaluarsa}</td>
                                                 <td>${value.barang.nama_barang}</td>
                                                 <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
+                                                <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
+                                                <td>${value.harga}</td>
                                                 <td>${value.lokasi}</td>
                                                 <td>${value.supplier.supplier}</td>
                                                 <td>

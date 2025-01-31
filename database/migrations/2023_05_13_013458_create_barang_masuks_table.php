@@ -18,7 +18,9 @@ return new class extends Migration
             $table->date('tanggal_masuk');
             $table->date('tanggal_kadaluarsa');
             $table->integer('jumlah_masuk');
+            $table->integer('outstanding')->default(0);
             $table->integer('jumlah_stok');
+            $table->integer('harga');
             $table->string('lokasi');
             $table->boolean('approved')->default(false);
             $table->foreignId('barang_id')->constrained();
