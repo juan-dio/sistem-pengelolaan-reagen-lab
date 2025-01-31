@@ -94,26 +94,26 @@
         $('#add-item').click(function(e) {
             e.preventDefault();
 
-            let some_barang_id = $('#some-barang_id').val();
-            let some_jumlah = $('#some-jumlah').val();
+            let some_barang_id = $('#some_barang_id').val();
+            let some_jumlah = $('#some_jumlah').val();
 
             let error = [];
 
             if (barang_id == 'Pilih Item') {
-                $('#alert-some-barang_id').removeClass('d-none');
-                $('#alert-some-barang_id').text('Pilih Item terlebih dahulu');
+                $('#alert-some_barang_id').removeClass('d-none');
+                $('#alert-some_barang_id').text('Pilih Item terlebih dahulu');
                 error.push('barang_id');
             } else {
-                $('#alert-some-barang_id').addClass('d-none');
+                $('#alert-some_barang_id').addClass('d-none');
                 error = error.filter(item => item !== 'barang_id');
             }
 
             if (jumlah < 1) {
-                $('#alert-some-jumlah').removeClass('d-none');
-                $('#alert-some-jumlah').text('Jumlah tidak boleh kurang dari 1');
+                $('#alert-some_jumlah').removeClass('d-none');
+                $('#alert-some_jumlah').text('Jumlah tidak boleh kurang dari 1');
                 error.push('jumlah');
             } else {
-                $('#alert-some-jumlah').addClass('d-none');
+                $('#alert-some_jumlah').addClass('d-none');
                 error = error.filter(item => item !== 'jumlah');
             }
 
@@ -196,14 +196,19 @@
                 form.appendChild(csrf);
 
                 print_barangs.forEach((item, index) => {
+                    // if (item.barang_id == 'Pilih Item') {
+                    //     $('#alert-some_barang_id').removeClass('d-none');
+                    //     $('#alert-some_barang_id').text('Pilih Item terlebih dahulu');
+                    //     return;
+                    // }
                     let barang_id = document.createElement('input');
                     barang_id.type = 'hidden';
-                    barang_id.name = `some-barang_id[${index}]`;
+                    barang_id.name = `some_barang_id[${index}]`;
                     barang_id.value = item.barang_id;
 
                     let jumlah = document.createElement('input');
                     jumlah.type = 'hidden';
-                    jumlah.name = `some-jumlah[${index}]`;
+                    jumlah.name = `some_jumlah[${index}]`;
                     jumlah.value = item.jumlah;
 
                     form.appendChild(barang_id);
@@ -212,6 +217,7 @@
 
                 document.body.appendChild(form);
                 form.submit();
+
                 $('#modal_print_some').modal('hide');
             }
         });

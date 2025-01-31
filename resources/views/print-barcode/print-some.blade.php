@@ -15,20 +15,20 @@
             <div class="col-md-5">
               <div class="form-group">
                 <label>Pilih Item</label>
-                <select class="js-example-basic-single" name="some-barang_id" id="some-barang_id" style="width: 100%">
+                <select class="js-example-basic-single" name="some_barang_id" id="some_barang_id" style="width: 100%">
                   <option selected>Pilih Item</option>
                   @foreach ($barangs as $barang)
                     <option value="{{ $barang->id }}">{{ $barang->nama_barang}}</option>
                   @endforeach
                 </select>
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-some-barang_id"></div>
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-some_barang_id"></div>
               </div>
             </div>
             <div class="col-md-5">
               <div class="form-group">
                 <label>Jumlah</label>
-                <input type="number" class="form-control" name="some-jumlah" id="some-jumlah" placeholder="Jumlah" value="1" min="1">
-                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-some-jumlah"></div>
+                <input type="number" class="form-control" name="some_jumlah" id="some_jumlah" placeholder="Jumlah" value="1" min="1">
+                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-some_jumlah"></div>
               </div>
             </div>
             <div class="col-md-2 mt-4">

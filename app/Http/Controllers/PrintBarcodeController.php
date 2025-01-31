@@ -35,7 +35,19 @@ class PrintBarcodeController extends Controller
 	}
 
 	public function printSome(Request $request) {
-		
+		$print_barangs = [];
+        foreach ($request->some_barang_id as $key => $barang_id) {
+            $barang = Barang::find($barang_id);
+            $jumlah = $request->some_jumlah[$key];
+            $print_barangs[] = [
+                'barang' => $barang,
+                'jumlah' => $jumlah,
+            ];
+        }
+        
+        return view('print-barcode.print-out-some', [
+            'print_barangs' => $print_barangs,
+        ]);
 	}
 
     /**

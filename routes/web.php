@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/print-barcode', [PrintBarcodeController::class, 'index']);
         Route::post('/print-barcode/print-one', [PrintBarcodeController::class, 'printOne']);
+        Route::post('/print-barcode/print-some', [PrintBarcodeController::class, 'printSome']);
 
         Route::get('/verifikasi', [VerifikasiController::class, 'index']);
         Route::post('/verifikasi-barang-masuk', [BarangMasukController::class, 'approveAll']);

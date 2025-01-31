@@ -43,7 +43,7 @@
                                 <th>Kode Transaksi</th>
                                 <th>Tanggal Keluar</th>
                                 <th>Nama Barang</th>
-                                <th>Jumlah Masuk</th>
+                                <th>Jumlah Keluar</th>
                                 <th>Alat</th>
                             </tr>
                         </thead>
@@ -101,7 +101,7 @@
                             table.row.add(row).draw(false);
                         });
                     } else {
-                        let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', ''];
+                        // let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', ''];
                         table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
                     }
                 },
