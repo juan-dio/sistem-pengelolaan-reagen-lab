@@ -5,6 +5,7 @@
 <div class="section-header">
     <h1>Laporan Stok Opname</h1>
     <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-stok-opname"><i class="fa fa-table"></i> Export Excel</a>
         <a href="javascript:void(0)" class="btn btn-danger" id="print-stok-opname"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
     </div>
 </div>
@@ -42,7 +43,7 @@
                                 <th>No</th>
                                 <th>Barang</th>
                                 <th>Stok Sistem</th>
-                                <th>Stok Aktual</th>
+                                <th>Stok Fisik</th>
                                 <th>Selisih</th>
                                 <th>Keterangan</th>
                                 <th>Tanggal</th>
@@ -94,8 +95,8 @@
                                 (index + 1),
                                 item.barang.nama_barang,
                                 `${item.barang.stok} ${item.barang.satuan.satuan}`,
-                                `${item.stok_aktual} ${item.barang.satuan.satuan}`,
-                                `${item.barang.stok - item.stok_aktual} ${item.barang.satuan.satuan}`,
+                                `${item.stok_fisik} ${item.barang.satuan.satuan}`,
+                                `${item.stok_sistem - item.stok_fisik} ${item.barang.satuan.satuan}`,
                                 item.keterangan,
                                 item.created_at.split('T')[0]
                             ];
@@ -126,6 +127,19 @@
             let url = '/laporan-stok-opname/print-stok-opname';
 
             if (tanggalMulai && tanggalSelesai) {
+                url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
+            }
+
+            window.location.href = url;
+        });
+
+        $('#excel-stok-opname').on('click', function(){
+            let tanggalMulai    = $('#tanggal_mulai').val();
+            let tanggalSelesai  = $('#tanggal_selesai').val();
+            
+            let url = '/laporan-stok-opname/excel';
+
+            if(tanggalMulai && tanggalSelesai){
                 url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
             }
 

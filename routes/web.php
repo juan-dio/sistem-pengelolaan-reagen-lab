@@ -58,22 +58,31 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/laporan-stok/get-data', [LaporanStokController::class, 'getData']);
         Route::get('/laporan-stok/print-stok', [LaporanStokController::class, 'printStok']);
+        Route::get('/laporan-stok/excel', [LaporanStokController::class, 'exportExcel']);
         Route::resource('/laporan-stok', LaporanStokController::class);
         
         Route::get('/laporan-barang-masuk/get-data', [LaporanBarangMasukController::class, 'getData']);
         Route::get('/laporan-barang-masuk/print-barang-masuk', [LaporanBarangMasukController::class, 'printBarangMasuk']);
+        Route::get('/laporan-barang-masuk/excel', [LaporanBarangMasukController::class, 'exportExcel']);
         Route::resource('/laporan-barang-masuk', LaporanBarangMasukController::class);
     
         Route::get('/laporan-barang-keluar/get-data', [LaporanBarangKeluarController::class, 'getData']);
         Route::get('/laporan-barang-keluar/print-barang-keluar', [LaporanBarangKeluarController::class, 'printBarangKeluar']);
+        Route::get('/laporan-barang-keluar/excel', [LaporanBarangKeluarController::class, 'exportExcel']);
         Route::resource('/laporan-barang-keluar', LaporanBarangKeluarController::class);
 
         Route::get('/laporan-stok-opname', [LaporanStokOpnameController::class, 'index']);
         Route::get('/laporan-stok-opname/get-data', [LaporanStokOpnameController::class, 'getData']);
         Route::get('/laporan-stok-opname/print-stok-opname', [LaporanStokOpnameController::class, 'printStokOpname']);
+        Route::get('/laporan-stok-opname/excel', [LaporanStokOpnameController::class, 'exportExcel']);
 
         Route::get('/forecast', [ForecastController::class, 'index']);
+        Route::get('/forecast/print-forecast', [ForecastController::class, 'printForecast']);
+        Route::get('/forecast/excel', [ForecastController::class, 'exportExcel']);
+
         Route::get('/rekapitulasi', [RekapitulasiController::class, 'index']);
+        Route::get('/rekapitulasi/print-rekapitulasi', [RekapitulasiController::class, 'printRekapitulasi']);
+        Route::get('/rekapitulasi/excel', [RekapitulasiController::class, 'exportExcel']);
 
         Route::get('/ubah-password', [UbahPasswordController::class,'index']);
         Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
@@ -133,6 +142,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/saldo-awal-item', [SaldoAwalItemController::class, 'index']);
         Route::get('/saldo-awal-item/get-data', [SaldoAwalItemController::class, 'getData']);
+        Route::get('/saldo-awal-item/print-saldo-awal-item', [SaldoAwalItemController::class, 'printSaldoAwalItem']);
+        Route::get('/saldo-awal-item/excel', [SaldoAwalItemController::class, 'exportExcel']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){

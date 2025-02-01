@@ -5,6 +5,7 @@
 <div class="section-header">
     <h1>Laporan Barang Masuk</h1>
     <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-barang-masuk"><i class="fa fa-table"></i> Export Excel</a>
         <a href="javascript:void(0)" class="btn btn-danger" id="print-barang-masuk"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
     </div>
 </div>
@@ -41,10 +42,17 @@
                             <tr>
                                 <th>No</th>
                                 <th>Kode Transaksi</th>
-                                <th>Tanggal Masuk</th>
-                                <th>Nama Barang</th>
-                                <th>Jumlah Masuk</th>
                                 <th>Supplier</th>
+                                <th>Kode Barang</th>
+                                <th>Lot</th>
+                                <th>Nama Barang</th>
+                                <th>Tanggal Masuk</th>
+                                <th>Expired</th>
+                                <th>Jumlah</th>
+                                <th>Outstanding</th>
+                                <th>Harga</th>
+                                <th>Lokasi</th>
+                                <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-laporan-barang-masuk">
@@ -92,15 +100,22 @@
                             let row = [
                                 (index + 1),
                                 item.kode_transaksi,
-                                item.tanggal_masuk,
+                                item.supplier.supplier,
+                                item.barang.kode_barang,
+                                item.lot,
                                 item.barang.nama_barang,
+                                item.tanggal_masuk,
+                                item.tanggal_kadaluarsa,
                                 `${item.jumlah_masuk} ${item.barang.satuan.satuan}`,
-                                item.supplier.supplier
+                                `${item.outstanding} ${item.barang.satuan.satuan}`,
+                                `Rp${formatNumber(item.harga.toString())},00`,
+                                item.lokasi,
+                                item.keterangan
+
                             ];
                             table.row.add(row).draw(false); // Tambahkan data yang baru ke DataTable
                         });
                     } else {
-                        let emptyRow = ['','Tidak ada data yang tersedia.', '', '', '', '', ''];
                         table.row.add(emptyRow).draw(false); // Tambahkan baris kosong ke DataTable
                     }
                 },
@@ -108,6 +123,11 @@
                     console.log(error);
                 }
             });
+        }
+
+        function formatNumber(n) {
+            // format number 1000000 to 1.234.567
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         }
 
         // Fungsi Refresh Tabel
@@ -122,6 +142,19 @@
             let tanggalSelesai = $('#tanggal_selesai').val();
 
             let url = '/laporan-barang-masuk/print-barang-masuk';
+
+            if (tanggalMulai && tanggalSelesai) {
+                url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
+            }
+
+            window.location.href = url;
+        });
+
+        $('#excel-barang-masuk').on('click', function(){
+            let tanggalMulai = $('#tanggal_mulai').val();
+            let tanggalSelesai = $('#tanggal_selesai').val();
+
+            let url = '/laporan-barang-masuk/excel'
 
             if (tanggalMulai && tanggalSelesai) {
                 url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;

@@ -7,6 +7,9 @@ use App\Models\Barang;
 use App\Models\Satuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LaporanStokController extends Controller
 {
@@ -65,51 +68,52 @@ class LaporanStokController extends Controller
         return view('laporan-stok.print-stok', compact('barangs', 'selectedOption'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function exportExcel(Request $request)
     {
-        //
-    }
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Barang');
+        $sheet->setCellValue('C1', 'Nama Barang');
+        $sheet->setCellValue('D1', 'Satuan');
+        $sheet->setCellValue('E1', 'Stok');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $selectedOption = $request->input('opsi');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if ($selectedOption == 'semua') {
+            $barangs = Barang::all();
+        } elseif ($selectedOption == 'minimum') {
+            $barangs = Barang::where('stok', '<=', 10)->get();
+        } elseif ($selectedOption == 'stok-habis') {
+            $barangs = Barang::where('stok', 0)->get();
+        } else {
+            $barangs = Barang::all();
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $no = 1;
+        $row = 2;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        foreach ($barangs as $barang) {
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, $barang->kode_barang);
+            $sheet->setCellValue('C' . $row, $barang->nama_barang);
+            $sheet->setCellValue('D' . $row, $barang->satuan->satuan);
+            $sheet->setCellValue('E' . $row, $barang->stok);
+            $row++;
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $writer = new Xlsx($spreadsheet);
+
+        $filename = 'laporan_stok.xlsx';
+
+        $response = new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
     }
 }

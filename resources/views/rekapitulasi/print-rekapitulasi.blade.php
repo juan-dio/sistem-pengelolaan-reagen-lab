@@ -31,46 +31,34 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Barang Masuk</h1>
-    @if ($tanggalMulai && $tanggalSelesai)
-        <p>Rentang Tanggal : {{ $tanggalMulai }} - {{ $tanggalSelesai }}<p>
-    @else
-        <p>Rentang Tanggal : Semua</p>
-    @endif
-    
+    <h1>Perkiraan Penggunaan Barang dalam 6 Bulan ke Depan</h1>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Transaksi</th>
-                <th>Supplier</th>
-                <th>Lot</th>
-                <th>Tanggal Masuk</th>
-                <th>Expired</th>
+                <th>Kode Barang</th>
                 <th>Nama Barang</th>
-                <th>Jumlah Masuk</th>
+                <th>Jenis</th>
+                <th>Stok</th>
                 <th>Outstanding</th>
-                <th>Harga</th>
-                <th>Lokasi</th>
-                <th>Keterangan</th>
+                <th>Masuk</th>
+                <th>Keluar</th>
+                {{-- <th>Satuan</th> --}}
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $item)
+            @foreach ($barangRekap as $key => $barang)
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->kode_transaksi }}</td>
-                <td>{{ $item->supplier->supplier}}</td>
-                <td>{{ $item->lot }}</td>
-                <td>{{ $item->tanggal_masuk }}</td>
-                <td>{{ $item->tanggal_kadaluarsa }}</td>
-                <td>{{ $item->barang->nama_barang}} </td>
-                <td>{{ $item->jumlah_masuk}} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->outstanding }} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->harga }}</td>
-                <td>{{ $item->lokasi }}</td>
-                <td>{{ $item->keterangan }}</td>
+                <td>{{ $key + 1 }}</td>
+                <td>{{ $barang->kode_barang }}</td>
+                <td>{{ $barang->nama_barang }}</td>
+                <td>{{ $barang->jenis->jenis_barang ?? '-' }}</td>
+                <td>{{ $barang->stok }} {{ $barang->satuan->satuan }}</td>
+                <td>{{ $barangOutstanding[$barang->id]->total_outstanding ?? 0 }} {{ $barang->satuan->satuan }}</td>
+                <td>{{ $barangMasuk[$barang->id]->total_masuk ?? 0 }} {{ $barang->satuan->satuan }}</td>
+                <td>{{ $barangKeluar[$barang->id]->total_keluar ?? 0 }} {{ $barang->satuan->satuan }}</td>
+                {{-- <td>{{ $barang->satuan->satuan ?? '-' }}</td> --}}
             </tr>
             @endforeach
         </tbody>
@@ -80,7 +68,7 @@
         Dicetak oleh: {{ auth()->user()->name }}<br>
         Tanggal: {{ date('d-m-Y') }}
     </div>
-
+    
     <script>
         const previousUrl = document.referrer;
 

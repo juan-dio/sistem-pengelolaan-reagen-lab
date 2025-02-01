@@ -31,46 +31,28 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Barang Masuk</h1>
-    @if ($tanggalMulai && $tanggalSelesai)
-        <p>Rentang Tanggal : {{ $tanggalMulai }} - {{ $tanggalSelesai }}<p>
-    @else
-        <p>Rentang Tanggal : Semua</p>
-    @endif
-    
+    <h1>Saldo Awal Item</h1>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode Transaksi</th>
-                <th>Supplier</th>
-                <th>Lot</th>
-                <th>Tanggal Masuk</th>
-                <th>Expired</th>
-                <th>Nama Barang</th>
-                <th>Jumlah Masuk</th>
-                <th>Outstanding</th>
+                <th>Kode Item</th>
+                <th>Nama Item</th>
+                <th>Jumlah</th>
                 <th>Harga</th>
-                <th>Lokasi</th>
-                <th>Keterangan</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $item->kode_transaksi }}</td>
-                <td>{{ $item->supplier->supplier}}</td>
-                <td>{{ $item->lot }}</td>
-                <td>{{ $item->tanggal_masuk }}</td>
-                <td>{{ $item->tanggal_kadaluarsa }}</td>
-                <td>{{ $item->barang->nama_barang}} </td>
-                <td>{{ $item->jumlah_masuk}} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->outstanding }} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->harga }}</td>
-                <td>{{ $item->lokasi }}</td>
-                <td>{{ $item->keterangan }}</td>
+                <td>{{ $item->barang->kode_barang }}</td>
+                <td>{{ $item->barang->nama_barang }}</td>
+                <td>{{ $item->jumlah }} {{ $item->barang->satuan->satuan }}</td>
+                <td>Rp {{ number_format($item->harga, 0, ',', '.') }},00</td>
+                <td>Rp {{ number_format($item->harga * $item->jumlah, 0, ',', '.') }},00</td>
             </tr>
             @endforeach
         </tbody>
@@ -80,7 +62,7 @@
         Dicetak oleh: {{ auth()->user()->name }}<br>
         Tanggal: {{ date('d-m-Y') }}
     </div>
-
+    
     <script>
         const previousUrl = document.referrer;
 

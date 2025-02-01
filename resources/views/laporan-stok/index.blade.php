@@ -5,6 +5,7 @@
 <div class="section-header">
     <h1>Laporan Stok</h1>
     <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-stok"><i class="fa fa-table"></i> Export Excel</a>
         <a href="javascript:void(0)" class="btn btn-danger" id="print-stok"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
     </div>
 </div>
@@ -86,6 +87,11 @@
         $('#print-stok').on('click', function(){
             let selectedOption = $('#opsi-laporan-stok').val();
             window.location.href = '/laporan-stok/print-stok?opsi=' + selectedOption;
+        });
+
+        $('#excel-stok').on('click', function(){
+            let selectedOption = $('#opsi-laporan-stok').val();
+            window.location.href = '/laporan-stok/excel?opsi=' + selectedOption;
         });
     });
 </script>

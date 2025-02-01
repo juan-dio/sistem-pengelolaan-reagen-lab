@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\saldoAwalItem;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SaldoAwalItemController extends Controller
 {
@@ -24,51 +27,55 @@ class SaldoAwalItemController extends Controller
         return response()->json($saldoAwalItems);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function printSaldoAwalItem(Request $request)
     {
-        //
+        $data = saldoAwalItem::all();
+
+        return view('saldo-awal-item.print-saldo-awal', compact('data'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function exportExcel(Request $request)
     {
-        //
-    }
+        $data = SaldoAwalItem::all();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(saldoAwalItem $saldoAwalItem)
-    {
-        //
-    }
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Tanggal');
+        $sheet->setCellValue('C1', 'Kode Barang');
+        $sheet->setCellValue('D1', 'Nama Barang');
+        $sheet->setCellValue('E1', 'Satuan');
+        $sheet->setCellValue('F1', 'Jumlah');
+        $sheet->setCellValue('G1', 'Harga');
+        $sheet->setCellValue('H1', 'Total');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(saldoAwalItem $saldoAwalItem)
-    {
-        //
-    }
+        $no = 1;
+        $row = 2;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, saldoAwalItem $saldoAwalItem)
-    {
-        //
-    }
+        foreach ($data as $item) {
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, $item->tanggal);
+            $sheet->setCellValue('C' . $row, $item->barang->kode_barang);
+            $sheet->setCellValue('D' . $row, $item->barang->nama_barang);
+            $sheet->setCellValue('E' . $row, $item->barang->satuan->satuan);
+            $sheet->setCellValue('F' . $row, $item->jumlah);
+            $sheet->setCellValue('G' . $row, $item->harga);
+            $sheet->setCellValue('H' . $row, ($item->jumlah * $item->harga));
+            $row++;
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(saldoAwalItem $saldoAwalItem)
-    {
-        //
+        $writer = new Xlsx($spreadsheet);
+    
+        $filename = 'saldo-awal-item.xlsx';
+    
+        $response = new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        });
+
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
     }
 }

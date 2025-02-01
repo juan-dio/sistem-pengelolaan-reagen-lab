@@ -4,9 +4,10 @@
 
 <div class="section-header">
     <h1>Saldo Awal Item</h1>
-    {{-- <div class="ml-auto">
-        <a href="javascript:void(0)" class="btn btn-danger" id="print-stok"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
-    </div> --}}
+    <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-saldo-awal"><i class="fa fa-table"></i> Export Excel</a>
+        <a href="javascript:void(0)" class="btn btn-danger" id="print-saldo-awal"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
+    </div>
 </div>
 
 <div class="row">
@@ -18,6 +19,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Tanggal</th>
                                 <th>Kode Item</th>
                                 <th>Nama Item</th>
                                 <th>Jumlah</th>
@@ -56,6 +58,7 @@
                         $.each(response, function(index, item) {
                             let row = [
                                 (index + 1),
+                                item.tanggal,
                                 item.barang.kode_barang,
                                 item.barang.nama_barang,
                                 `${item.jumlah} ${item.barang.satuan.satuan}`,
@@ -80,10 +83,13 @@
             return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         }
 
-        // $('#print-stok').on('click', function(){
-        //     let selectedOption = $('#opsi-laporan-stok').val();
-        //     window.location.href = '/laporan-stok/print-stok?opsi=' + selectedOption;
-        // });
+        $('#print-saldo-awal').on('click', function(){
+            window.location.href = '/saldo-awal-item/print-saldo-awal-item';
+        });
+
+        $('#excel-saldo-awal').on('click', function(){            
+            window.location.href = '/saldo-awal-item/excel';
+        });
     });
 </script>
 

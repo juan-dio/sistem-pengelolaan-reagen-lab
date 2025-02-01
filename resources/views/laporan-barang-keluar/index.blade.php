@@ -5,6 +5,7 @@
 <div class="section-header">
     <h1>Laporan Barang Keluar</h1>
     <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-barang-keluar"><i class="fa fa-table"></i> Export Excel</a>
         <a href="javascript:void(0)" class="btn btn-danger" id="print-barang-keluar"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
     </div>
 </div>
@@ -42,6 +43,7 @@
                                 <th>No</th>
                                 <th>Kode Transaksi</th>
                                 <th>Tanggal Keluar</th>
+                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Jumlah Keluar</th>
                                 <th>Alat</th>
@@ -94,6 +96,7 @@
                                 (index + 1),
                                 item.kode_transaksi,
                                 item.tanggal_keluar,
+                                item.barang.kode_barang,
                                 item.barang.nama_barang,
                                 `${item.jumlah_keluar} ${item.barang.satuan.satuan}`,
                                 item.alat.alat
@@ -123,6 +126,20 @@
             let tanggalSelesai  = $('#tanggal_selesai').val();
             
             let url = '/laporan-barang-keluar/print-barang-keluar';
+
+            if(tanggalMulai && tanggalSelesai){
+                url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
+            }
+
+            window.location.href = url;
+        });
+
+        //Export Excel barang keluar
+        $('#excel-barang-keluar').on('click', function(){
+            let tanggalMulai    = $('#tanggal_mulai').val();
+            let tanggalSelesai  = $('#tanggal_selesai').val();
+            
+            let url = '/laporan-barang-keluar/excel';
 
             if(tanggalMulai && tanggalSelesai){
                 url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;

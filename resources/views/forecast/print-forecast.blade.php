@@ -31,36 +31,28 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Stok Opname</h1>
-    @if ($tanggalMulai && $tanggalSelesai)
-        <p>Rentang Tanggal : {{ $tanggalMulai }} - {{ $tanggalSelesai }}<p>
-    @else
-        <p>Rentang Tanggal : Semua</p>
-    @endif
-    
+    <h1>Perkiraan Penggunaan Barang dalam 6 Bulan ke Depan</h1>
 
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>Barang</th>
-                <th>Stok Sistem</th>
-                <th>Stok Aktual</th>
-                <th>Selisih</th>
-                <th>Keterangan</th>
-                <th>Tanggal</th>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                @for ($i = 1; $i <= 6; $i++)
+                    <th>{{ now()->addMonths($i)->format('F Y') }}</th>
+                @endfor
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $item)
+            @foreach ($forecastResults as $result)
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->barang->nama_barang}} </td>
-                <td>{{ $item->barang->stok }} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->stok_fisik }} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->barang->stok - $item->stok_fisik }} {{ $item->barang->satuan->satuan }}</td>
-                <td>{{ $item->keterangan }} </td>
-                <td>{{ $item->created_at->format('Y-m-d') }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $result['kode_barang'] }}</td>
+                <td>{{ $result['barang'] }}</td>
+                @foreach ($result['forecast'] as $forecast)
+                    <td>{{ $forecast }} {{ $result['satuan'] }}</td>
+                @endforeach
             </tr>
             @endforeach
         </tbody>

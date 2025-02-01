@@ -5,6 +5,7 @@
 <div class="section-header">
     <h1>Rekapitulasi</h1>
     <div class="ml-auto">
+        <a href="javascript:void(0)" class="btn btn-success" id="excel-rekapitulasi"><i class="fa fa-table"></i> Export Excel</a>
         <a href="javascript:void(0)" class="btn btn-danger" id="print-rekapitulasi"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
     </div>
 </div>
@@ -36,7 +37,7 @@
                                 <td>{{ $barang->nama_barang }}</td>
                                 <td>{{ $barang->jenis->jenis_barang ?? '-' }}</td>
                                 <td>{{ $barang->stok }} {{ $barang->satuan->satuan }}</td>
-                                <td>{{ $barangOutstanding[$barang->id]->total_outstanding ?? 0 }} {{ $barang->satuan->satuan }}</td>
+                                <td>{{ $barangMasuk[$barang->id]->total_outstanding ?? 0 }} {{ $barang->satuan->satuan }}</td>
                                 <td>{{ $barangMasuk[$barang->id]->total_masuk ?? 0 }} {{ $barang->satuan->satuan }}</td>
                                 <td>{{ $barangKeluar[$barang->id]->total_keluar ?? 0 }} {{ $barang->satuan->satuan }}</td>
                                 {{-- <td>{{ $barang->satuan->satuan ?? '-' }}</td> --}}
@@ -54,6 +55,14 @@
     $(document).ready(function() {
         let table = $('#table_id').DataTable({
             paging: true
+        });
+
+        $('#print-rekapitulasi').on('click', function(){
+            window.location.href = '/rekapitulasi/print-rekapitulasi';
+        });
+
+        $('#excel-rekapitulasi').on('click', function(){
+            window.location.href = '/rekapitulasi/excel';
         });
     });
 </script>
