@@ -22,6 +22,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Kode Transaksi</th>
+                                    <th>Supplier</th>
                                     <th>Lot</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Expired</th>
@@ -30,7 +31,7 @@
                                     <th>Outstanding</th>
                                     <th>Harga</th>
                                     <th>Lokasi</th>
-                                    <th>Supplier</th>
+                                    <th>Keterangan</th>
                                     <th>Status</th>
                                     <th>Opsi</th>
                                 </tr>
@@ -211,6 +212,7 @@
                             <tr class="barang-row" id="index_${value.id}">
                                 <td>${counter++}</td>   
                                 <td>${value.kode_transaksi}</td>
+                                <td>${value.supplier.supplier}</td>
                                 <td>${value.lot}</td>
                                 <td>${value.tanggal_masuk}</td>
                                 <td>${value.tanggal_kadaluarsa}</td>
@@ -219,7 +221,7 @@
                                 <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
                                 <td>Rp${formatNumber(value.harga.toString())},00</td>
                                 <td>${value.lokasi}</td>
-                                <td>${value.supplier.supplier}</td>
+                                <td>${value.keterangan ? value.keterangan : ''}</td>
                                 <td>
                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                 </td>
@@ -254,6 +256,7 @@
             let jumlah_stok = jumlah_masuk;
             let harga = $('#harga').val().split(',')[0].replace('Rp', '').replace('.', '');
             let lokasi = $('#lokasi').val();
+            let keterangan = $('#keterangan').val();
             let barang_id = $('#barang_id').val();
             let supplier_id = $('#supplier_id').val();
             let token = $("meta[name='csrf-token']").attr("content");
@@ -268,6 +271,7 @@
             formData.append('jumlah_stok', jumlah_stok);
             formData.append('harga', harga);
             formData.append('lokasi', lokasi);
+            formData.append('keterangan', keterangan);
             formData.append('barang_id', barang_id);
             formData.append('supplier_id', supplier_id);
             formData.append('_token', token);
@@ -300,6 +304,7 @@
                                     <tr class="barang-row" id="index_${value.id}">
                                         <td>${counter++}</td>   
                                         <td>${value.kode_transaksi}</td>
+                                        <td>${value.supplier.supplier}</td>
                                         <td>${value.lot}</td>
                                         <td>${value.tanggal_masuk}</td>
                                         <td>${value.tanggal_kadaluarsa}</td>
@@ -308,7 +313,7 @@
                                         <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
                                         <td>${value.harga}</td>
                                         <td>${value.lokasi}</td>
-                                        <td>${value.supplier.supplier}</td>
+                                        <td>${value.keterangan ? value.keterangan : ''}</td>
                                         <td>
                                             ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                         </td>
@@ -485,6 +490,7 @@
                                     <tr class="barang-row" id="index_${value.id}">
                                         <td>${counter++}</td>   
                                         <td>${value.kode_transaksi}</td>
+                                        <td>${value.supplier.supplier}</td>
                                         <td>${value.lot}</td>
                                         <td>${value.tanggal_masuk}</td>
                                         <td>${value.tanggal_kadaluarsa}</td>
@@ -493,7 +499,7 @@
                                         <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
                                         <td>${value.harga}</td>
                                         <td>${value.lokasi}</td>
-                                        <td>${value.supplier.supplier}</td>
+                                        <td>${value.keterangan ? value.keterangan : ''}</td>
                                         <td>
                                             ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                         </td>
@@ -584,6 +590,7 @@
                                             <tr class="barang-row" id="index_${value.id}">
                                                 <td>${counter++}</td>   
                                                 <td>${value.kode_transaksi}</td>
+                                                <td>${value.supplier.supplier}</td>
                                                 <td>${value.lot}</td>
                                                 <td>${value.tanggal_masuk}</td>
                                                 <td>${value.tanggal_kadaluarsa}</td>
@@ -592,7 +599,7 @@
                                                 <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
                                                 <td>${value.harga}</td>
                                                 <td>${value.lokasi}</td>
-                                                <td>${value.supplier.supplier}</td>
+                                                <td>${value.keterangan ? value.keterangan : ''}</td>
                                                 <td>
                                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                                 </td>

@@ -124,6 +124,16 @@
                 </div>
               </div>
             </div>
+            
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label>Keterangan</label>
+                  <textarea class="form-control" name="keterangan" id="keterangan"></textarea>
+                  <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan"></div>
+                </div>
+              </div>
+            </div>
 
           </div>
         <div class="modal-footer">

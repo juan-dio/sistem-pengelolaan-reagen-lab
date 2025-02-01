@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\saldoAwalItem;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Validator;
 
@@ -99,10 +100,11 @@ class BarangMasukController extends Controller
             'jumlah_stok'       => $request->jumlah_stok,
             'harga'             => $request->harga,
             'lokasi'            => $request->lokasi,
+            'keterangan'        => $request->keterangan,
             'barang_id'          => $request->barang_id,
             'supplier_id'       => $request->supplier_id,
             'user_id'           => auth()->user()->id
-        ]); 
+        ]);
 
         return response()->json([
             'success'   => true,
@@ -132,12 +134,24 @@ class BarangMasukController extends Controller
         foreach ($barangMasuk as $bm) {
             $bm->approved = true;
             $bm->save();
-
+            
             // Tambahkan stok barang
             $barang = Barang::where('id', $bm->barang_id)->first();
             if ($barang) {
                 $barang->stok += $bm->jumlah_masuk;
                 $barang->save();
+            }
+
+            // Buat saldo awal item jika belum ada
+            $saldoAwalItem = saldoAwalItem::where('barang_id', $bm->barang_id)->first();
+            if (!$saldoAwalItem) {
+                saldoAwalItem::create([
+                    'tanggal'   => $bm->tanggal_masuk,
+                    'barang_id' => $bm->barang_id,
+                    'jumlah'    => $bm->jumlah_masuk,
+                    'harga'     => $bm->harga,
+                    'lokasi'    => $bm->lokasi
+                ]);
             }
         }
 

@@ -19,9 +19,12 @@ use App\Http\Controllers\LaporanStokController;
 use App\Http\Controllers\ManajemenUserController;
 use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\LaporanStokOpnameController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PrintBarcodeController;
+use App\Http\Controllers\RekapitulasiController;
+use App\Http\Controllers\SaldoAwalItemController;
 use App\Http\Controllers\StokAdjustmentController;
 use App\Http\Controllers\StokOpnameController;
 use App\Http\Controllers\TransferItemController;
@@ -68,6 +71,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan-stok-opname', [LaporanStokOpnameController::class, 'index']);
         Route::get('/laporan-stok-opname/get-data', [LaporanStokOpnameController::class, 'getData']);
         Route::get('/laporan-stok-opname/print-stok-opname', [LaporanStokOpnameController::class, 'printStokOpname']);
+
+        Route::get('/forecast', [ForecastController::class, 'index']);
+        Route::get('/rekapitulasi', [RekapitulasiController::class, 'index']);
 
         Route::get('/ubah-password', [UbahPasswordController::class,'index']);
         Route::POST('/ubah-password', [UbahPasswordController::class, 'changePassword']);
@@ -124,6 +130,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/verifikasi-barang-keluar', [BarangKeluarController::class, 'approveAll']);
         Route::post('/verifikasi-stok-opname', [StokOpnameController::class, 'approveAll']);
         Route::post('/verifikasi-transfer-item', [TransferItemController::class, 'approveAll']);
+
+        Route::get('/saldo-awal-item', [SaldoAwalItemController::class, 'index']);
+        Route::get('/saldo-awal-item/get-data', [SaldoAwalItemController::class, 'getData']);
     });
 
     Route::group(['middleware' => 'checkRole:superadmin'], function(){

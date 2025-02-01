@@ -13,7 +13,15 @@ class SaldoAwalItemController extends Controller
      */
     public function index()
     {
-        //
+        return view('saldo-awal-item.index',[
+            'saldoAwalItems' => saldoAwalItem::all()
+        ]);
+    }
+
+    public function getData()
+    {
+        $saldoAwalItems = saldoAwalItem::all();
+        return response()->json($saldoAwalItems);
     }
 
     /**

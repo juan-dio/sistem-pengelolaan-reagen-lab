@@ -175,7 +175,7 @@
 
                             <li class="sidebar-item dropdown">
                                 <a href="#"
-                                    class="nav-link has-dropdown {{ Request::is('laporan-barang-masuk') || Request::is('laporan-barang-keluar') || Request::is('laporan-stok') || Request::is('laporan-stok-opname') || Request::is('laporan-pemakaian') || Request::is('laporan-forecast') || Request::is('laporan-rekapitulasi') || Request::is('laporan-kategori') ? 'active' : '' }}"
+                                    class="nav-link has-dropdown {{ Request::is('laporan-barang-masuk') || Request::is('laporan-barang-keluar') || Request::is('laporan-stok') || Request::is('laporan-stok-opname') || Request::is('laporan-pemakaian') || Request::is('saldo-awal-item') || Request::is('forecast') || Request::is('rekapitulasi') || Request::is('laporan-kategori') ? 'active' : '' }}"
                                     data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-sharp fa-reguler fa-file"></i><span class="align-middle">Laporan</span></a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -191,10 +191,13 @@
                                         <a class="nav-link {{ Request::is('laporan-stok-opname') ? 'active' : '' }}" href="/laporan-stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
                                     </li>
                                     <li>
-                                        <a class="nav-link {{ Request::is('laporan-forecast') ? 'active' : '' }}" href="/laporan-forecast"><i class="fa-solid fa-calculator"></i><span>Forecast</span></a>
+                                        <a class="nav-link {{ Request::is('saldo-awal-item') ? 'active' : '' }}" href="/saldo-awal-item"><i class="fa-solid fa-box-archive"></i><span>Saldo Awal Item</span></a>
                                     </li>
                                     <li>
-                                        <a class="nav-link {{ Request::is('laporan-rekapitulasi') ? 'active' : '' }}" href="/laporan-rekapitulasi"><i class="fa-solid fa-clipboard-list"></i><span>Rekapitulasi</span></a>
+                                        <a class="nav-link {{ Request::is('forecast') ? 'active' : '' }}" href="/forecast"><i class="fa-solid fa-calculator"></i><span>Forecast</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('rekapitulasi') ? 'active' : '' }}" href="/rekapitulasi"><i class="fa-solid fa-clipboard-list"></i><span>Rekapitulasi</span></a>
                                     </li>
                                     <li>
                                         <a class="nav-link {{ Request::is('laporan-kategori') ? 'active' : '' }}" href="/laporan-kategori"><i class="fa-solid fa-file-lines"></i><span>Kategori</span></a>

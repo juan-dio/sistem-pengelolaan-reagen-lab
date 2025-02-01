@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('saldo_awal_items', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal');
             $table->foreignId('barang_id')->constrained();
+            $table->integer('jumlah');
+            $table->integer('harga');
+            $table->string('lokasi');
             $table->timestamps();
         });
     }
