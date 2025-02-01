@@ -93,6 +93,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/barang-masuk/get-autocomplete-data', [BarangMasukController::class, 'getAutoCompleteData']);
         Route::get('/barang-masuk/get-data', [BarangMasukController::class, 'getDataBarangMasuk']);
+        Route::post('/barang-masuk/{barangMasuk}/outstanding', [BarangMasukController::class, 'updateOutstanding']);
         Route::resource('/barang-masuk', BarangMasukController::class);
     
         Route::get('/barang-keluar/get-autocomplete-data', [BarangKeluarController::class, 'getAutoCompleteData']);

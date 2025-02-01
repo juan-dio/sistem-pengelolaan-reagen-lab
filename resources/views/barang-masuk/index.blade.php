@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @include('barang-masuk.create')
+@include('barang-masuk.edit')
 
 @section('content')
     <div class="section-header">
@@ -223,6 +224,7 @@
                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                 </td>
                                 <td>
+                                    <a href="javascript:void(0)" id="button_edit_outstanding" data-id="${value.id}" data-outstanding="${value.outstanding}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                                     <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                 </td>
                             </tr>
@@ -311,6 +313,7 @@
                                             ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                         </td>
                                         <td>
+                                            <a href="javascript:void(0)" id="button_edit_outstanding" data-id="${value.id}" data-outstanding="${value.outstanding}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                                             <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                         </td>
                                     </tr>
@@ -341,9 +344,6 @@
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
                             $('#alert-supplier_id').removeClass('d-block').addClass('d-none');
                             $('#alert-lokasi').removeClass('d-block').addClass('d-none');
-
-                            let table = $('#table_id').DataTable();
-                            table.draw(); // memperbarui Datatables
                         },
                         error: function(error) {
                             console.log(error);
@@ -434,6 +434,113 @@
         });
     </script>
 
+    <!-- Show Modal Edit Outstanding -->
+    <script>
+        $('body').on('click', '#button_edit_outstanding', function() {
+            let barang_masuk_id = $(this).data('id');
+            let outstanding = $(this).data('outstanding');
+            $('#barang_masuk_id').val(barang_masuk_id);
+            $('#edit_outstanding').val(outstanding);
+            $('#modal_edit_outstanding').modal('show');
+        });
+
+        $('#update').click(function(e) {
+            e.preventDefault();
+
+            let barang_masuk_id = $('#barang_masuk_id').val();
+            let intransit = $('#intransit').val();
+            let received = $('#received').val();
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            let formData = new FormData();
+            formData.append('barang_masuk_id', barang_masuk_id);
+            formData.append('intransit', intransit);
+            formData.append('received', received);
+            formData.append('_token', token);
+
+            $.ajax({
+                url: `/barang-masuk/${barang_masuk_id}/outstanding`,
+                type: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${response.message}`,
+                        showConfirmButton: true,
+                        timer: 3000
+                    });
+
+                    $.ajax({
+                        url: "/barang-masuk/get-data",
+                        type: "GET",
+                        dataType: 'JSON',
+                        success: function(response) {
+                            let counter = 1;
+                            $('#table_id').DataTable().clear();
+                            $.each(response.data, function(key, value) {
+                                let barangMasuk = `
+                                    <tr class="barang-row" id="index_${value.id}">
+                                        <td>${counter++}</td>   
+                                        <td>${value.kode_transaksi}</td>
+                                        <td>${value.lot}</td>
+                                        <td>${value.tanggal_masuk}</td>
+                                        <td>${value.tanggal_kadaluarsa}</td>
+                                        <td>${value.barang.nama_barang}</td>
+                                        <td>${value.jumlah_masuk} ${value.barang.satuan.satuan}</td>
+                                        <td>${value.outstanding} ${value.barang.satuan.satuan}</td>
+                                        <td>${value.harga}</td>
+                                        <td>${value.lokasi}</td>
+                                        <td>${value.supplier.supplier}</td>
+                                        <td>
+                                            ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" id="button_edit_outstanding" data-id="${value.id}" data-outstanding="${value.outstanding}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
+                                            <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
+                                        </td>
+                                    </tr>
+                                `;
+                                $('#table_id').DataTable().row.add($(barangMasuk)).draw(false);
+                            });
+
+                            $('#modal_edit_outstanding').modal('hide');
+
+                            $('#alert-intransit').removeClass('d-block').addClass('d-none');
+                            $('#alert-received').removeClass('d-block').addClass('d-none');
+                        }
+                    });
+                },
+                error: function(error) {
+                    if (error.responseJSON && error.responseJSON.intransit && error.responseJSON.intransit[0]) {
+                        $('#alert-intransit').removeClass('d-none').addClass('d-block');
+                        $('#alert-intransit').html(error.responseJSON.intransit[0]);
+                    } else {
+                        $('#alert-intransit').removeClass('d-block').addClass('d-none');
+                    }
+
+                    if (error.responseJSON && error.responseJSON.received && error.responseJSON.received[0]) {
+                        $('#alert-received').removeClass('d-none').addClass('d-block');
+                        $('#alert-received').html(error.responseJSON.received[0]);
+                    } else {
+                        $('#alert-received').removeClass('d-block').addClass('d-none');
+                    }
+
+                    if (error.responseJSON && error.responseJSON.message) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `${error.responseJSON.message}`,
+                            showConfirmButton: true,
+                            timer: 3000
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
     <!-- Hapus Data Barang -->
     <script>
         $('body').on('click', '#button_hapus_barangMasuk', function() {
@@ -490,6 +597,7 @@
                                                     ${value.approved == 0 ? '<span class="badge bg-warning text-white">pending</span>' : '<span class="badge bg-success text-white">approved</span>'}
                                                 </td>
                                                 <td>
+                                                    <a href="javascript:void(0)" id="button_edit_outstanding" data-id="${value.id}" data-outstanding="${value.outstanding}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
                                                     <a href="javascript:void(0)" id="button_hapus_barangMasuk" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg"><i class="fas fa-trash"></i> </a>
                                                 </td>
                                             </tr>

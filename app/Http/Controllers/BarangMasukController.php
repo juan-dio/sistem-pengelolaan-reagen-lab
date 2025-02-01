@@ -58,7 +58,7 @@ class BarangMasukController extends Controller
             'jumlah_masuk'      => 'required|numeric',
             'outstanding'       => 'required|numeric',
             'jumlah_stok'       => 'required|numeric',
-            'harga'             => 'required|numeric',
+            'harga'             => 'required|numeric|min:0',
             'lokasi'            => 'required',
             'barang_id'         => 'required|exists:barangs,id',
             'supplier_id'       => 'required|exists:suppliers,id'
@@ -76,6 +76,7 @@ class BarangMasukController extends Controller
             'jumlah_stok.numeric'       => 'Form Jumlah Stok Harus Berupa Angka !',
             'harga.required'            => 'Form Harga Wajib Di Isi !',
             'harga.numeric'             => 'Form Harga Harus Berupa Angka !',
+            'harga.min'                 => 'Form Harga Minimal 0 !',
             'lokasi.required'           => 'Form Lokasi Wajib Di Isi !',
             'barang_id.required'         => 'Pilih Barang !',
             'barang_id.exists'           => 'Pilih Barang !',
@@ -141,6 +142,80 @@ class BarangMasukController extends Controller
         }
 
         return redirect()->back()->with('success', 'Semua barang basuk berhasil disetujui!');
+    }
+
+    public function updateOutstanding(Request $request, BarangMasuk $barangMasuk)
+    {
+        $validator = Validator::make($request->all(), [
+            'intransit' => 'required|numeric|min:0',
+            'received'  => 'required|numeric|min:0'
+        ],[
+            'intransit.required'    => 'Form Intransit Wajib Di Isi !',
+            'intransit.numeric'     => 'Form Intransit Harus Berupa Angka !',
+            'intransit.min'         => 'Form Intransit Minimal 0 !',
+            'received.required'     => 'Form Received Wajib Di Isi !',
+            'received.numeric'      => 'Form Received Harus Berupa Angka !',
+            'received.min'          => 'Form Received Minimal 0 !'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        if(!$barangMasuk->approved) {
+            // $oldOutstanding = $barangMasuk->outstanding;
+            // $oldJumlahMasuk = $barangMasuk->jumlah_masuk;
+            // $oldJumlahStok = $barangMasuk->jumlah_stok;
+            
+            // $barangMasuk->outstanding = $request->outstanding;
+            // $barangMasuk->jumlah_masuk = $oldJumlahMasuk + ($oldOutstanding - $request->outstanding);
+            // $barangMasuk->jumlah_stok = $oldJumlahStok + ($oldOutstanding - $request->outstanding);
+
+            $barangMasuk->outstanding = $request->intransit;
+            $barangMasuk->jumlah_masuk = $barangMasuk->jumlah_masuk + $request->received;
+            $barangMasuk->jumlah_stok = $barangMasuk->jumlah_stok + $request->received;
+            $barangMasuk->save();
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Data Berhasil Di Update !',
+                'data'      => $barangMasuk
+            ]);
+        } else if ($barangMasuk->approved) {
+            // $oldOutstanding = $barangMasuk->outstanding;
+            // $oldJumlahMasuk = $barangMasuk->jumlah_masuk;
+            // $oldJumlahStok = $barangMasuk->jumlah_stok;
+            
+            // $barangMasuk->outstanding = $request->outstanding;
+            // $barangMasuk->jumlah_masuk = $oldJumlahMasuk + ($oldOutstanding - $request->outstanding);
+            // $barangMasuk->jumlah_stok = $oldJumlahStok + ($oldOutstanding - $request->outstanding);
+            // $barangMasuk->save();
+
+            // // Tambahkan stok barang
+            // $barang = Barang::where('id', $barangMasuk->barang_id)->first();
+            // if ($barang) {
+            //     $barang->stok += ($oldOutstanding - $request->outstanding);
+            //     $barang->save();
+            // }
+
+            $barangMasuk->outstanding = $request->intransit;
+            $barangMasuk->jumlah_masuk = $barangMasuk->jumlah_masuk + $request->received;
+            $barangMasuk->jumlah_stok = $barangMasuk->jumlah_stok + $request->received;
+            $barangMasuk->save();
+
+            // Tambahkan stok barang
+            $barang = Barang::where('id', $barangMasuk->barang_id)->first();
+            if ($barang) {
+                $barang->stok += $request->received;
+                $barang->save();
+            }
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Data Berhasil Di Update !',
+                'data'      => $barangMasuk
+            ]);
+        }
     }
 
     /**
