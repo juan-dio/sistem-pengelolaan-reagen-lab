@@ -35,12 +35,17 @@ class DatabaseSeeder extends Seeder
 
         Role::create([
             'role'      => 'kepala gudang',
-            'deskripsi' => 'Kepala gudang memilki akses untuk mengelola dan mencetak laporan stok, barang masuk, dan barang keluar'
+            'deskripsi' => 'Kepala gudang memilki akses untuk verifikasi dan laporan'
         ]);
 
         Role::create([
             'role'      => 'admin gudang',
-            'deskripsi' => 'Admin gudang memilki akses untuk mengelola stok,  barang masuk, barang keluar dan laporannya'
+            'deskripsi' => 'Admin gudang memilki akses untuk mengelola barang masuk, barang keluar dan laporannya'
+        ]);
+
+        Role::create([
+            'role'      => 'staff warehouse',
+            'deskripsi' => 'Staff warehouse memilki akses untuk mengelola data item'
         ]);
 
         User::create([
@@ -62,6 +67,13 @@ class DatabaseSeeder extends Seeder
             'email'     => 'admin@gmail.com',
             'password'  => bcrypt('1234'),
             'role_id'   => 3
+        ]);
+
+        User::create([
+            'name'      => 'Staff Warehouse',
+            'email'     => 'staffwarehouse@gmail.com',
+            'password'  => bcrypt('1234'),
+            'role_id'   => 4
         ]);
 
         Jenis::create([

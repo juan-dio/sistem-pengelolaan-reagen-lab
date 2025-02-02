@@ -116,7 +116,6 @@
                                 </a>
                             </li>
 
-                            {{-- <li class="menu-header">DATA MASTER</li> --}}
                             <li class="sidebar-item dropdown">
                                 <a href="#"
                                     class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') || Request::is('satuan-barang') || Request::is('supplier') || Request::is('alat') ? 'active' : '' }}"
@@ -146,9 +145,6 @@
                                     class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('stok-adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
                                     data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
                                 <ul class="dropdown-menu">
-                                    {{-- <li>
-                                        <a class="nav-link {{ Request::is('order') ? 'active' : '' }}" href="/order"><i class="fa-solid fa-truck-fast"></i><span>Order</span></a>
-                                    </li> --}}
                                     <li>
                                         <a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a>
                                     </li>
@@ -199,9 +195,9 @@
                                     <li>
                                         <a class="nav-link {{ Request::is('rekapitulasi') ? 'active' : '' }}" href="/rekapitulasi"><i class="fa-solid fa-clipboard-list"></i><span>Rekapitulasi</span></a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a class="nav-link {{ Request::is('laporan-kategori') ? 'active' : '' }}" href="/laporan-kategori"><i class="fa-solid fa-file-lines"></i><span>Kategori</span></a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </li>
 
@@ -235,84 +231,141 @@
                                 </a>
                             </li>
 
-                            <li class="menu-header">LAPORAN</li>
-                            <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}"
-                                    href="laporan-stok"><i
-                                        class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
-                            <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}"
-                                    href="laporan-barang-masuk"><i class="fa fa-regular fa-file-import"></i><span>Barang
-                                        Masuk</span></a></li>
-                            <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}"
-                                    href="laporan-barang-keluar"><i
-                                        class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang Keluar</span></a>
+                            <li class="sidebar-item dropdown">
+                                <a href="#"
+                                    class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('stok-adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
+                                    data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link {{ Request::is('stok-adjustment') ? 'active' : '' }}" href="/stok-adjustment"><i class="fa-regular fa-pen-to-square"></i><span>Stok Adjustment</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('verifikasi') ? 'active' : '' }}" href="/verifikasi"><i class="fa-solid fa-clipboard-check"></i><span>Verifikasi</span></a>
+                                    </li>
+                                </ul>
                             </li>
 
-                            <li class="menu-header">MANAJEMEN USER</li>
-                            <li><a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}"
-                                    href="aktivitas-user"><i class="fa fa-solid fa-list"></i><span>Aktivitas
-                                        User</span></a></li>
+                            <li class="sidebar-item dropdown">
+                                <a href="#"
+                                    class="nav-link has-dropdown {{ Request::is('laporan-barang-masuk') || Request::is('laporan-barang-keluar') || Request::is('laporan-stok') || Request::is('laporan-stok-opname') || Request::is('laporan-pemakaian') || Request::is('saldo-awal-item') || Request::is('forecast') || Request::is('rekapitulasi') || Request::is('laporan-kategori') ? 'active' : '' }}"
+                                    data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-sharp fa-reguler fa-file"></i><span class="align-middle">Laporan</span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span> Stok</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa-solid fa-file-import"></i><span>Barang Masuk</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa-solid fa-file-export"></i><span>Barang Keluar</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-stok-opname') ? 'active' : '' }}" href="/laporan-stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('saldo-awal-item') ? 'active' : '' }}" href="/saldo-awal-item"><i class="fa-solid fa-box-archive"></i><span>Saldo Awal Item</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('forecast') ? 'active' : '' }}" href="/forecast"><i class="fa-solid fa-calculator"></i><span>Forecast</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('rekapitulasi') ? 'active' : '' }}" href="/rekapitulasi"><i class="fa-solid fa-clipboard-list"></i><span>Rekapitulasi</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="sidebar-item dropdown">
+                                <a href="#"
+                                    class="nav-link has-dropdown {{ Request::is('data-pengguna') || Request::is('hak-akses') || Request::is('aktivitas-user') || Request::is('database') ? 'active' : '' }}"
+                                    data-toggle="dropdown"><i class="fas fa-solid fa-sliders"></i><span class="align-middle">Pengaturan</span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link {{ Request::is('aktivitas-user') ? 'active' : '' }}" href="/aktivitas-user"><i class="fa fa-solid fa-user-pen"></i><span>Aktivitas User</span></a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
 
                         @if (auth()->user()->role->role === 'admin gudang')
                             <li class="sidebar-item">
-                                <a class="sidebar-link nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}"
+                                <a class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}"
                                     href="/">
                                     <i class="fas fa-fire"></i> <span class="align-middle">Dashboard</span>
                                 </a>
                             </li>
 
-                            <li class="menu-header">DATA MASTER</li>
                             <li class="sidebar-item dropdown">
                                 <a href="#"
-                                    class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') || Request::is('satuan-barang') ? 'active' : '' }}"
-                                    data-toggle="dropdown"><i class="fas fa-thin fa-cubes"></i><span>Data
-                                        Barang</span></a>
+                                    class="nav-link has-dropdown {{ Request::is('barang-masuk') || Request::is('barang-keluar') || Request::is('stok-opname') || Request::is('stok-adjustment') || Request::is('transfer') || Request::is('verifikasi') ? 'active' : '' }}"
+                                    data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-right-left"></i><span class="align-middle">Transaksi</span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="nav-link {{ Request::is('barang') ? 'active' : '' }}"
-                                            href="/barang"><i class="fa fa-solid fa-circle fa-xs"></i> Nama Barang</a>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}" href="/barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang Masuk</span></a>
                                     </li>
-                                    <li><a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}"
-                                            href="/jenis-barang"><i class="fa fa-solid fa-circle fa-xs"></i> Jenis</a>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}" href="/barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i><span>Barang Keluar</span></a>
                                     </li>
-                                    <li><a class="nav-link {{ Request::is('satuan-barang') ? 'active' : '' }}"
-                                            href="/satuan-barang"><i class="fa fa-solid fa-circle fa-xs"></i>
-                                            Satuan</a></li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item dropdown">
-                                <a href="#"
-                                    class="nav-link has-dropdown {{ Request::is('supplier') || Request::is('customer') ? 'active' : '' }}"
-                                    data-toggle="dropdown"><i
-                                        class="fa fa-sharp fa-solid fa-building"></i><span>Perusahaan</span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="nav-link {{ Request::is('supplier') ? 'active' : '' }}"
-                                            href="/supplier"><i class="fa fa-solid fa-circle fa-xs"></i> Supplier</a>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('print-barcode') ? 'active' : '' }}" href="/print-barcode"><i class="fa-regular fa-note-sticky"></i><span>Print Barcode</span></a>
                                     </li>
-                                    <li><a class="nav-link {{ Request::is('customer') ? 'active' : '' }}"
-                                            href="/alat"><i class="fa fa-solid fa-circle fa-xs"></i> Customer</a>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('stok-opname') ? 'active' : '' }}" href="/stok-opname"><i class="fa-solid fa-file-pen"></i><span>Stok Opname</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('transfer-item') ? 'active' : '' }}" href="/transfer-item"><i class="fa fa-solid fa-arrows-rotate"></i><span>Transfer Item</span></a>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li class="menu-header">TRANSAKSI</li>
-                            <li><a class="nav-link {{ Request::is('barang-masuk') ? 'active' : '' }}"
-                                    href="barang-masuk"><i class="fa fa-solid fa-arrow-right"></i><span>Barang
-                                        Masuk</span></a></li>
-                            <li><a class="nav-link {{ Request::is('barang-keluar') ? 'active' : '' }}"
-                                    href="barang-keluar"><i class="fa fa-sharp fa-solid fa-arrow-left"></i>
-                                    <span>Barang Keluar</span></a></li>
+                            <li class="sidebar-item dropdown">
+                                <a href="#"
+                                    class="nav-link has-dropdown {{ Request::is('laporan-barang-masuk') || Request::is('laporan-barang-keluar') || Request::is('laporan-stok') || Request::is('laporan-stok-opname') || Request::is('laporan-pemakaian') || Request::is('saldo-awal-item') || Request::is('forecast') || Request::is('rekapitulasi') || Request::is('laporan-kategori') ? 'active' : '' }}"
+                                    data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-sharp fa-reguler fa-file"></i><span class="align-middle">Laporan</span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}" href="/laporan-stok"><i class="fa fa-sharp fa-reguler fa-file"></i><span> Stok</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}" href="/laporan-barang-masuk"><i class="fa-solid fa-file-import"></i><span>Barang Masuk</span></a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}" href="/laporan-barang-keluar"><i class="fa-solid fa-file-export"></i><span>Barang Keluar</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
 
-                            <li class="menu-header">LAPORAN</li>
-                            <li><a class="nav-link {{ Request::is('laporan-stok') ? 'active' : '' }}"
-                                    href="laporan-stok"><i
-                                        class="fa fa-sharp fa-reguler fa-file"></i><span>Stok</span></a></li>
-                            <li><a class="nav-link {{ Request::is('laporan-barang-masuk') ? 'active' : '' }}"
-                                    href="laporan-barang-masuk"><i
-                                        class="fa fa-regular fa-file-import"></i><span>Barang Masuk</span></a></li>
-                            <li><a class="nav-link {{ Request::is('laporan-barang-keluar') ? 'active' : '' }}"
-                                    href="laporan-barang-keluar"><i
-                                        class="fa fa-sharp fa-regular fa-file-export"></i><span>Barang
-                                        Keluar</span></a></li>
+                        @if (auth()->user()->role->role === 'staff warehouse')
+                            <li class="sidebar-item">
+                                <a class="nav-link {{ Request::is('/') || Request::is('dashboard') ? 'active' : '' }}"
+                                    href="/">
+                                    <i class="fas fa-fire"></i> <span class="align-middle">Dashboard</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item dropdown">
+                                <a href="#"
+                                    class="nav-link has-dropdown {{ Request::is('barang') || Request::is('jenis-barang') || Request::is('satuan-barang') || Request::is('supplier') || Request::is('alat') ? 'active' : '' }}"
+                                    data-toggle="dropdown" data-bs-parent="#accordionSidebar"><i class="fas fa-solid fa-table"></i><span class="align-middle">Data Master</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link {{ Request::is('barang') ? 'active' : '' }}" href="/barang"><i class="fa-solid fa-prescription-bottle"></i>Data Reagen</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('jenis-barang') ? 'active' : '' }}" href="/jenis-barang"><i class="fa-solid fa-list-ul"></i> Jenis</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('satuan-barang') ? 'active' : '' }}" href="/satuan-barang">
+                                            <i class="fa-solid fa-cube"></i> Satuan</a></li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('supplier') ? 'active' : '' }}" href="/supplier"><i class="fa-solid fa-truck"></i> Supplier</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link {{ Request::is('alat') ? 'active' : '' }}" href="/alat"><i class="fa-solid fa-microscope"></i>Alat</a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
                     </ul>
 

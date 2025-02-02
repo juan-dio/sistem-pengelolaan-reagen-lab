@@ -8,6 +8,7 @@ use App\Models\BarangMasuk;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,10 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        if (!file_exists(public_path('storage'))) {
+            Artisan::call('storage:link');
+        }
+
         $barangCount        = Barang::all()->count();
         $barangMasukCount   = BarangMasuk::all()->count();
         $barangKeluarCount  = BarangKeluar::all()->count();
@@ -39,7 +44,6 @@ class DashboardController extends Controller
     
         $barangMinimum = Barang::where('stok', '<=', 10)->get();
         
-                                
         return view('dashboard', [
             'barang'            => $barangCount,
             'barangMasuk'       => $barangMasukCount,
