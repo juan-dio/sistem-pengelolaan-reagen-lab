@@ -4,15 +4,14 @@
 @include('barang.edit')
 @include('barang.show')
 @include('barang.excel')
+@include('barang.loading')
 
 @section('content')
     <div class="section-header">
         <h1>Data Reagen</h1>
         <div class="ml-auto">
-            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah
-                Reagen</a>
-            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang_excel"><i class="fa fa-table"></i> Import
-                Reagen Excel</a>
+            <a href="javascript:void(0)" class="btn btn-success" id="button_tambah_barang_excel"><i class="fa fa-table"></i> Import Reagen Excel</a>
+            <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah Reagen</a>
         </div>
     </div>
 
@@ -29,7 +28,7 @@
                                     <th>Kode</th>
                                     <th>Nama</th>
                                     <th>Test Group</th>
-                                    <th>Stok Minimum</th>
+                                    {{-- <th>Stok Minimum</th> --}}
                                     <th colspan="2">Opsi</th>
                                 </tr>
                             </thead>
@@ -78,7 +77,6 @@
                                 <td>${value.kode_barang}</td>
                                 <td>${value.nama_barang}</td>
                                 <td>${value.test_group}</td>
-                                <td>${value.stok_minimum}</td>
                                 <td style="padding: 8px 6px;">
                                     <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                     <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
@@ -133,7 +131,7 @@
             $('#modal_tambah_barang_excel').modal('show');
         });
 
-        $('#import').click(function(e) {
+        $('#import').click(function (e) {
             e.preventDefault();
 
             let excel = $('#excel')[0].files[0];
@@ -143,6 +141,9 @@
             formData.append('excel', excel);
             formData.append('_token', token);
 
+            // Tampilkan modal loading
+            $('#loadingModal').modal('show');
+
             $.ajax({
                 url: '/barang/excel',
                 type: "POST",
@@ -151,21 +152,23 @@
                 contentType: false,
                 processData: false,
 
-                success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: true,
-                        timer: 3000
-                    });
-                    
-                    let data = response.data;
+                success: function (response) {
+                    // Swal.fire({
+                    //     icon: 'success',
+                    //     title: `${response.message}`,
+                    //     showConfirmButton: true,
+                    //     timer: 3000
+                    // });
 
-                    for(let i = 1; i < data.length; i++) {
+                    let data = response.data;
+                    let requests = []; 
+                    let failedCount = 0; // Hitung jumlah request yang gagal
+
+                    for (let i = 1; i < data.length; i++) {
                         let gambar = null;
                         if (data[i].kode_barang) {
                             let canvas = document.createElement('canvas');
-        
+
                             JsBarcode(canvas, data[i].kode_barang, {
                                 format: "CODE128",
                                 displayValue: true,
@@ -173,18 +176,16 @@
                                 width: 2,
                                 height: 60
                             });
-                            
+
                             let barcodeDataUrl = canvas.toDataURL('image/png');
-            
-                            // Konversi base64 menjadi Blob
                             const base64Data = barcodeDataUrl.split(',')[1];
                             const binaryData = atob(base64Data);
                             const arrayBuffer = new Uint8Array(binaryData.length);
-            
+
                             for (let i = 0; i < binaryData.length; i++) {
                                 arrayBuffer[i] = binaryData.charCodeAt(i);
                             }
-            
+
                             gambar = new Blob([arrayBuffer], { type: 'image/png' });
                         }
 
@@ -201,94 +202,112 @@
                         formData.append('deskripsi', data[i].deskripsi);
                         formData.append('_token', token);
 
-                        $.ajax({
+                        let request = $.ajax({
                             url: '/barang',
                             type: "POST",
                             cache: false,
                             data: formData,
                             contentType: false,
-                            processData: false,
-
-                            success: function(response) {
-                                $.ajax({
-                                    url: '/barang/get-data',
-                                    type: "GET",
-                                    cache: false,
-                                    success: function(response) {
-                                        $('#table-barangs').html(''); // kosongkan tabel terlebih dahulu
-
-                                        let counter = 1;
-                                        $('#table_id').DataTable().clear();
-                                        $.each(response.data, function(key, value) {
-                                            let barang = `
-                                                <tr class="barang-row" id="index_${value.id}">
-                                                    <td>${counter++}</td>
-                                                    <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px";"></td>
-                                                    <td>${value.kode_barang}</td>
-                                                    <td>${value.nama_barang}</td>
-                                                    <td>${value.test_group}</td>
-                                                    <td>${value.stok_minimum}</td>
-                                                    <td style="padding: 8px 6px;">
-                                                        <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
-                                                        <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
-                                                        <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash" style="padding: 0 1px;"></i> </a>
-                                                    </td>
-                                                    <td style="padding: 8px 6px;">        
-                                                        <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
-                                                    </td>
-                                                </tr>
-                                            `;
-                                            $('#table_id').DataTable().row.add($(barang)).draw(false);
-                                        });
-
-                                        // $('#nama_barang').val('');
-                                        // $('#kode_barang').val('');
-                                        // $('#stok_minimum').val('');
-                                        // $('#deskripsi').val('');
-
-                                        // $('#modal_tambah_barang').modal('hide');
-
-                                        // $('#alert-nama_barang').removeClass('d-block').addClass('d-none');
-                                        // $('#alert-kode_barang').removeClass('d-block').addClass('d-none');
-                                        // $('#alert-stok_minimum').removeClass('d-block').addClass('d-none');
-                                        // $('#alert-jenis_id').removeClass('d-block').addClass('d-none');
-                                        // $('#alert-satuan_id').removeClass('d-block').addClass('d-none');
-                                        // $('#alert-deskripsi').removeClass('d-block').addClass('d-none');
-
-                                        let table = $('#table_id').DataTable();
-                                        table.draw();
-                                    },
-                                    error: function(error) {
-                                        // console.log(error);
-                                    }
-                                });
-                            },
-                            error: function(error) {
-                                // console.log(error);
-                            }
+                            processData: false
+                        }).fail(function (error) {
+                            failedCount++; // Tambah jumlah error jika request gagal
                         });
+
+                        requests.push(request);
                     }
 
-                    $('#modal_tambah_barang_excel').modal('hide');
-                    $('#excel').val('');
-                    $('#alert-excel').removeClass('d-block').addClass('d-none');
+                    // Tunggu semua request selesai
+                    Promise.allSettled(requests).then(() => {
+                        // Tutup modal loading setelah semua request selesai
+                        $('#loadingModal').modal('hide');
 
-                    let table = $('#table_id').DataTable();
-                    table.draw();
+                        // Menampilkan SweetAlert setelah modal loading ditutup
+                        if (failedCount > 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Proses Selesai dengan Beberapa Error',
+                                text: `${failedCount} data gagal diproses karena duplikat atau error lainnya.`,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Semua Data Berhasil Diproses!',
+                                text: 'Seluruh data berhasil diimport tanpa error.',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+
+                        // Reload tabel barang
+                        $.ajax({
+                            url: '/barang/get-data',
+                            type: "GET",
+                            cache: false,
+                            success: function (response) {
+                                $('#table-barangs').html('');
+                                let counter = 1;
+                                $('#table_id').DataTable().clear();
+                                $.each(response.data, function (key, value) {
+                                    let barang = `
+                                        <tr class="barang-row" id="index_${value.id}">
+                                            <td>${counter++}</td>
+                                            <td><img src="/storage/${value.gambar}" alt="gambar Barang" style="width: 150px;"></td>
+                                            <td>${value.kode_barang}</td>
+                                            <td>${value.nama_barang}</td>
+                                            <td>${value.test_group}</td>
+                                            <td style="padding: 8px 6px;">
+                                                <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i></a>
+                                                <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i></a>
+                                                <a href="javascript:void(0)" id="button_hapus_barang" data-id="${value.id}" class="btn btn-icon btn-danger btn-lg mb-2"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                            <td style="padding: 8px 6px;">        
+                                                <a href="javascript:void(0)" class="btn-barcode btn btn-icon btn-info btn-lg mb-2">Cetak</a>
+                                            </td>
+                                        </tr>
+                                    `;
+                                    $('#table_id').DataTable().row.add($(barang)).draw(false);
+                                });
+
+                                let table = $('#table_id').DataTable();
+                                table.draw();
+                            },
+                            error: function (error) {
+                                console.error("Gagal memuat data barang:", error);
+                            }
+                        });
+
+                        $('#modal_tambah_barang_excel').modal('hide');
+                        $('#excel').val('');
+                        $('#alert-excel').removeClass('d-block').addClass('d-none');
+                    });
                 },
 
-                error: function(error) {
+                error: function (error) {
+                    $('#loadingModal').modal('hide'); // Tutup modal jika request pertama gagal
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Memproses File',
+                        text: 'Terjadi kesalahan saat membaca file Excel. Pastikan format sudah benar.',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+
                     if (error.responseJSON && error.responseJSON.excel && error.responseJSON.excel[0]) {
                         $('#excel').val('');
                         $('#alert-excel').removeClass('d-none').addClass('d-block');
                         $('#alert-excel').html(error.responseJSON.excel[0]);
                     } else {
                         $('#alert-excel').removeClass('d-block').addClass('d-none');
-
                     }
                 }
             });
         });
+
+
+
     </script>
 
 
@@ -382,7 +401,6 @@
                                         <td>${value.kode_barang}</td>
                                         <td>${value.nama_barang}</td>
                                         <td>${value.test_group}</td>
-                                        <td>${value.stok_minimum}</td>
                                         <td style="padding: 8px 6px;">
                                             <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                             <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>
@@ -499,7 +517,7 @@
                     $('#detail_satuan_id').val(response.data.satuan_id);
                     $('#detail_stok').val(response.data.stok !== null && response.data.stok !== '' ? response.data.stok : 'Stok Kosong');
                     $('#detail_stok_minimum').val(response.data.stok_minimum);
-                    $('#detail_deskripsi').val(response.data.deskripsi);
+                    $('#detail_deskripsi').val(response.data.deskripsi != "null" ? response.data.deskripsi : 'Tidak ada deskripsi');
                     $('#detail_gambar_preview').attr('src', '/storage/' + response.data.gambar);
                     $('#modal_detail_barang').modal('show');
                 }
@@ -746,7 +764,6 @@
                                             <td>${value.kode_barang}</td>
                                             <td>${value.nama_barang}</td>
                                             <td>${value.test_group}</td>
-                                            <td>${value.stok_minimum}</td>
                                             <td style="padding: 8px 6px;">
                                                 <a href="javascript:void(0)" id="button_detail_barang" data-id="${value.id}" class="btn btn-icon btn-success btn-lg mb-2"><i class="far fa-eye"></i> </a>
                                                 <a href="javascript:void(0)" id="button_edit_barang" data-id="${value.id}" class="btn btn-icon btn-warning btn-lg mb-2"><i class="far fa-edit"></i> </a>

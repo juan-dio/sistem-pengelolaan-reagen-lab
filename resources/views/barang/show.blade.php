@@ -31,7 +31,7 @@
 
               <div class="form-group">
                 <label>Test Group</label>
-                <input type="number" class="form-control" name="test_group" id="detail_test_group" disabled>
+                <input type="text" class="form-control" name="test_group" id="detail_test_group" disabled>
               </div>
 
               <div class="form-group">
