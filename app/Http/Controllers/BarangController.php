@@ -285,8 +285,8 @@ class BarangController extends Controller
             $rowData['stok_minimum'] = $sheet->getCell('C' . $row->getRowIndex())->getValue();
             $rowData['test_group'] = $sheet->getCell('D' . $row->getRowIndex())->getValue();
             $rowData['deskripsi'] = $sheet->getCell('E' . $row->getRowIndex())->getValue();
-            $rowData['jenis_id'] = ($sheet->getCell('F' . $row->getRowIndex())->getValue() == 'dingin') ? 1 : 2;
-            $rowData['satuan_id'] = (in_array($sheet->getCell('G' . $row->getRowIndex())->getValue(), ['mL', 'ml', 'ML'])) ? 1 : 2;
+            $rowData['jenis_id'] = (strtolower($sheet->getCell('F' . $row->getRowIndex())->getValue()) == 'dingin') ? 1 : 2;
+            $rowData['satuan_id'] = (strtolower($sheet->getCell('G' . $row->getRowIndex())->getValue()) == 'ml') ? 1 : 2;
 
             $data[] = $rowData;
         }

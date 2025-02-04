@@ -83,7 +83,10 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Stok Saat Ini</label>
-                  <input type="number" class="form-control" name="stok" id="stok" disabled>
+                  <input type="number" class="form-control" name="stok" id="stok" style="width: 75%;" disabled>
+                  <div class="input-group-append" style="width: 25%;">
+                    <input type="text" class="satuan form-control" name="satuan" disabled>
+                  </div>
                   <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-stok"></div>
                 </div>
               </div>
@@ -93,7 +96,7 @@
                   <div class="input-group">
                     <input type="number" class="form-control" name="jumlah_keluar" id="jumlah_keluar" min="0" style="width: 75%;">
                     <div class="input-group-append" style="width: 25%;">
-                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                      <input type="text" class="satuan form-control" name="satuan" disabled>
                     </div>
                     <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_keluar" style="width: 100%;"></div>
                   </div>

@@ -125,7 +125,7 @@ class BarangMasukController extends Controller
             $barang->save();
         }
 
-        return redirect()->back()->with('success', 'Barang basuk berhasil disetujui!');
+        return redirect()->back()->with('success', 'Barang masuk berhasil disetujui!');
     }
 
     public function approveAll(Request $request)
@@ -155,7 +155,7 @@ class BarangMasukController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Semua barang basuk berhasil disetujui!');
+        return redirect()->back()->with('success', 'Semua barang masuk berhasil disetujui!');
     }
 
     public function updateOutstanding(Request $request, BarangMasuk $barangMasuk)

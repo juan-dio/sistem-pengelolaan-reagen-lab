@@ -15,14 +15,20 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label>Outstanding</label>
-                <input type="number" class="form-control" name="edit_outstanding" id="edit_outstanding" readonly>
+                <input type="number" class="form-control" name="edit_outstanding" id="edit_outstanding" style="width: 75%;" readonly>
+                <div class="input-group-append" style="width: 25%;">
+                  <input type="text" class="satuan form-control" name="satuan" disabled>
+                </div>
                 <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-edit_outstanding"></div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label>In Transit</label>
-                <input type="number" class="form-control" name="intransit" id="intransit">
+                <input type="number" class="form-control" name="intransit" id="intransit" style="width: 75%;">
+                <div class="input-group-append" style="width: 25%;">
+                  <input type="text" class="satuan form-control" name="satuan" disabled>
+                </div>
                 <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-intransit"></div>
               </div>
             </div>

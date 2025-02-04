@@ -31,7 +31,7 @@
     </style>
 </head>
 <body>
-    <h1>Perkiraan Penggunaan Barang dalam 6 Bulan ke Depan</h1>
+    <h1>Rekapitulasi</h1>
 
     <table>
         <thead>

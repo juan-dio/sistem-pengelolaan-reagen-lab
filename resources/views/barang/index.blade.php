@@ -9,6 +9,7 @@
 @section('content')
     <div class="section-header">
         <h1>Data Reagen</h1>
+        {{-- <h1 style="font-family: 'Poppins'">Data Reagen</h1> --}}
         <div class="ml-auto">
             <a href="javascript:void(0)" class="btn btn-success" id="button_tambah_barang_excel"><i class="fa fa-table"></i> Import Reagen Excel</a>
             <a href="javascript:void(0)" class="btn btn-primary" id="button_tambah_barang"><i class="fa fa-plus"></i> Tambah Reagen</a>
@@ -336,6 +337,7 @@
                 JsBarcode(canvas, kode_barang, {
                     format: "CODE128",
                     displayValue: true,
+                    font: "Poppins",
                     fontSize: 20,
                     width: 2,
                     height: 60
@@ -571,6 +573,7 @@
                 JsBarcode(canvas, kode_barang, {
                     format: "CODE128",
                     displayValue: true,
+                    font: "Poppins",
                     fontSize: 20,
                     width: 2,
                     height: 60

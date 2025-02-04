@@ -112,13 +112,13 @@
                             $('#barang_id').val(response.id);
                             $('#kode_transaksi').val(generateKodeTransaksi(response.kode_barang));
                             $('#stok').val(response.stok);
-                            $('#satuan_id').val(response.satuan.satuan);
+                            $('.satuan').val(response.satuan.satuan);
                         } else {
                             $('#nama_barang').val('');
                             $('#barang_id').val('');
                             $('#kode_transaksi').val('');
                             $('#stok').val('');
-                            $('#satuan_id').val('');
+                            $('.satuan').val('');
                         }
                     },
                     error: function(error) {

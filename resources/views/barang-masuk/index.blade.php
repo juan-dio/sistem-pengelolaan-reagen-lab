@@ -170,13 +170,13 @@
                             }
                             if (response && (response.stok || response.stok === 0) && response.satuan) {
                                 $('#stok').val(response.stok);
-                                $('#satuan_id').val(response.satuan);
+                                $('.satuan').val(response.satuan);
                             } else if (response && response.stok === 0) {
                                 $('#stok').val(0);
-                                $('#satuan_id').val('');
+                                $('.satuan').val('');
                             } else {
                                 $('#stok').val('');
-                                $('#satuan_id').val('');
+                                $('.satuan').val('');
                             }
                         },
                     });

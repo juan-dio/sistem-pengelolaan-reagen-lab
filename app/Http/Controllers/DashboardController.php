@@ -26,6 +26,7 @@ class DashboardController extends Controller
         $barangKeluarCount  = BarangKeluar::all()->count();
         $userCount          = User::all()->count();
         $barangMasukPerBulan = BarangMasuk::selectRaw('DATE_FORMAT(tanggal_masuk, "%Y-%m") as date, SUM(jumlah_masuk) as total')
+            ->where('approved', 1)
             ->groupBy('date')
             ->get()
             ->map(function ($data) {
@@ -34,6 +35,7 @@ class DashboardController extends Controller
                 return $data;
         });
         $barangKeluarPerBulan = BarangKeluar::selectRaw('DATE_FORMAT(tanggal_keluar, "%Y-%m") as date, SUM(jumlah_keluar) as total')
+            ->where('approved', 1)
             ->groupBy('date')
             ->get()
             ->map(function ($data) {
@@ -42,7 +44,7 @@ class DashboardController extends Controller
                 return $data;
         });
     
-        $barangMinimum = Barang::where('stok', '<=', 10)->get();
+        $barangMinimum = Barang::where('stok', '<=', 10)->take(5)->get();
         
         return view('dashboard', [
             'barang'            => $barangCount,

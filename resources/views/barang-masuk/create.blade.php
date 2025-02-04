@@ -85,7 +85,7 @@
                   <div class="input-group">
                     <input type="number" class="form-control" name="jumlah_masuk" id="jumlah_masuk" min="0" style="width: 75%;">
                     <div class="input-group-append" style="width: 25%;">
-                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                      <input type="text" class="satuan form-control" name="satuan" disabled>
                     </div>
                     <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jumlah_masuk" style="width: 100%;"></div>
                   </div>
@@ -97,7 +97,7 @@
                   <div class="input-group">
                     <input type="number" class="form-control" name="outstanding" id="outstanding" min="0" style="width: 75%;">
                     <div class="input-group-append" style="width: 25%;">
-                      <input type="text" class="form-control" name="satuan" id="satuan_id" disabled>
+                      <input type="text" class="satuan form-control" name="satuan" disabled>
                     </div>
                     <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-outstanding" style="width: 100%;"></div>
                   </div>

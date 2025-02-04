@@ -83,8 +83,19 @@
 
     {{-- Cetak Beberapa Item --}}
     <script>
-        const barangs = jQuery.parseJSON('{!! json_encode($barangs) !!}');
-        console.log(barangs);
+        // const barangs = jQuery.parseJSON('{!! json_encode($barangs) !!}');
+        // console.log(barangs);
+
+        const barangs = $.ajax({
+            url: '/barang/get-data',
+            type: 'GET',
+            async: false,
+            success: function(response) {
+                return response;
+            }
+        }).responseJSON.data;
+        // $.ajax()
+
         let print_barangs = [];
 
         $('body').on('click', '#button_print_some', function() {
